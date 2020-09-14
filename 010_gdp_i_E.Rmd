@@ -1,0 +1,511 @@
+---
+title: "Output, the interest rate and the exchange rate"
+author: "Luis Francisco Gomez Lopez"
+date: 2020-09-08
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fonttheme: structurebold
+    theme: AnnArbor
+  ioslides_presentation: default
+  slidy_presentation: default
+bibliography: macro_faedis.bib
+link-citations: yes
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE, 
+                      message   = FALSE,
+                      fig.align = "center")
+```
+
+```{r}
+
+library(tidyverse)
+library(latex2exp)
+library(DiagrammeR)
+library(timetk)
+library(tidyquant)
+library(lubridate)
+```
+
+# Contents
+
+- Please Read Me
+- Purpose
+- Equilibrium in the Goods Market in an open economy and some simplifications
+- Equilibrium in the Financial Market in an open economy and some simplifications
+- Equilibrium in the Goods and Financial Markets in an open economy with some simplifications
+- Exchange rate regimes
+- Exchange Policy in Colombia
+- Acknowledgments
+- References
+
+# Please Read Me
+
+- Check the message __Welcome greeting__ published in the News Bulletin Board.
+
+- Dear student please edit your profile uploading a photo where your face is clearly visible.
+
+- The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
+
+- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 19]
+
+# Purpose
+
+Characterize the equilibrium of the markets of goods and the financial markets in an open economy
+
+# Equilibrium in the Goods Market in an open economy  and some simplifications
+
+- **IS** curve:
+
+$$\begin{split}
+   \widehat{Y} & = \widehat{Z} \\
+   & = \widehat{C}(\widehat{Y}-\widehat{T}) + \widehat{I}(\widehat{Y}, r) + \widehat{G} + \widehat{X}(\widehat{Y}^*,\varepsilon) - \varepsilon\widehat{IM}(\widehat{Y},\varepsilon) \\
+   & = \widehat{C}(\widehat{Y}-\widehat{T}) + \widehat{I}(\widehat{Y}, r) + \widehat{G} + \widehat{NX}(\widehat{Y}^*, \widehat{Y},\varepsilon)
+   \end{split}$$
+
+Where $\widehat{NX}(\widehat{Y}^*, \widehat{Y},\varepsilon) \equiv \widehat{X}(\widehat{Y}^*,\varepsilon) - \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$
+
+- Also it is assumed that the **Marshall–Lerner condition** is fulfilled: $\frac{d\widehat{NX}}{d\varepsilon} > 0$
+
+- Furthermore, the **nominal** exchange rate, $E$, that affect $\varepsilon$ is defined, in this case, as the amount of units of national currency that must be given in exchange for a unit of foreign currency.
+
+# Equilibrium in the Goods Market in an open economy  and some simplifications
+
+- To simplify the analysis we will assume that the rest of the world trades with only one currency and the economy that is being analyzed with a local currency. In the colombian case, it can be assumed that it is the USD and the COP:
+
+    + $\varepsilon = \frac{P_j*E}{P_i}$ where $\varepsilon$ is the **real bilateral** exchange rate between 2 territories, i and j, where j is the **rest of the world** that trades with only one currency and i is the **economy being analyzed**.
+
+- Also to facilitate the analysis, the index numbers, $P_j$ and $P_i$, are set equal to $\frac{P_j}{P_i} = 1$ such that $\varepsilon = E$. Furthermore because $r \approx i - \pi^e$ we will assume that $\pi^e = 0$ such that $r \approx i$.
+
+- Taking into account this simplifications:
+
+    + $\widehat{Y} = \widehat{C}(\widehat{Y}-\widehat{T}) + \widehat{I}(\widehat{Y}, i) + \widehat{G} + \widehat{NX}(\widehat{Y}^*, \widehat{Y},E)$
+    
+# Equilibrium in the Financial Market in an open economy and some simplifications
+
+- **LM** curve
+
+    + Because $r \approx i - \pi^e$ and we assume that $\pi^e = 0$:
+    
+        + $r = \overline{r}$
+        
+        + $i - \pi^e = \overline{i} - \pi^e$
+        
+        + $i = \overline{i}$
+
+- **Uncovered interest parity relation**[^1]
+
+    + $1 + i = (1 + i^*)*\frac{E^e}{E}$
+    
+    + $E = \frac{1 + i^*}{1 + i}E^e$
+
+[^1]: The subscripts are removed to facilitate the notation
+
+# Equilibrium in the Goods and Financial Markets in an open economy with some simplifications
+
+- **IS** curve: 
+
+    + $\widehat{Y} = \widehat{C}(\widehat{Y}-\widehat{T}) + \widehat{I}(\widehat{Y}, i) + \widehat{G} + \widehat{NX}(\widehat{Y}^*, \widehat{Y},E)$
+
+    + **Marshall–Lerner condition**
+    
+        + Because $\varepsilon = E$ then $\frac{d\widehat{NX}}{dE} > 0$. Therefore $\frac{\widehat{X}(\widehat{Y}^*,E)}{E*\widehat{IM}(\widehat{Y},E)}\eta_{\widehat{X},E} - \eta_{\widehat{IM},E} > 1$
+    
+- **LM** curve: 
+
+    + $i = \overline{i}$
+
+- **Uncovered interest parity relation**: 
+
+    + $E = \frac{1 + i^*}{1 + i}E^e$
+
+- **Equilibrium in the Goods and Financial Markets** : 
+
+    + $\widehat{Y} = \widehat{C}(\widehat{Y}-\widehat{T}) + \widehat{I}(\widehat{Y}, \overline{i}) + \widehat{G} + \widehat{NX}(\widehat{Y}^*, \widehat{Y},\frac{1 + i^*}{1 + \overline{i}}E^e)$
+    
+        + Where $\frac{d\widehat{NX}}{d\left[\frac{1 + i^*}{1 + \overline{i}}E^e\right]} > 0$ so $\frac{\widehat{X}(\widehat{Y}^*,\frac{1 + i^*}{1 + \overline{i}}E^e)}{\left[\frac{1 + i^*}{1 + \overline{i}}E^e\right]*\widehat{IM}(\widehat{Y},\frac{1 + i^*}{1 + \overline{i}}E^e)}\eta_{\widehat{X},\frac{1 + i^*}{1 + \overline{i}}E^e} - \eta_{\widehat{IM},\frac{1 + i^*}{1 + \overline{i}}E^e} > 1$
+    
+    + $i = \overline{i}$
+    
+    + $E = \frac{1 + i^*}{1 + \overline{i}}E^e$
+    
+# Equilibrium in the Goods and Financial Markets in an open economy with some simplifications
+
+```{r, out.width = '80%'}
+
+ggplot(data = tibble(x = c(0, 5, 2, 6, 11, 8),
+                     y = c(5, 0, 2, 5,  0, 2))
+) +
+
+    # First plot
+    geom_point(aes(x = x, y = y),
+               color = "blue",
+               size  = 3) +
+    geom_segment(aes(x = 0, y = 2, 
+                     xend = 4, yend = 2),
+                 color = 'red') +
+    geom_segment(aes(x = 0, y = 4, 
+                     xend = 4, yend = 0),
+                 color = 'green') +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 0, yend = 5)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 5, yend = 0)) +
+    geom_segment(aes(x = 2, y = 2, 
+                     xend = 2, yend = 0),
+                 linetype = 'dashed') +
+    annotate(geom = 'text', 
+             x = 2.25, y = 0.25, 
+             label = TeX('$\\widehat{Y}^{eq}$')) +
+    annotate(geom = 'text', 
+             x = 0.25, y = 2.25, 
+             label = TeX('$\\bar{i}$')) +
+    annotate(geom = 'text', 
+             x = 5.25, y = 0, 
+             label = TeX('$\\widehat{Y}$')) +
+    annotate(geom = 'text', 
+             x = 0, y = 5.25, 
+             label = TeX('$i')) +
+    annotate(geom = 'text', 
+             x = 4.25, y = 2.125, 
+             label = TeX('$LM')) +
+    annotate(geom = 'text', 
+             x = 1, y = 3.5, 
+             label = TeX('$IS')) +
+
+    # Second plot
+    geom_segment(aes(x = 6, y = 4, 
+                     xend = 10, yend = 0),
+                 color = 'purple') +
+    geom_segment(aes(x = 6, y = 0, 
+                     xend = 6, yend = 5)) +
+    geom_segment(aes(x = 6, y = 0, 
+                     xend = 11, yend = 0)) +
+    geom_segment(aes(x = 8, y = 2, 
+                     xend = 8, yend = 0),
+                 linetype = 'dashed') +
+    geom_segment(aes(x = 4, y = 2, 
+                     xend = 8, yend = 2),
+                 linetype = 'dotted') +
+    annotate(geom = 'text', 
+             x = 8.25, y = 0.25, 
+             label = TeX('$\\E^{eq}$')) +
+    annotate(geom = 'text', 
+             x = 6.25, y = 2.25, 
+             label = TeX('$\\bar{i}$')) +
+    annotate(geom = 'text', 
+             x = 11.25, y = 0, 
+             label = TeX('$E$'))  +
+    annotate(geom = 'text', 
+             x = 6, y = 5.25, 
+             label = TeX('$i')) +
+    annotate(geom = 'text', 
+             x = 7.5, y = 3.5, 
+             label = str_glue('Uncovered interest 
+                              parity relation')) +
+    annotate(geom = 'text', 
+             x = 1, y =  1.5, 
+             label = str_glue('Equilibrium in 
+                              the goods and the 
+                              financial markets
+                              in an open
+                              economy')) +
+    annotate(geom = 'text', 
+             x = 7, y =  1.5, 
+             label = str_glue('Equilibrium in 
+                              the goods and the 
+                              financial markets
+                              in an open
+                              economy')) +
+    theme_void()
+```
+
+# Exchange rate regimes
+
+- __De jure__ exchange rate regime: 
+
+    + Regime that a country claim to officially follow
+    
+- __De facto__ exchange rate regime: 
+
+    + Regime that a country actually follow
+
+# Exchange rate regimes
+
+- Classification of __de facto__ exchange arrangements [@imfAnnualReportExchange2020, p 43-45]:
+
+```{r, out.width = '100%'}
+
+grViz(diagram = '
+      
+      digraph boxes_and_circles {
+      
+      graph [rankdir = TB]
+      
+      node [shape = circle, color = "#2C3E50"]
+      
+      "De facto\nexchange\narrangements";
+      
+      node [shape = oval, color = "#E31A1C"]
+      
+      "Hard\npegs";
+      "Soft\npegs";
+      "Floating\nregimes";
+      "Residual";
+      
+      node [shape = oval, color = "#18BC9C"]
+      
+      "No\nseparate\nlegal\ntender";
+      "Currency\nboard";
+      "Conventional\npeg";
+      "Stabilized\narrangement";
+      "Crawling\npeg";
+      "Crawl-like\narrangement";
+      "Pegged\nexchange\nrate\nwithin\nhorizontal\nbands";
+      "Floating";
+      "Free\nfloating";
+      "Other\nmanaged\narrangement";
+      
+      "De facto\nexchange\narrangements" -> "Hard\npegs";
+      "De facto\nexchange\narrangements" -> "Soft\npegs";
+      "De facto\nexchange\narrangements" -> "Floating\nregimes";
+      "De facto\nexchange\narrangements" -> "Residual";
+      
+      "Hard\npegs" -> "No\nseparate\nlegal\ntender";
+      "Hard\npegs" -> "Currency\nboard";
+      "Soft\npegs" -> "Conventional\npeg";
+      "Soft\npegs" -> "Stabilized\narrangement";
+      "Soft\npegs" -> "Crawling\npeg";
+      "Soft\npegs" -> "Crawl-like\narrangement";
+      "Soft\npegs" -> "Pegged\nexchange\nrate\nwithin\nhorizontal\nbands";
+      "Floating\nregimes" -> "Floating";
+      "Floating\nregimes" -> "Free\nfloating";
+      "Residual" -> "Other\nmanaged\narrangement";
+ 
+      }
+      
+      ')
+```
+
+# Exchange rate regimes
+
+- __De facto__ exchange arrangements around the world [@imfAnnualReportExchange2020]
+
+```{r, out.width = "75%"}
+
+read_csv(file = "010_AREAERDataQueryReport_ Exchange_Arrangement (1949 -)_2020_08_27.csv") %>% 
+    select(Year, Country, Code, Index, Category, Status) %>% 
+    filter(Year %in% 2010:2018,
+           Code %in% c(971, 972, 973, 974, 159, 975, 976, 977, 978, 979),
+           Status %in% "yes") %>% 
+    count(Year, Category) %>% 
+    mutate(Year     = as_factor(Year),
+           Category = case_when(
+                        Category == "Pegged exchange rate within horizontal bands" ~ str_glue("Pegged exchange rate
+                                                                                              within horizontal bands"),
+                        TRUE ~ Category)) %>% 
+    ggplot(aes(x    = Year, 
+               y    = n, 
+               fill = fct_reorder(.f = Category, .x = n) %>% 
+                        fct_rev())) +
+    geom_col(color = "black", alpha = 0.8) + 
+    geom_text(aes(x     = Year, 
+                  y     = n, 
+                  label = n), 
+              fontface  = "bold",
+              position  = position_stack(vjust = 0.5)) +
+    scale_fill_tq() + 
+    labs(y        = "Number of countries",
+         title    = "De facto exchange rate arrangements around the world",
+         caption  = str_glue("Source: IMF AREAER Database
+                             Last date update: 2020-08"), 
+         fill     = "") +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"), legend.position = "bottom",
+          axis.text         = element_text(face = "bold"))
+```
+
+# Exchange Policy in Colombia
+
+- __De jure__ exchange rate regime[^2]:
+
+    + Crawling peg
+    
+        + From 1967-03-22 to 1991-10-28
+        
+        + "Decreto 444 de 1967"
+        
+    + Pegged exchange rate within horizontal bands
+    
+        + From 1991-10-29 to 1999-09-24
+        
+        + "Certificados de Cambio" (from 1991-10-29 to 1994-01-23): "Resolución Externa No 10 de 1991 Banco de la República de Colombia, Artículo 1"  
+        
+        + "Bandas cambiarias" (from 1994-01-24 to 1999-11-24): "Resolución Externa No 2 de 1994 Banco de la República de Colombia, Artículos 2-3"
+        
+[^2]: Author's own interpretation
+        
+# Exchange Policy in Colombia
+
+- __De jure__ exchange rate regime[^3]:
+    
+    + Free floating
+    
+        + From 1999-11-25
+        
+        + "Resolución Externa No 21 de 1999 Banco de la República de Colombia, Artículo 2"
+
+[^3]: Author's own interpretation
+
+# Exchange Policy in Colombia
+
+- __De jure__ exchange rate regime COP/USD[^4]:
+
+```{r, out.width = "75%"}
+
+# Data 1: clasiffication exchange rate regimes
+classif <- tibble(regime = c("Crawling peg", 
+                             "Pegged exchange rate within horizontal bands",
+                             "Free floating") %>% as_factor(),
+                  start  = c(ymd("1967-03-01"), ymd("1991-10-01"), ymd("1999-11-01")),
+                  end    = c(ymd("1991-10-01"), ymd("1999-11-01"), ymd("2020-08-01")))
+
+# Data 2: monthly average exchange rate COP/USD
+col_cop_usd_monthly_mean <- read_csv(file   = "010_TCM_Serie empalmada_de_datos_promedio_por_meses_y_datos_a_fin_de_mes.csv", 
+         locale = locale(decimal_mark = ",")) %>% 
+    set_names(nm = c("date", "mean", "last")) %>% 
+    mutate(date = as.character(date) 
+                    %>% timetk::parse_date2()) %>% 
+    filter_by_time(.date_var   = date, 
+                   .start_date = ymd("1967-03-01"), 
+                   .end_date   = "end") %>% 
+    select(date, mean)
+    
+col_cop_usd_monthly_mean %>%     
+    ggplot() + 
+    geom_line(aes(x = date, y = mean),
+              color = palette_light()[1]) +
+    geom_rect(data  = classif,
+              aes(xmin  = start, xmax = end, fill = regime), 
+              ymin  = -Inf, 
+              ymax  = Inf, 
+              alpha = 0.2,
+              color = "black",
+              show.legend = TRUE) +
+    scale_fill_tq() +
+    scale_x_date(breaks = c(ymd("1967-03-01"), 
+                            ymd("1991-10-01"),
+                            ymd("1999-11-01"),
+                            ymd("2020-08-01")), 
+                 date_labels = "%Y-%m") +
+    labs(x        = "",
+         y        = "COP/USD",
+         fill     = "",
+         title    = str_glue("Colombia monthly average exchange rate and 
+                             de jure exchange rate regime classification: COP/USD"),
+         caption  = str_glue("Source monthly average exchange rate: Banco de la República (Colombia)
+                             Source de jure exchange rate regime classification: Author's own interpretation 
+                             Last update date: 2020-08")) + 
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          legend.position   = "bottom", 
+          axis.text         = element_text(face = "bold"))
+```
+
+[^4]: Author's own interpretation
+
+# Exchange Policy in Colombia
+
+- Exchange Policy and the position of the **Bank of the Republic (Colombia)**
+
+    + http://www.banrep.gov.co/ > Navegue por temas > Política de intervención cambiaria
+    
+        + "... en un régimen con flexibilidad cambiaria la tasa de cambio opera como una variable de ajuste ante los choques que recibe la economía, reduciendo la volatilidad de la actividad económica."
+        
+        + " ... la flexibilidad cambiaria permite  utilizar de forma independiente la tasa de interés como un instrumento para acercar la inflación y el producto a sus valores deseados."
+        
+        + " ... la flexibilidad cambiaria reduce los incentivos a la toma excesiva de riesgo cambiario por parte de los agentes de la economía, lo cual es vital para mantener la estabilidad financiera."
+        
+# Exchange Policy in Colombia
+
+- Exchange Policy and the position of the **Bank of the Republic (Colombia)**
+
+    + http://www.banrep.gov.co/ > Navegue por temas > Política de intervención cambiaria
+    
+        + "No obstante lo anterior, el Banco de la República como autoridad cambiaria tiene la potestad de intervenir en el mercado de divisas. Dicha intervención no limita la flexibilidad cambiaria, no pretende fijar o alcanzar algún nivel específico de la tasa de cambio y persigue objetivos compatibles con la estrategia de inflación objetivo."
+
+# Exchange Policy in Colombia
+
+- Purporses of the inverventions in the Foreign Exchange Market by the **Bank of the Republic (Colombia)**
+
+    + http://www.banrep.gov.co/ > Navegue por temas > Política de intervención cambiaria
+    
+        + " ... incrementar el nivel de reservas internacionales para reducir la vulnerabilidad externa y mejorar las condiciones de acceso al crédito externo ..."
+        
+        + " mitigar movimientos de la tasa de cambio que no reflejen claramente el comportamiento de los fundamentales de la economía y que puedan afectar negativamente la inflación y la actividad económica ..."
+        
+        + " ... moderar desviaciones rápidas y sostenidas de la tasa de cambio respecto a su tendencia con el fin de evitar comportamientos desordenados de los mercados financieros."
+        
+# Exchange Policy in Colombia
+
+- Relation with the simplified IS-LM model 
+
+    + **Hard pegged regimes**
+    
+        + $E_t = E_{t+1}^e$
+        
+    + **Uncovered interest parity relation**
+    
+        + $E_t = \frac{1 + i_t^*}{1 + i_t}E_{t+1}^e$
+        
+- Therefore we have that:
+
+    + $E_t = \frac{1 + i_t^*}{1 + i_t}E_t$
+    
+    + $1 = \frac{1 + i_t^*}{1 + i_t}$
+    
+    + $i_t^* = i_t$
+    
+        + In **hard pegged regimes** central banks lose the possibility of fixing the interest rate and the possibility to use it as an instrument of the monetary policy.
+        
+# Acknowledgments
+
+- To my family that supports me
+
+- To the taxpayers of Colombia and the __[UMNG students](https://www.umng.edu.co/estudiante)__ who pay my salary
+
+- To the __[Business Science](https://www.business-science.io/)__ and __[R4DS Online Learning](https://www.rfordatasci.com/)__ communities where I learn __[R](https://www.r-project.org/about.html)__ 
+
+- To the __[R Core Team](https://www.r-project.org/contributors.html)__, the creators of __[RStudio IDE](https://rstudio.com/products/rstudio/)__ and the authors and maintainers of the packages __[tidyverse](https://CRAN.R-project.org/package=tidyverse)__, __[tidyquant](https://CRAN.R-project.org/package=tidyquant)__, __[lubridate](https://CRAN.R-project.org/package=lubridate)__, __[latex2exp](https://CRAN.R-project.org/package=latex2exp)__, __[DiagrammeR](https://CRAN.R-project.org/package=DiagrammeR)__, __[timetk](https://CRAN.R-project.org/package=timetk)__ and __[tinytex](https://CRAN.R-project.org/package=tinytex)__ for allowing me to access these tools without paying for a license
+
+- To the __[Linux kernel community](https://www.kernel.org/category/about.html)__ for allowing me the possibility to use some __[Linux distributions](https://static.lwn.net/Distributions/)__ as my main __[OS](https://en.wikipedia.org/wiki/Operating_system)__ without paying for a license
+
+# References

@@ -1,0 +1,341 @@
+---
+title: "Employment and unemployment indicators"
+author: Luis Francisco Gomez Lopez
+date: 2020-07-27
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fonttheme: structurebold
+    theme: AnnArbor
+  ioslides_presentation: default
+  slidy_presentation: default
+bibliography: macro_faedis.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE, 
+                      message   = FALSE,
+                      fig.align = "center")
+```
+
+```{r libraries}
+
+library(tidyverse)
+library(tidyquant)
+library(wbstats)
+```
+
+# Contents
+
+- Please Read Me
+- Purpose
+- Labor classification of the population in Colombia
+- Main indicators of the labor market in Colombia
+- Annual Unemployment rate (UR) and Employment rate (ER) in Colombia
+- Statistical sources on the labor market in Colombia
+- Acknowledgments
+- References
+
+# Please Read Me
+
+- Check the message __Welcome greeting__ published in the News Bulletin Board.
+
+- Dear student please edit your profile uploading a photo where your face is clearly visible.
+
+- The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
+
+- This presentation is based on [@loraTecnicasMedicionEconomica2016, Chapter 2]
+
+# Purpose
+
+Introduce the labor market indicators and statistical sources on employment in Colombia to understand their dynamics.
+
+# Labor classification of the population in Colombia
+
+- To understand the indicators of the labor market from an economic perspective, it is necessary to classify the population from a labor point of view. Initially, the total population of a territory could be included but in practice the __Total Population (TP)__ that is included __doesn't__ cover [@hussmannsSurveysEconomicallyActive1990, chapter 2]:
+
+    + Members of the armed forces because this information is considered secret or because it is not easy to obtain information when its members are in barracks and military areas.
+    
+    + Residents in institutions such as people who are not part of the military forces but reside in military facilities, residents of penal or correctional centers and hospital residents.
+
+- In that sense, the **Total Population (TP)** covers the non-institutional civilian population residing in households.
+
+# Labor classification of the population in Colombia
+
+- There are four (4) levels (we will not see a fifth (5) level in this presentation) to classify the __Total Population (TP)__ of a territory from a labor point of view. 
+
+- This classification follows recommendations of the __International Labor Organization (ILO)__ and is the methodology used by the __Departamento Administrativo Nacional de Estadística (DANE)__ in Colombia [@daneMetodologiaGeneralGran2016].
+
+    + **Level 1**: based on age to define who is able to work.
+ 
+        + *Rural areas*: over 10 years old
+        
+        + *Urban areas*: over 12 years old
+        
+- This population is none as **Working Age Population (WAP)**
+
+# Labor classification of the population in Colombia
+
+- **Level 2**: based on those who do not want or cannot do some economic activity and those who do or seek to do some economic activity.
+
+    + **Economically Inactive Population (EIP)**: Individuals who belong to **WAP** but who in a reference week did not participate in the production of goods and services because they don't  need, can't or are not interest in having a paid activity.
+    
+        + *Examples* **EIP**: Students who do not work, homemakers, pensioners who do not work, rentiers who do not work, permanent disabled individuals to work, people who believe it is not worth working or do not want to work
+                
+        + **Economically Active Population (EAP)**: Individuals who belong to **WAP** and work or are seeking employment.
+
+# Labor classification of the population in Colombia
+
+- **Level 3**: based on the condition of individuals within the **EAP**
+
+    + **Employed (E)**: Individuals who belong to the **EAP** and who within a reference period they work at least one (1) hour in a reference week, they didn't work in the reference week but they had a job or they are unpaid workers and worked for at least one (1) hour in a reference week in a business
+    
+        + Take into account the home is not considered a business in the case of homemakers
+    
+    + **Unemployed (U)**: Individuals who are available and willing to work, but did not work in the reference period.
+
+# Labor classification of the population in Colombia
+
+-  **Level 4**: based on the condition of individuals within the groups **E** and **U**.
+
+    + For the case of **Unemployed (U)**:
+        
+        + *Visible Unemployment (VU)*: Individuals that belong to **Unemployed (U)**, without employment in the reference week and looked for a job in the last month.   
+        
+        + *Invisible Unemployment (IU)*: Individuals that belong to **Unemployed (U)**, without employment in the reference week and did not look for a job in the last month but they did in the last 12 months and have a reason for discouragement.   
+
+# Labor classification of the population in Colombia
+
+- **Level 4**: based on the condition of individuals within the groups **E** and **U**.
+
+    + For the case of **Employed (E)**:
+        
+        + **Full Employed (FE)**: Individuals that belong to **Employed (E)** and claim not to be able or not to have the desire to work more than they already work.
+        
+        + **Underemployed (UE)**: two (2) categories called subjective and objective are considered.
+        
+        + *Subjective Underemployment*: Individuals who expressed the intention of improving his income, the number of working hours or his intention of having a more appropriate work inaccordance with his skills.
+        
+        + *Objective Underemployment*: Individuals who have an intention but also have done any kind of search to materialize their expectation and they are ready to make the change.
+
+# Labor classification of the population in Colombia
+
+```{r may_col_labor, out.width = "90%"}
+
+#Plot
+## Labor Market Colombia
+tibble(x = c( 0, 
+              -1, 
+              1,
+              0,
+              2,
+              -2,
+              2,
+              -3,
+              -1,
+              1,
+              3),
+       y = c( 0, 
+              -1, 
+              -1,
+              -2,
+              -2,
+              -3,
+              -3,
+              -4,
+              -4,
+              -4,
+              -4),
+       indicator = c('Total Population (TP)',
+                     'Population below\n10 or 12 years\n(Rural or Urban)',
+                     'Working Age\nPopulation\n(WAP)',
+                     'Economically\nActive\nPopulation\n(EAP)',
+                     'Economically\nInactive\nPopulation\n(EIP)',
+                     'Employed (E)',
+                     'Unemployed (U)',
+                     'Full Employed\n(FE)',
+                     'Underemployed\n(UE)',
+                     'Visible\nUnemployment\n(VU)',
+                     'Invisible\nUnemployment\n(IU)'
+       ),
+       level     = c('0', 
+                     '1', '1', 
+                     '2', '2', 
+                     '3', '3',
+                     '4', '4', '4', '4'),
+       value     = c(49234,
+                     49234 - 39668,
+                     39668,
+                     25051,
+                     39668 - 25051,
+                     22006,
+                     3045,
+                     22006 - (6414 + 2744),
+                     6414 + 2744,
+                     2895,
+                     150
+       )
+) %>% 
+    mutate(label_text = str_glue('{indicator}
+                                 {value %>% 
+                                    scales::number(big.mark = ",")}')) %>% 
+    ggplot(aes(x = x, y = y, label = label_text)) +
+    geom_segment(x = 0, y = 0, xend = 0, yend = -1) +
+    geom_segment(x = -1, y = -1, xend = 1, yend = -1) +
+    geom_segment(x = 1, y = -1, xend = 1, yend = -2) +
+    geom_segment(x = 0, y = -2, xend = 2, yend = -2) +
+    geom_segment(x = 0, y = -2, xend = 0, yend = -3) +
+    geom_segment(x = -2, y = -3, xend = 2, yend = -3) +
+    geom_segment(x = -2, y = -3, xend = -2, yend = -4) +
+    geom_segment(x = -3, y = -4, xend = -1, yend = -4) +
+    geom_segment(x = 2, y = -3, xend = 2, yend = -4) +
+    geom_segment(x = 1, y = -4, xend = 3, yend = -4) +
+    geom_label(aes(fill = level), 
+               color       = "white", 
+               fontface    = "bold",
+               size        = 3.5) +
+    scale_fill_tq() +
+    coord_cartesian(xlim = c(-5, 5), 
+                    ylim = c(-4.2, 0.2)) +
+    labs(title    = 'Labor classification of the population in Colombia',
+         subtitle = str_glue('Period: February 2020
+                             Units  : Thousands of individuals'),
+         caption  = str_glue('Sources: DANE, Gran Encuesta Integrada de Hogares - GEIH
+                              Last update: 2020-06-30'),
+         fill     = "Level"
+    ) + 
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          panel.grid        = element_blank(),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_blank(),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_blank(), 
+          axis.ticks        = element_blank())
+```
+
+# Main indicators of the labor market in Colombia
+
+- **Gross participation rate (GPR)**
+
+    + Measures the relative size of the workforce and captures the percentage of the population that is able to carry out economic activities.
+    
+$$\begin{aligned} GPR = \frac{EAP}{TP} * 100 \end{aligned}$$
+
+- **Labor participation rate (LPR)** *("Tasa Global de Participación" in spanish)*
+
+    + Measures the pressure of the working-age population over the labor market.
+    
+$$\begin{aligned} LPR = \frac{EAP}{WAP} * 100 \end{aligned}$$
+
+# Main indicators of the labor market in Colombia
+
+- **Unemployment rate (UR)**
+
+    + Measures the proportion of the labor force that is not being demanded.
+    + In the denominator the **EAP** is used since this population includes individuals who work or seek to work. 
+
+$$\begin{aligned} UR = \frac{U}{EAP} * 100 \end{aligned}$$
+
+- **Employment rate (ER)**
+
+    + Measures the proportion of the population that is able to work and that participates in the labor market.
+    + In the denominator the **WAP** is used to be consistent with the **Labor participation rate (LPR)** *("Tasa Global de Participación" in spanish)*
+
+$$\begin{aligned} ER = \frac{E}{WAP} * 100 \end{aligned}$$
+
+# Annual Unemployment rate (UR) and Employment rate (ER) in Colombia
+
+```{r ur_er_rate, out.width = "85%"}
+
+wb(country   = c('COL'), 
+            indicator = c('SL.UEM.TOTL.ZS', 'SL.EMP.TOTL.SP.ZS')) %>% 
+    as_tibble() %>% 
+    select(country, date, value, indicator) %>% 
+    mutate(date = as.numeric(date)) %>% 
+    arrange(date) %>%
+    mutate(indicator = case_when(
+        indicator == 'Unemployment, total (% of total labor force) (modeled ILO estimate)' ~ 'Unemployment rate (UR) (ILO estimate))',
+        indicator == 'Employment to population ratio, 15+, total (%) (modeled ILO estimate)' ~ 'Employment rate (ER) (ILO estimate))',
+        TRUE ~ indicator)
+    ) %>% 
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_point(shape = 21, fill = palette_light()[[2]], color = "black") +
+    geom_line() +
+    geom_vline(xintercept = 1999,
+               color      = palette_light()[[1]]) +
+    expand_limits(y = 0) +
+    facet_wrap(facet    = vars(indicator), 
+               ncol     = 1,
+               nrow     = 2, 
+               scales   = "free_y", 
+               labeller = ) +
+    scale_x_continuous(breaks = c(1991, 1999, 2010, 2018)) +
+    scale_y_continuous(labels = scales::number_format(accuracy = 1,
+                                                      suffix = "%")
+    ) +
+    labs(x        = 'Year',
+         y        = 'Percent',
+         title    = 'Annual Unemployment rate (UR) and Employment rate (ER) in Colombia', 
+         subtitle = str_glue('UR code WDI: SL.UEM.TOTL.ZS
+                             UR units: percent
+                             ER code WDI: SL.EMP.TOTL.SP.ZS
+                             ER units: percent
+                             Observation: ILO estimations where ages 15 and older are considered the WAP'),
+         caption  = str_glue('Source: World Development Indicators (WDI) - World Bank
+                             Last update date: 2020-0')
+    ) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"),
+          strip.background.x = element_rect(color = "black", fill = "#fefff0"),
+          strip.text.x = element_text(margin = margin(t = 5,
+                                                      r = 5,
+                                                      b = 5,
+                                                      l = 5, 
+                                                      unit = "pt"), face = "bold")
+          )
+```
+
+# Statistical sources on the labor market in Colombia
+
+- It is quite expensive to collect information from the entire **Total Population (TP)**.
+
+- Due to the above, a sample of the **Total Population (TP)** is taken and, with _statistical tools_ plus using *probability theory*, the main indicators of the colombian labor market are estimated.
+
+- The information to make these estimates is obtained from 2 sources:
+
+    + **Gran Encuesta Integrada de Hogares (GEIH)**[^1]
+    
+        + Módulo H Fuerza de Trabajo
+        + Módulo I Ocupados
+        + Módulo J Desocupados
+        + Módulo K Inactivos
+    
+    + **Census**
+    
+[^1]: The questionnaires are available at [@daneMetodologiaGeneralGran2016] > Materiales relacionados > Cuestionarios
+
+# Acknowledgments
+
+- To my family that supports me
+
+- To the taxpayers of Colombia and the __[UMNG students](https://www.umng.edu.co/estudiante)__ who pay my salary
+
+- To the __[Business Science](https://www.business-science.io/)__ and __[R4DS Online Learning](https://www.rfordatasci.com/)__ communities where I learn __[R](https://www.r-project.org/about.html)__ 
+
+- To the __[R Core Team](https://www.r-project.org/contributors.html)__, the creators of __[RStudio IDE](https://rstudio.com/products/rstudio/)__ and the authors and maintainers of the packages __[tidyverse](https://CRAN.R-project.org/package=tidyverse)__, __[tidyquant](https://CRAN.R-project.org/package=tidyquant)__, __[wbstats](https://CRAN.R-project.org/package=wbstats)__ and __[tinytex](https://CRAN.R-project.org/package=tinytex)__ for allowing me to access these tools without paying for a license
+
+- To the __[Linux kernel community](https://www.kernel.org/category/about.html)__ for allowing me the possibility to use some __[Linux distributions](https://static.lwn.net/Distributions/)__ as my main __[OS](https://en.wikipedia.org/wiki/Operating_system)__ without paying for a license
+
+# References

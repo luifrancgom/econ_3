@@ -1,0 +1,232 @@
+---
+title: 'Financial markets II: The extended IS-LM model'
+author: "Luis Francisco Gomez Lopez"
+date: 2020-08-24
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fonttheme: structurebold
+    theme: AnnArbor
+  ioslides_presentation: default
+  slidy_presentation: default
+bibliography: macro_faedis.bib
+link-citations: yes
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE, 
+                      message   = FALSE,
+                      fig.align = "center")
+```
+
+```{r}
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+```
+
+# Contents
+
+- Please Read Me
+- Purpose
+- Nominal and real interest rate
+- Risk premium and interest rate
+- Extended IS-LM model
+- Acknowledgments
+- References
+
+# Please Read Me
+
+- Check the message __Welcome greeting__ published in the News Bulletin Board.
+
+- Dear student please edit your profile uploading a photo where your face is clearly visible.
+
+- The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
+
+- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 6]
+
+# Purpose
+
+Analyze an extension of the IS-LM model to present a more complex financial system.
+
+# Nominal and real interest rate
+
+- **Example**: 3 goods, 2 periods, expenditure in 2 periods (information about prices in 2 periods and quantities for a base period) [@ralphPracticalIntroductionIndex2015, p 40]
+
+```{r table_price_level}
+
+tibble(Fruits     = c('Apples', 'Bananas', 'Pineapples'),
+       Price_2012 = c(0.4, 0.5, 1.25),
+       Price_2013 = c(0.42, 0.55, 2),
+       Quantity_2013 = c(220, 230, 50)) %>% 
+    mutate_at(.vars = vars(Price_2012:Price_2013), 
+              .funs = scales::dollar) %>% 
+    set_names(nm = c('Fruits', 'Price 2012', 
+                     'Price 2013', 'Quantity 2012')) %>%
+  kable(format = "latex", booktabs = TRUE, caption = "Fruits prices and quantities") %>% 
+  kable_styling(font_size = 9, latex_options = "striped") %>% 
+  row_spec(row = 0, bold = TRUE)
+```
+
+# Nominal and real interest rate
+
+- A consumer borrows to acquire a basket of goods in 2012, using as reference the quantities of 2012. When the consumer borrows, the bank charges him an **annual effective overdue** interest rate equal to $i_{2012}$. In 2013 he must pay a sum equal to $C_{2012}(1 + i_{2012})$ where $C_{2012} = 0.40*\textbf{220} + 0.50*\textbf{230} + 1.25*\textbf{50} = 265.5$ is the value of the basket of goods in 2012. 
+
+- Also the basket of goods in 2013, using as reference the quantities of 2012, is $C_{2013} = 0.42*\textbf{220} + 0.55*\textbf{230} + 2.00*\textbf{50} = 318.9$
+
+# Nominal and real interest rate
+
+- If we divide $C_{2012}$ by $C_{2013}$, we obtain an equivalence between the monetary units of 2012 and the monetary units of 2013. This means that 265.5 monetary units of 2012 are equivalent to 318.9 monetary units of 2013 or that $\frac{265.5}{318.9}$ monetary units of 2012 are equivalent to 1 monetary unit of 2013 given that both allow us to obtain the same consumption basket or the same fraction of it.
+
+- Taking into account the previous results, the purchasing power of what the consumer borrows is given by $(1 + i_{2012})\frac{C_{2012}}{C_{2013}}$.
+
+- We can rewrite the previous expression in terms of price indices $(1 + i_{2012})\frac{C_{2012}}{C_{2013}} = (1 + i_{2012})\frac{\frac{C_{2012}}{C_{2012}}*100}{\frac{C_{2013}}{C_{2012}}*100} = (1 + i_{2012})\frac{P_{2012}}{P_{2013}} \approx (1 + i_{2012})\frac{100}{120.113}$ where $P_{2012} = 100$ and $P_{2013} \approx 120.113$ are the price indices of 2012 and 2013. 
+
+# Nominal and real interest rate
+
+- With the price indices we can include inflation as follows:
+
+$$\begin{split}
+   \pi_{2013} & = \frac{P_{2013}-P_{2012}}{P_{2012}} = \frac{P_{2013}}{P_{2012}} - 1 \\ 
+   & \Rightarrow 1 + \pi_{2013} = \frac{P_{2013}}{P_{2012}} \\ 
+   & \Rightarrow \frac{P_{2012}}{P_{2013}} = \frac{1}{1 + \pi_{2013}}
+   \end{split}$$
+   
+# Nominal and real interest rate
+
+- In that way we have that:
+
+$$\begin{split}
+   (1 + i_{2012})\frac{C_{2012}}{C_{2013}} & = (1 + i_{2012})\frac{P_{2012}}{P_{2013}} \\
+   & = \frac{1 + i_{2012}}{1 + \pi_{2013}}
+   \end{split}$$
+
+- The expression  $\frac{1 + i_{2012}}{1 + \pi_{2013}}$ is known as 1 plus the **real interest rate**, $r_{2012}$
+
+    + Therefore $1 + r_{2012} \equiv \frac{1 + i_{2012}}{1 + \pi_{2013}}$ and in general we can define $1 + r_t \equiv \frac{1 + i_t}{1 + \pi_{t+1}}$.
+
+# Nominal and real interest rate
+
+- In $t$ there is no information on the exact value of $\pi_{t+1}$ if we want to borrow money in $t$ and pay in $t + 1$. 
+
+    + If that is the case then it is necessary to estimate $\pi_{t+1}$ where that estimation will be called the expected inflation, $\pi_{t+1}^e$. 
+    
+    + Therefore we can find an approximation for $1 + r_t$ given by $1 + r_t = \frac{1 + i_t}{1 + \pi_{t+1}^e}$.
+
+- The previous expression can be rewritten as 
+
+$$\begin{split}
+   log_e(1 + r_t) & \equiv log_e(\frac{1 + i_t}{1 + \pi_{t+1}^e}) \\
+   & = log_e(1 + i_t) - log_e(1 + \pi_{t+1}^e)
+   \end{split}$$
+   
+# Nominal and real interest rate
+
+- It is possible to show that[^1] $log_e(1 + r_t) \approx r_t$, $log_e(1 + i_t) \approx i_t$ and $log_e(1 + \pi_{t+1}^e) \approx \pi_{t+1}^e$
+    
+    + Therefore $r_t \approx i_t - \pi_{t+1}^e$.
+
+- If for example, you have a savings account with an **effective annual overdue** interest rate of $0.0025(0.25\%)$ and if the annual inflation was $0.03(3\%)$, your real return will be $0.0025 - 0.03 = -0.0275(-2.75\%)$.
+
+[^1]: The proof can be found in [@hamiltonTimeSeriesAnalysis1994, p 718, Logarithms and Percent]
+
+# Risk premium and interest rate
+
+- In financial markets there are different products that differ in various aspects such as the level of **risk**[^2]. In this part we will focus on the **risk** where it is assumed that is compensated by the lenders through a **risk premium** that increases the interest rate compared to a financial product that is considered to have no **risk**.
+
+- If $i_t$ is the interest rate of a risk-free financial product then $i_t + x_t$ will be the interest rate of a financial product with risk where $x_t$ is known as the **risk premium**.
+
+- To understand what determines the **risk premium**, we are going to establish a reasonable **equilibrium condition** in which the yield obtained from a product with **risk** is not known a priori with certainty since there is a probability of non-payment.
+
+[^2]: There are other aspects different from **risk** but we will not see them in the course.
+
+# Risk premium and interest rate
+
+- If we are in a period $t$ two situations can  happen in $t+1$:
+
+    + The person or organization that borrows pays in $t + 1$ and the lender receives for each monetary unit $1 + i_t + x_t$.
+    
+    + The person or organization that borrows does not pay in $t+1$ and the the lender receives nothing, that is 0.
+
+- If $p_t$ is the probability of non-payment with $0 < p_t < 1$ and $1 - p_t$ is the probability of payment then we could calculate a weighted average of the yield that can be obtained, since we do not know a priori what will happen in $t + 1$, given by $(1 + i_t + x_t)(1-p_t) + 0*p_t$.
+
+    + For students who have seen a course of statistics the previous expression uses the concept of **expected value**.
+    
+    + For those who have not seen this course the previous expression can be understood as a weighted average taking into account the possible resources that could be received.
+    
+# Risk premium and interest rate
+
+-  In financial markets there are products with and without **risk**. With a product without risk you get for each monetary unit $1 + i_t$ and with one without risk $(1 + i_t + x_t)(1-p_t) + 0*p_t$.
+
+    + If $1 + i_t > (1 + i_t + x_t)(1-p_t) + 0*p_t$ there would only be products without risk since they would generate a higher yield.
+    
+    + If $1 + i_t < (1 + i_t + x_t)(1-p_t) + 0*p_t$ there would only be products with risk since they would generate a higher yield. 
+    
+    + If $1 + i_t = (1 + i_t + x_t)(1-p_t) + 0*p_t$ there would be products with and without risk since they would generate the same yield. 
+    
+# Risk premium and interest rate
+
+- Because there exist both types of products in the financial market, the most reasonable thing is to assume that $1 + i_t = (1 + i_t + x_t)(1-p_t)$ where in that way we can know that the determinants of the risk premium, $x_t$, are $x_t = \frac{(1 + i_t)p_t}{(1-p_t)}$.
+
+    + The last expression tells us that the **risk premium** increase when the interest rate of the product without risk, $i_t$, increases and when the probability of non-payment, $p_t$, increases: 
+    
+        + $\frac{dx_t}{di_t} = \frac{p_t}{1-p_t} >0$
+        + $\frac{dx_t}{dp_t} = \frac{1 + i_t}{(1 - p_t)^2} > 0$
+        
+# Extended IS-LM model
+
+- The IS-LM model that we have been working on includes
+
+    + A **IS curve** $\widehat{Y} = \widehat{C}(\widehat{Y} - \widehat{T}) + \widehat{I}(i,\widehat{Y}) + \widehat{G}$
+    
+    + A **LM curve** $i_t = \overline{i}_t$
+
+- Now we extend the model to include:
+
+    + The difference between the nominal and real interest rate
+    
+    + The expected inflation as a key aspect to make investment decisions
+    
+    + The possibility of the central bank to control in some degree the real interest rate
+    
+    + The possibility of non-payment through the **risk premium**
+    
+# Extended IS-LM model
+
+- The new **IS curve** is $\widehat{Y} = \widehat{C}(\widehat{Y} - \widehat{T}) + \widehat{I}(r + x,\widehat{Y}) + \widehat{G}$
+
+- The new **LM curve** is $r = \overline{r}$ where $r = \frac{1 + i}{1 + \pi^e} - 1$ or $r \approx i - \pi^e$
+
+    + It is important to note that $i \geq 0$, where the central bank cannot decrease this rate below zero
+    + In other words, the minimum value that the central bank can reach is $r = \frac{- \pi^e}{1 + \pi^e}$ or $r \approx - \pi^e$
+    
+# Acknowledgments
+
+- To my family that supports me
+
+- To the taxpayers of Colombia and the __[UMNG students](https://www.umng.edu.co/estudiante)__ who pay my salary
+
+- To the __[Business Science](https://www.business-science.io/)__ and __[R4DS Online Learning](https://www.rfordatasci.com/)__ communities where I learn __[R](https://www.r-project.org/about.html)__ 
+
+- To the __[R Core Team](https://www.r-project.org/contributors.html)__, the creators of __[RStudio IDE](https://rstudio.com/products/rstudio/)__ and the authors and maintainers of the packages __[tidyverse](https://CRAN.R-project.org/package=tidyverse)__, __[knitr](https://CRAN.R-project.org/package=knitr)__, __[kableExtra](https://CRAN.R-project.org/package=kableExtra)__ and __[tinytex](https://CRAN.R-project.org/package=tinytex)__ for allowing me to access these tools without paying for a license
+
+- To the __[Linux kernel community](https://www.kernel.org/category/about.html)__ for allowing me the possibility to use some __[Linux distributions](https://static.lwn.net/Distributions/)__ as my main __[OS](https://en.wikipedia.org/wiki/Operating_system)__ without paying for a license
+
+# References

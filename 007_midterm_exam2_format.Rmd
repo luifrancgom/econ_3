@@ -1,0 +1,107 @@
+---
+title: "Midterm Exam 2"
+author:
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+date: ''
+output:
+  word_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE,
+                      message   = FALSE, 
+                      fig.align = "center")
+```
+
+```{r, libraries}
+
+library(tidyverse)
+library(tidyquant)
+library(lubridate)
+library(readxl)
+library(timetk)
+library(zoo)
+```
+
+# Financial markets II
+
+## Nominal and real interest rate
+
++ Enter into the Bank of the Republic (Colombia) using the route:
+
+**http://www.banrep.gov.co/** > Estadísticas > Precios e inflación > 1. Inflación al consumidor > Índice de precios al consumidor (IPC) > Descargar y consultar:Series IPC total nacional e inflación (desde 07/1954)
+
+```{r}
+
+infla_monthly <- read_excel(path  = "007_ipc_serie_variaciones-2.xlsx", 
+           sheet = 1, 
+           range = "A13:B806") %>% 
+    set_names(nm = c("date", "ipc")) %>%
+    mutate(date  = as.yearmon(as.character(date), "%Y%m") %>% 
+                        as_date(),
+           infla = (ipc - lag(ipc, n = 12)) / lag(ipc, n = 12)) %>%
+    drop_na() %>% 
+    filter_by_time(.date_var = date, .start_date = "1980-01-01")
+```
+
+1. Calculate the annual inflation using the monthly CPI that you can find in the column "IPC" from `r (infla_monthly$date[1] %>% as.character() %>% str_sub(start = 1, end = 7))` to `r (infla_monthly$date[length(infla_monthly$date)] %>% as.character() %>% str_sub(start = 1, end = 7))`. **(5 points)**
+
+**Observation 1**: If the CPI is measured monthly then to calculate the annual inflation for a particular month you must use the formula, $\pi_t=\frac{CPI_t - CPI_{t-12}}{CPI_{t-12}}$. For example if you want to calculate the annual inflation of January 2000 you need to use the CPI of January 2000 and January 1999.
+
+**Observation 2**: If the calculations are correct, you will get similar results as in the column "Inflación anual %".
+
++ Enter into the Bank of the Republic (Colombia) using the route:
+
+**http://www.banrep.gov.co/** > Estadísticas > Tasas de interés y sector financiero > 1. Tasas de interés de política monetaria > Tasas de interés de política monetaria > Descargar y consultar: Serie diaria (desde 04/01/1999)
+
+2. Calculate the mode (in statistics the mode is the value that appears most frequently) of the interest rate fixed by the Bank of the Republic (Colombia) (in the data it refers to the column "Tasa de intervención de política monetaria") **for each month in each year**. In case of a tie choose any value within the most frequent values **(5 points)**. 
+
+3. Calculate the real interest rate **for each month in each year** using the information found in point 1 and point 2, the information available and the formula $r_t = i_t - \pi_{t+12}$. **(5 points)**
+
+**Observation 1**: The interest rate fixed by the Bank of the Republic (Colombia) is measure daily but the inflation is measure monthly. Therefore we are using the mode of the interest rate fixed by the Bank of the Republic (Colombia) for each month in each year so $i_t$ and $\pi_{t+12}$ are measure using the same periods. In that way all the variables are expressed monthly and $i_t$ will be equal to the mode of the interest rate fixed by the Bank of the Republic (Colombia) **for each month in each year**.
+
+**Observation 2**: To calculate the real interest rate, keep in mind that it is not necessary to estimate an expected inflation rate since there is information from subsequent periods. Therefore $\pi_{t+12}$ is a variable that you already calculate in point 1.
+
+**Observation 3**: To calculate the real interest rate, keep in mind that the nominal interest rate is expressed as **annual effective overdue**. In that sense, $\pi_{t+12}$ must be the inflation but 12 months later and that is why $\pi$ has a subscript equal to $t+12$.
+
+4. Calculate the real interest rate **for each month in each year** using the information found in point 1 and point 2, the information available, the formula $1+r_t = \frac{1+i_t}{1+\pi_{t+12}}$ and taking into account the observations pointed out in point 3. **(5 points)**
+
+**Observation 1**: Take into account that the objective is to calculate $r_t$ and not $1+r_t$.
+
+5. Plot the values of the interest rate fixed by the Bank of the Republic (Colombia) and the real interest rate for each month in each year using both formulas, $r_t = i_t - \pi_{t+12}$ and $1+r_t = \frac{1+i_t}{1+\pi_{t+12}}$, where the x-axis corresponds to the date and y-axis corresponds to the value of these variables. **(5 points)**
+
+**Observation 1**: In the development of items 1 to 4, you will lose information from some periods. Therefore, when there is no data, do not indicate in the plot that a variable is equal to zero. It is not the same that a variable is equal to zero and that there is no data of this variable.
+
+## Exercise 8
+
+This exercises is taken from:
+
+**Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 6 Financial Markets II: The extended IS-LM model > Questions and Problems > Exercise 8
+
+In Chapter 6 the following formula is presented:
+
+$$(1+i_t)=(1-p_t)(1+i_t+x_t)+p_t*0$$
+
+Where $p_t$ is the probability the bond does not pay at all (the bond issuer is bankrupt) and has a zero return, $i_t$ is the nominal policy interest rate and $x_t$ is the risk premium.
+
+6. If the probability of bankruptcy is zero, what is the rate of interest on the risk bond? **(5 points)**
+
+7. Calculate the probability of bankruptcy when the nominal interest rate for a risk borrower is $0.08(8\%)$ and the nominal policy interest rate is $0.03(3\%)$. **(5 points)**
+
+8. Calculate the nominal interest rate for a borrower when the probability of bankruptcy is $0.01$ and the nominal policy interest rate is $0.04(4\%)$. **(5 points)**
+
+9. The formula assumes that payment upon default is zero. In fact, it is often positive. How would you change the formula in this case? **(5 points)**
+
+## Financial crisis of 2007–2008 in USA and IS-LM model
+
+10.	Explain **based on the extended IS-LM model**, using words and **attaching a plot**, how fiscal and monetary policy was used to mitigate the fall in real GDP during the financial crisis of 2007–2008 in USA. **(5 points)**
+
+**Observation 1**: Be clear and precise in the explanation and please don’t include “bullshit” (Sorry for the last word but I did not find a better expression where I am using it in the sense indicated in **https://en.wikipedia.org/wiki/Bullshit**).

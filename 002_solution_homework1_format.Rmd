@@ -1,0 +1,370 @@
+---
+title: "Homework 1"
+author:
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+date: ""
+output:
+  html_document:
+    df_print: paged
+    highlight: tango
+    number_sections: yes
+    theme: flatly
+    toc: yes
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE,
+                      message   = FALSE, 
+                      fig.align = "center")
+```
+
+```{r}
+
+library(tidyverse)
+library(tidyquant)
+library(wbstats)
+library(plotly)
+```
+
+# Gross Domestic Product (GDP)
+
+## Real and Nominal GDP
+
+- Enter into the World Bank's Human Development Indicators database using the link:
+
+<**https://databank.worldbank.org/source/world-development-indicators**>
+
+- In *Country* select *Argentina*
+- In *Series* select *GDP (current LCU)*
+- In *Time* select *VIEW RECENT YEARS: 50*
+- Apply changes and download the data using *Download options > Excel* at the upper right corner of the platform
+
+1. Make a plot of the **Nominal GDP** of *Argentina* where the x-axis corresponds to the years and y-axis corresponds to the value of the **Nominal GDP**. **(4 points)**
+
+```{r}
+
+# Data
+## Argentina Nominal GDP
+nominal_gdp_arg <- wbstats::wb(country   = c("ARG"), 
+   indicator = c("NY.GDP.MKTP.CN")) %>% 
+    as_tibble() %>% 
+    select(country, date, value) %>% 
+    mutate(date       = as.numeric(date),
+           label_text = str_glue("Year: {date}
+                                  Nominal GDP: {value}")) %>% 
+    arrange(date)
+  
+    # Plot
+static_plot1 <- nominal_gdp_arg %>%  
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_point(aes(text = label_text), 
+               shape = 21, 
+               fill = palette_light()[[2]],
+               color = "black") +
+    geom_line() +
+    labs(x        = "Year",
+         y        = "Billions (Long scale)",
+         title    = "Nominal GDP Argentina") +
+    scale_y_continuous(labels = scales::number_format(scale  = 1e-12, 
+                                                      suffix = "B", 
+                                                      accuracy = 1)
+                       ) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+    
+    # Interactivity
+    static_plot1 %>% 
+      ggplotly(tooltip = "text")
+```
+
+2. Explain why **Nominal GDP** is not a good measure of the aggregate production for *Argentina*. **(4 points)**
+
+The **Nominal GDP** captures the variation in quantities and prices related to production of  *Argentina* in monetary terms. Therefore it is difficult to identify what is really increasing or decreasing. A better metric to measure final production in *Argentina* would be the **Real GDP** which tries to eliminate the effect that prices have on production to examine the increase or decrease in quantities.  
+
+- In *Country* select *Argentina*
+- In *Series* select *GDP (constant LCU)*
+- In *Time* select *VIEW RECENT YEARS: 50*
+- Apply changes and download the data using *Download options > Excel* at the upper right corner of the platform
+
+3. Make a plot of the **Nominal GDP** and the **Real Nominal GDP** of *Argentina* where the x-axis corresponds to the years and y-axis corresponds to the values of the **Nominal GDP** and **Real GDP**. **(4 points)**
+
+```{r}
+
+# Data
+## Argentina Real and Nominal GDP
+real_nominal_gdp_arg <- wb(country   = c("ARG"), 
+            indicator = c("NY.GDP.MKTP.CN", "NY.GDP.MKTP.KN")) %>% 
+    as_tibble() %>% 
+    select(country, date, value, indicator) %>% 
+    mutate(date = as.numeric(date),
+           label_text = case_when(
+                          indicator == "GDP (current LCU)" ~ str_glue("Year: {date}
+                                                                       Nominal GDP: {value}"),
+                          indicator == "GDP (constant LCU)" ~ str_glue("Year: {date}
+                                                                        Real GDP: {value}"),
+                          TRUE ~ indicator
+           )) %>%
+    group_by(indicator) %>% 
+    arrange(date) %>% 
+    ungroup()
+
+    # Plot
+static_plot2 <- real_nominal_gdp_arg %>%  
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_point(aes(fill = indicator, text = label_text), 
+               color = "black", 
+               shape = 21) +
+    geom_line(aes(color = indicator, 
+                  group = indicator)) +
+    geom_vline(xintercept = 2004,
+               color      = palette_light()[[1]]) +
+    labs(x        = "Year",
+        y        = "Billions (Long scale)",
+        title    = "Nominal and Real GDP Argentina",
+        color = "") +
+    scale_x_continuous(breaks = c(1960, 1980, 2000, 2004, 2020)) +
+    scale_y_continuous(labels = scales::number_format(scale  = 1e-12, 
+                                                      suffix = "B",
+                                                      accuracy = 1)) +
+    scale_color_tq() +
+    scale_fill_tq() +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+    # Interactivity
+    static_plot2 %>% 
+      ggplotly(tooltip = "text")
+```
+
+
+4. Explain why **Real GDP** is a better measure of the aggregate production than **Nominal GDP** for *Argentina*. **(4 points)**
+
+**Real GDP** is a better measure of the aggregate production than **Nominal GDP** because it tries to control for the effect that prices have on production (measure in monetary terms). In the case of *Argentina* the **Nominal GDP** increased during the last years of the plot but it is mainly because of a persistent increase in prices.
+
+5. Explain why **Real GDP** and **Nominal GDP** have the same value in one year. **(4 points)**
+
+**Real GDP** and **Nominal GDP** have the same value in the year __2004__ because this is the base year that was used to calculate the **Real GDP** for *Argentina*. This can be seen in the previous plot. 
+
+- In *Country* select *Argentina*
+- In *Series* select *Population, total*
+- In *Time* select *VIEW RECENT YEARS: 50*
+- Apply changes and download the data using *Download options > Excel* at the upper right corner of the platform
+
+6. Calculate *Real GDP per-capita* for **Argentina**. **(4 points)**
+
+```{r}
+
+# Data
+## Argentina Real per capita GDP
+per_capita_gdp_arg <- wb(country   = c("ARG"), 
+                         indicator = c("NY.GDP.MKTP.KN", "SP.POP.TOTL")) %>% 
+    as_tibble() %>%
+    select(country, date, value, indicator) %>% 
+    mutate(date = as.numeric(date),
+           indicator = case_when(
+               indicator == "GDP (constant LCU)" ~ "real_gdp",
+               indicator == "Population, total" ~ "pop",
+               TRUE ~ indicator
+           )) %>% 
+    pivot_wider(id_cols = c("country", "date"), 
+                names_from = indicator,
+                values_from = value) %>%
+    mutate(real_per_capita_gdp = real_gdp / pop,
+           label_text = str_glue("Year: {date},
+                                  Real GDP: {real_gdp},
+                                  Population: {pop},
+                                  Real GDP per-capita: {real_per_capita_gdp %>% round()}")) %>% 
+    arrange(date)
+
+    # Plot
+static_plot3 <- per_capita_gdp_arg %>%  
+    ggplot(aes(x = date, 
+               y = real_per_capita_gdp)) + 
+    geom_point(aes(text = label_text), 
+               shape = 21, 
+               fill = palette_light()[[2]],
+               color = "black") +
+    geom_line() +
+    labs(x        = "Year",
+        y        = "Argentine pesos (ARS)",
+        title    = "Real GDP per-capita Argentina (ARS) Base Year 2004",
+        color = "") +
+    scale_x_continuous(breaks = c(1960, 1980, 2000, 2020)) +
+    scale_y_continuous() +
+    scale_color_tq() +
+    scale_fill_tq() +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+    # Interactivity
+    static_plot3 %>% 
+      ggplotly(tooltip = "text")
+```
+
+7. Explain why *Real GDP per-capita* is a better measure for the production than *Real GDP* for *Argentina* **(4 points)**
+
+**Real GDP per-capita** is a better measure for the production than **Real GDP** because it controls for the population. Making a population adjustment is important because production can increase simply because there are more people. In territories where there are more people, more production is expected but not because they are more productive but because there is more workforce. Therefore it is better to use per-capita data.
+
+8. Plot the growth of the *Real GDP per-capita* for *Argentina*. **(4 points)**
+
+```{r}
+
+# Data
+## Argentina Real per capita GDP
+growth_per_capita_gdp_arg <- per_capita_gdp_arg %>% 
+  select(country, date, real_per_capita_gdp) %>% 
+  mutate(growth_per_capita_gdp_arg = (real_per_capita_gdp - lag(real_per_capita_gdp)) / lag(real_per_capita_gdp),
+         label_text = str_glue("Year: {date},
+                                Real GDP per-capita: {real_per_capita_gdp  %>% round()},
+                                Growth Real GDP per-capita: {growth_per_capita_gdp_arg %>% scales::percent(accuracy = 0.01)}"))
+
+    # Plot
+static_plot4 <- growth_per_capita_gdp_arg %>%  
+    ggplot(aes(x = date, 
+               y = growth_per_capita_gdp_arg)) + 
+    geom_point(aes(text = label_text), 
+               shape = 21, 
+               fill = palette_light()[[2]],
+               color = "black") +
+    geom_line() +
+    geom_hline(yintercept = 0,
+               color      = palette_light()[[3]]) +
+    labs(x        = "Year",
+        y        = "Percent",
+        title    = "Growth real GDP per-capita Base Year 2004",
+        color = "") +
+    scale_x_continuous(breaks = c(1960, 1980, 2000, 2020)) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+    scale_color_tq() +
+    scale_fill_tq() +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+    # Interactivity
+    static_plot4 %>% 
+      ggplotly(tooltip = "text")
+```
+
+# Inflation
+
+9. Calculate the **GDP Deflator** using the information collected in the previous section. **(4 points)**
+
+```{r}
+
+deflator_gdp <- wb(country   = c("ARG"), 
+            indicator = c("NY.GDP.MKTP.CN", "NY.GDP.MKTP.KN")) %>% 
+    as_tibble() %>% 
+    select(country, date, value, indicator) %>% 
+    mutate(date = as.numeric(date),
+           indicator = case_when(
+                          indicator == "GDP (current LCU)" ~ "nominal_gdp",
+                          indicator == "GDP (constant LCU)" ~ "real_gdp",
+                          TRUE ~ indicator
+           )) %>% 
+    pivot_wider(id_cols = c("country", "date"), 
+                names_from = indicator, 
+                values_from = value) %>% 
+    arrange(date) %>% 
+    mutate(gdp_deflator = (nominal_gdp / real_gdp)*100)
+
+deflator_gdp %>% 
+  set_names(c("Country", "Year", "Nominal GDP", "Real GDP", "GDP Deflator"))
+```
+
+10. Calculate the annual **inflation** for *Argentina* using the **GDP Deflator**. **(4 points)**
+
+```{r}
+
+inflation_deflator_gdp <- deflator_gdp %>% 
+    select(country, date, gdp_deflator) %>% 
+    mutate(inflation = (gdp_deflator - lag(gdp_deflator)) / lag(gdp_deflator),
+           label_text = str_glue("Year: {date},
+                                  Annual Inflation: {inflation %>% scales::percent(accuracy = 0.01)}"))
+
+inflation_deflator_gdp %>% 
+  mutate(inflation = scales::percent(inflation, accuracy = 0.01)) %>% 
+  select(-label_text) %>% 
+  set_names(nm = c("Country", "Year", "GDP Deflator", "Annual Inflation"))
+```
+
+11. Make a plot of the **inflation** where the x-axis corresponds to the years and y-axis corresponds to the values of the **inflation**. **(4 points)**
+
+```{r}
+
+static_plot5 <- inflation_deflator_gdp %>%  
+    ggplot(aes(x = date, 
+               y = inflation)) + 
+    geom_point(aes(text = label_text), 
+               shape = 21, 
+               fill = palette_light()[[2]],
+               color = "black") +
+    geom_line() +
+    labs(x        = "Year",
+        y        = "Percent",
+        title    = "Inflation Argentina using GDP deflator Base Year 2004",
+        color = "") +
+    scale_x_continuous(breaks = c(1960, 1980, 2000, 2020)) +
+    scale_y_continuous(labels = scales::percent_format()) +
+    scale_color_tq() +
+    scale_fill_tq() +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+    # Interactivity
+    static_plot5 %>% 
+      ggplotly(tooltip = "text")
+  
+```
+
+12. Describe what you see in the plot and point out why is important for a company in a country to have an economic macroenvironment with a low and stable **inflation** rate. *Hint*: Review the videos found in **Primer corte 30% > Learning Resources > Links of interest**. **(6 points)**
+
+Based on the information available, *Argentina* has had periods of persistent price increases where for this period the highest **inflation** rate is presented in the year __1989__. For a company in a country it is important to have an economic macroenvironment with a low and stable **inflation** rate because:
+
+- The purchasing power of consumers' money is preserved, allowing more products to be purchased from companies.
+
+- Resources by a company can be managed more efficiently since the prices of raw materials and inputs are more predictable, making it easier to plan future production.
+
+- In an environment with low and stable inflation, government institutions can adopt better policies that particularly benefit businesses.

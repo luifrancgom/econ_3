@@ -1,0 +1,74 @@
+---
+title: "Homework 1"
+author:
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+date: ""
+output:
+  word_document: 
+    toc: yes
+    toc_depth: '3'
+  html_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE,
+                      message   = FALSE, 
+                      fig.align = "center")
+```
+
+# Gross Domestic Product (GDP)
+
+## Real and Nominal GDP
+
+- Enter into the World Bank's Human Development Indicators database using the link:
+
+<**https://databank.worldbank.org/source/world-development-indicators**>
+
+- In *Country* select *Argentina*
+- In *Series* select *GDP (current LCU)*
+- In *Time* select *VIEW RECENT YEARS: 50*
+- Apply changes and download the data using *Download options > Excel* at the upper right corner of the platform
+
+1. Make a plot of the **Nominal GDP** of *Argentina* where the x-axis corresponds to the years and y-axis corresponds to the value of the **Nominal GDP**. **(4 points)**
+
+2. Explain why **Nominal GDP** is not a good measure of the aggregate production for *Argentina*. **(4 points)**
+
+- In *Country* select *Argentina*
+- In *Series* select *GDP (constant LCU)*
+- In *Time* select *VIEW RECENT YEARS: 50*
+- Apply changes and download the data using *Download options > Excel* at the upper right corner of the platform
+
+3. Make a plot of the **Nominal GDP** and the **Real Nominal GDP** of *Argentina* where the x-axis corresponds to the years and y-axis corresponds to the values of the **Nominal GDP** and **Real GDP**. **(4 points)**
+
+4. Explain why **Real GDP** is a better measure of the aggregate production than **Nominal GDP** for *Argentina*. **(4 points)**
+
+5. Explain why **Real GDP** and **Nominal GDP** have the same value in one year. **(4 points)**
+
+- In *Country* select *Argentina*
+- In *Series* select *Population, total*
+- In *Time* select *VIEW RECENT YEARS: 50*
+- Apply changes and download the data using *Download options > Excel* at the upper right corner of the platform
+
+6. Calculate *Real GDP per-capita* for **Argentina**. **(4 points)**
+
+7. Explain why *Real GDP per-capita* is a better measure for the production than *Real GDP* for *Argentina* **(4 points)**
+
+8. Plot the growth of the *Real GDP per-capita* for *Argentina*. **(4 points)**
+
+# Inflation
+
+9. Calculate the **GDP Deflator** using the information collected in the previous section. **(4 points)**
+
+10. Calculate the annual **inflation** for *Argentina* using the **GDP Deflator**. **(4 points)**
+
+11. Make a plot of the **inflation** where the x-axis corresponds to the years and y-axis corresponds to the values of the **inflation**. **(4 points)**
+
+12. Describe what you see in the plot and point out why is important for a company in a country to have an economic macroenvironment with a low and stable **inflation** rate. *Hint*: Review the videos found in **Primer corte 30% > Learning Resources > Links of interest**. **(6 points)**

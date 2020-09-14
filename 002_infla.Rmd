@@ -1,0 +1,309 @@
+---
+title: "Inflation"
+author: Luis Francisco Gomez Lopez
+date: 2020-07-24
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fonttheme: structurebold
+    theme: AnnArbor
+  ioslides_presentation: default
+  slidy_presentation: default
+bibliography: macro_faedis.bib
+link-citations: yes
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE, 
+                      message   = FALSE,
+                      fig.align = "center")
+```
+
+```{r libraries}
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(wbstats)
+library(tidyquant)
+```
+
+# Contents
+
+- Please Read Me
+- Purpose
+- What is inflation?
+- Price level
+- Inflation as a rate
+- Index numbers and inflation in Colombia
+- Consumer Price Index (CPI) in Colombia
+- Acknowledgments
+- References
+
+# Please Read Me
+
+- Check the message __Welcome greeting__ published in the News Bulletin Board.
+
+- Dear student please edit your profile uploading a photo where your face is clearly visible.
+
+- The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
+
+- This presentation is based on [@blanchardMacroeconomics2017a, Chapters 1 & 2]
+
+# Purpose
+
+Introduce the students to the three (3) main variables in macroeconomics (production, inflation and unemployment) with an emphasis on how the two (2) first variables are measured (production and inflation).
+
+# What is inflation?
+
+- __Inflation__ is a persistent increase in the price level:
+
+    + Inflation refers to a general increase in the price level.
+    
+    + This increase must be persistent.
+    
+    + A measure that represents the behavior of the price level is required.
+
+- Review the videos found in:
+
+    + __Primer corte 30% > Learning Resources > Links of interest__
+ 
+# Price level
+
+- The __price level__ is an __index number__ [@ralphPracticalIntroductionIndex2015]
+
+    + An __index number__ is a quantity that by varying shows the changes of a magnitude over time or space.
+    
+    + Usually to represent the __price level__ an index number known as the __Laspeyres Index__ is used.
+    
+    + __Laspeyres Index__ compares the cost of a basket of products with a base period assuming that the quantities consumed are the same as the base period.
+
+# Price level
+
+```{r table_price_level}
+
+#Table
+## Example from A Practical Introduction to Index Numbers, page 40 
+tibble(Fruits     = c('Apples', 'Bananas', 'Pineapples'),
+       Price_2012 = c(0.4, 0.5, 1.25),
+       Price_2013 = c(0.42, 0.55, 2),
+       Quantity_2013 = c(220, 230, 50)) %>% 
+    mutate_at(.vars = vars(Price_2012:Price_2013), 
+              .funs = scales::dollar) %>% 
+    set_names(nm = c('Fruits', 'Price 2012', 
+                     'Price 2013', 'Quantity 2012')) %>% 
+    kable(format = "latex", booktabs = TRUE, caption = 'Fruits prices and quantities') %>% 
+    kable_styling(font_size = 7, latex_options = "striped") %>% 
+    row_spec(row = 0 , bold = TRUE)
+```
+
+- __Laspeyres Index__ for 2012 (Base 2012):
+$$\begin{aligned}\frac{Basket\;2012}{Basket\;2012} = \frac{0.40*\textbf{220} + 0.50*\textbf{230} + 1.25*\textbf{50}}{0.40*\textbf{220} + 0.50*\textbf{230} + 1.25*\textbf{50}} * 100 = 100\end{aligned}$$
+- __Laspeyres Index__ for 2013 (Base 2012):
+$$\begin{aligned}\frac{Basket\;2013}{Basket\;2012} = \frac{0.42*\textbf{220} + 0.55*\textbf{230} + 2.00*\textbf{50}}{0.40*\textbf{220} + 0.50*\textbf{230} + 1.25*\textbf{50}} * 100 = 102\end{aligned}$$
+
+# Inflation as a rate
+
+- The variation in the __price level__ from one period to another is used to measure inflation.
+
+- In our example:
+$$\begin{aligned}\frac{102\;-100}{100} * 100 = 0.02 * 100 = 2 \end{aligned}$$
+- The previous number means that the __price level__ increased by 2% between 2012 and 2013 where the __price level__ was calculated based on the year 2012.
+
+# Index numbers and inflation in Colombia
+
+- The value that the index number takes to measure the __price level__ will depend on the products that are taken into account in the basket that is used. In our example the products that were taken into account were Apples, Bananas and Pineapples.
+
+- If all final products that are produced within an economy are taken into account then this index number is known as __GDP Deflator__:
+
+$$\begin{aligned} GDP\;Deflator_t= \frac{Nominal\;GDP_t}{Real\;GDP_t} * 100\end{aligned}$$
+
+- Therefore __inflation__ is calculated as:
+
+$$\begin{aligned} Inflation_t= \frac{Deflator_t-Deflator_{t-1}}{Deflator_{t-1}} * 100\end{aligned}$$
+
+# Index numbers and inflation in Colombia
+
+- __Indice de Precios al Productor (IPP)__ or __Producer Price Index (PPI)__.
+
+    + In Colombia, this index measures the average variation of the prices of a basket of products representative of the internal supply in its first stage of commercialization [@daneMetodologiaGeneralIndice2015]. 
+    
+- __Indice de Precios al Consumidor (IPC)__ or __Consumer Price Index (CPI)__
+
+    + In Colombia, this index measures the average variation of the prices of a basket of products representative of household consumption [@daneIPCActualizacionMetodologica2019].
+    
+        + You can check out the basket of products included in the __(IPC)__ or __(CPI)__ in: [@daneIPCActualizacionMetodologica2019] > Actualización metodológica 2019 > Nomenclatura basada en la COICOP (canasta de bienes y servicios) > Estructura IPC 2018
+
+# Consumer Price Index (CPI) in Colombia
+
+- The __CPI__ is build using information from __Encuesta Nacional de Presupuesto de los Hogares –ENPH- (2016-2017)__ where it is conducted every 10 years. 
+
+- Additionally, monthly price information is collected for 443 items in 38 cities where divisions included in the __CPI__ are based on __Classification of Individual Consumption According to Purpose (COICOP)__
+
+# Consumer Price Index (CPI) in Colombia
+
+```{r table_coicop_cpi}
+
+#Table
+## Divisions COICOP  
+tibble(Division = c("01", "02", "03",
+                    "04", "05", "06",
+                    "07", "08", "09",
+                    "10", "11", "12"),
+       Name     = c("Food and non-alcoholic beverages",
+                    "Alcoholic beverages, tobacco and narcotics",
+                    "Clothing and footwear",
+                    "Housing, water, electricity, gas and other fuels",
+                    "Furnishings, household equipment and routine household maintenance",
+                    "Health",
+                    "Transport",
+                    "Information and communication",
+                    "Recreation, sport and culture",
+                    "Education services",
+                    "Restaurants and accommodation services",
+                    "Insurance and financial services")
+       ) %>% 
+  kable(format = "latex", booktabs = TRUE, caption = "COICOP divisions used in the CPI") %>% 
+  kable_styling(font_size = 9, latex_options = "striped") %>% 
+  row_spec(row = 0, bold = TRUE)
+```
+
+# Consumer Price Index (CPI) in Colombia
+
+```{r cpi_col, out.width = "90%"}
+
+# Data
+wb(country   = c("COL"), 
+            indicator = c("FP.CPI.TOTL")) %>% 
+    as_tibble() %>% 
+    select(country, date, value) %>% 
+    mutate(date = as.numeric(date)) %>% 
+    arrange(date) %>%
+    
+    # Plot 
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_point(fill = palette_light()[[2]], color = "black", shape = 21) +
+    geom_line() +
+    geom_vline(xintercept = 2010,
+               color      = palette_light()[[1]]) +
+    geom_hline(yintercept = 100,
+               color      = palette_light()[[3]]) +
+    scale_x_continuous(breaks = seq(from = 1960, to = 2020, by = 10)) +
+    annotate(geom  = "label", 
+             x     = 1980,
+             y     = 75,
+             label = str_glue("In 2010, the CPI takes the value 
+                              of 100 because this is the year 
+                              that is being taken as the base period"), 
+             color = "white",
+             fill  = palette_light()[[1]]) +
+    labs(x        = "Year",
+         y        = "CPI (2010 = 100)",
+         title    = "Colombia Consumer price index (CPI)", 
+         subtitle = str_glue("CPI code WDI: FP.CPI.TOTL
+                             CPI units: none but Base Year 2010"),
+         caption  = str_glue("Source: World Bank - World Development Indicators (WDI)
+                             Last update date: 2020-07-01")
+         ) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+```
+
+# Consumer Price Index (CPI) in Colombia
+
+```{r inflation_col, out.width = "90%"}
+
+# Plot
+## Colombia Inflation
+wbstats::wb(country   = c("COL"), 
+            indicator = c("FP.CPI.TOTL.ZG")) %>% 
+    as_tibble() %>% 
+    select(country, date, value) %>% 
+    mutate(date = as.numeric(date)) %>% 
+    arrange(date) %>% 
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_point(shape = 21, fill = palette_light()[[2]], color = "black") +
+    geom_smooth(data = wbstats::wb(country   = c("COL"), 
+                                   indicator = c("FP.CPI.TOTL.ZG")) %>% 
+                    as_tibble() %>% 
+                    select(country, date, value) %>% 
+                    mutate(date = as.numeric(date)) %>% 
+                    arrange(date) %>% 
+                    filter(date >= 1991),
+                method   = "loess",
+                span     = 0.5,
+                alpha    = 0.2,
+                linetype = "twodash",
+                color = palette_light()[[6]]) +
+    geom_line() +
+    geom_vline(xintercept = 1991,
+               color      = palette_light()[[1]]) +
+    scale_x_continuous(breaks = seq(from = 1960, to = 2020, by = 10)) +
+    scale_y_continuous(labels = scales::number_format(suffix = "%")) +
+    annotate(geom  = "label", 
+             x     = 2010,
+             y     = 28,
+             label = str_glue("With the mandate of the 
+                              1991 Constitution, the 
+                              Bank of the Republic of 
+                              Colombia has progressively 
+                              complied with maintaining 
+                              a low and stable inflation 
+                              rate"), 
+             color = "white",
+             fill  = palette_light()[[1]]) +
+    labs(x        = "Year",
+         y        = "Percent",
+         title    = "Inflation using CPI in Colombia", 
+         subtitle = str_glue("Variable code WDI: FP.CPI.TOTL.ZG
+                             Variable units: annual percent Base Year 2010"),
+         caption  = str_glue("Source: World Development Indicators (WDI) - World Bank
+                             Last update date: 2020-07-10")
+         ) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+```
+
+# Acknowledgments
+
+- To my family that supports me
+
+- To the taxpayers of Colombia and the __[UMNG students](https://www.umng.edu.co/estudiante)__ who pay my salary
+
+- To the __[Business Science](https://www.business-science.io/)__ and __[R4DS Online Learning](https://www.rfordatasci.com/)__ communities where I learn __[R](https://www.r-project.org/about.html)__ 
+
+- To the __[R Core Team](https://www.r-project.org/contributors.html)__, the creators of __[RStudio IDE](https://rstudio.com/products/rstudio/)__ and the authors and maintainers of the packages __[tidyverse](https://CRAN.R-project.org/package=tidyverse)__, __[knitr](https://CRAN.R-project.org/package=knitr)__, __[kableExtra](https://CRAN.R-project.org/package=kableExtra)__, __[tidyquant](https://CRAN.R-project.org/package=tidyquant)__, __[wbstats](https://CRAN.R-project.org/package=wbstats)__ and __[tinytex](https://CRAN.R-project.org/package=tinytex)__ for allowing me to access these tools without paying for a license
+
+- To the __[Linux kernel community](https://www.kernel.org/category/about.html)__ for allowing me the possibility to use some __[Linux distributions](https://static.lwn.net/Distributions/)__ as my main __[OS](https://en.wikipedia.org/wiki/Operating_system)__ without paying for a license
+
+# References

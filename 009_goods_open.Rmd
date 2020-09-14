@@ -1,0 +1,479 @@
+---
+title: 'The Goods Market in an Open Economy'
+author: "Luis Francisco Gomez Lopez"
+date: 2020-09-06
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fonttheme: structurebold
+    theme: AnnArbor
+  ioslides_presentation: default
+  slidy_presentation: default
+bibliography: macro_faedis.bib
+link-citations: yes
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE, 
+                      message   = FALSE,
+                      fig.align = "center")
+```
+
+```{r}
+
+library(tidyverse)
+library(latex2exp)
+library(readxl)
+library(knitr)
+library(kableExtra)
+```
+
+# Contents
+
+- Please Read Me
+- Purpose
+- Demand for goods in an open economy
+- IS curve in an open economy
+- Marshall–Lerner condition
+- IS curve and the Balance of Payments (BOP)
+- Acknowledgments
+- References
+
+# Please Read Me
+
+- Check the message __Welcome greeting__ published in the News Bulletin Board.
+
+- Dear student please edit your profile uploading a photo where your face is clearly visible.
+
+- The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
+
+- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 18]
+
+# Purpose
+
+Analyze the equilibrium of the goods market of an open economy.
+
+# Demand for goods in an open economy
+
+ - The demand of goods in an open economy is:
+ 
+    + $\widehat{Z} \equiv \widehat{C} + \widehat{I} + \widehat{G} + \widehat{X} - \varepsilon*\widehat{IM}$
+    
+    + If we include behavioral equations we have[^1]: $$\widehat{Z} = \widehat{C}(\widehat{Y}-\widehat{T}) + \widehat{I}(\widehat{Y}, r) + \widehat{G} + \widehat{X}(\widehat{Y}^*,\varepsilon) - \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$$
+     
+        + Where exports and imports, $\widehat{X}$ and $\widehat{IM}$, depend on the **real multilateral** exchange rate, $\varepsilon$. Also exports depend on **GDP** inside the territory, $\widehat{Y}$, and imports depend on **GDP** outside the territory, $\widehat{Y}^*$
+        
+        + Furthermore, we multiply $\widehat{IM}$ by $\varepsilon$ to express the term $\varepsilon*\widehat{IM}$ in the domestic currency[^2].
+
+[^1]: We are not going to include the **risk premium**, $x$, to facilitate the analysis.
+[^2]: If the different **nominal** exchange rates, that are included in $\varepsilon$, are expressed as the amount of **units of national currency** that must be given in exchange for a **unit of foreign currency** then you have to multiply and not divide the imports by $\varepsilon$.
+
+# Demand for goods in an open economy
+
+ - The demand of goods in an open economy is:
+ 
+     + $\widehat{Z} \equiv \widehat{C} + \widehat{I} + \widehat{G} + \widehat{X} - \varepsilon*\widehat{IM}$
+     
+         + If we include behavioral equations we have: $$\widehat{Z} = \widehat{C}(\widehat{Y}-\widehat{T}) + \widehat{I}(\widehat{Y}, r) + \widehat{G} + \widehat{X}(\widehat{Y}^*,\varepsilon) - \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$$
+
+    + $\widehat{C}$, $\widehat{I}$ and $\widehat{G}$ include both products that are produced within the economy and products that are produced in the rest of the world.
+
+        + Therefore these variables can depend on $\varepsilon$. In that sense, we assume that if $\varepsilon$ increases, the products produced by the **rest of the world** are replaced by products produced **within** the economy and together $\widehat{C}$, $\widehat{I}$ and $\widehat{G}$ do not change.
+
+# Demand for goods in an open economy
+
+- The demand for goods in an open economy is divided between:
+
+    + Demand for goods **within the territory** that can be produced **within the territory** or in the **rest of the world**: $\widehat{C}(\widehat{Y}-\widehat{T}) + \widehat{I}(\widehat{Y}, r) + \widehat{G}$
+
+    + Demand for goods from the **rest of the world** produced **within the territory**: $\widehat{X}(\widehat{Y}^*,\varepsilon)$
+
+    + Demand for goods **within the territory** produced in the **rest of the world**: $\varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$
+
+- Additionally it is important to mention that for a given period it can happen that:
+
+    + $\widehat{X}(\widehat{Y}^*,\varepsilon) > \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$ (**Trade surplus**)
+    
+    + $\widehat{X}(\widehat{Y}^*,\varepsilon) < \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$ (**Trade deficit**)
+    
+    + $\widehat{X}(\widehat{Y}^*,\varepsilon) = \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$
+
+# Demand for goods in an open economy
+
+```{r, out.width = '90%'}
+
+ggplot(data = tibble(x = c(0, 5,  0,  5),
+                     y = c(5, 0, -1, -6))
+) +
+    #First plot
+    geom_point(aes(x = x, y = y),
+               color = "blue",
+               size  = 3) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 5, yend = 0)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 0, yend = 5)) + 
+    geom_segment(aes(x = 0, y = 1.5, 
+                     xend = 4, yend = 3.5,
+    ),
+    color = 'red') +
+    annotate(geom = 'text', 
+             x = 4, y = 3.75, 
+             label = TeX('$\\widehat{Z} = \\widehat{C}(\\widehat{Y}_R-\\widehat{T}) + \\widehat{I}(r,\\widehat{Y}_R) + \\widehat{G}')) +
+    annotate(geom = 'text', 
+             x = 5.25, y = 0, 
+             label = TeX('$\\widehat{Y}_R$')) +
+    annotate(geom = 'text', 
+             x = 0, y = 5.25, 
+             label = TeX('$\\widehat{Z}')) +
+    
+    #Second plot
+    geom_segment(aes(x = 0, y = -6, 
+                     xend = 0, yend = -1)) +
+    geom_segment(aes(x = 0, y = -6, 
+                     xend = 5, yend = -6)) +
+    geom_segment(aes(x = 0, y = -4.5, 
+                     xend = 4, yend = -2.5,
+    ),
+    color = 'red') +
+    geom_segment(aes(x = 0, y = -5, 
+                     xend = 4, yend = -4,
+    ),
+    color = 'green') +
+    annotate(geom = 'text', 
+             x = 5.25, y = -6, 
+             label = TeX('$\\widehat{Y}$')) +
+    annotate(geom = 'text', 
+             x = 0, y = -0.75, 
+             label = TeX('$\\widehat{Z}')) + 
+    annotate(geom = 'text', 
+             x = 4, y = -2.25, 
+             label = TeX('$\\widehat{Z} = \\widehat{C}(\\widehat{Y}_R-\\widehat{T}) + \\widehat{I}(r,\\widehat{Y}_R) + \\widehat{G}')) +
+    annotate(geom = 'text', 
+             x = 4, y = -3.75, 
+             label = TeX('$\\widehat{Z} = \\widehat{C}(\\widehat{Y}_R-\\widehat{T}) + \\widehat{I}(r,\\widehat{Y}_R) + \\widehat{G} - \\epsilon\\widehat{M}(\\widehat{Y}_R,\\epsilon)')) + 
+    theme_void()
+```
+
+# Demand for goods in an open economy
+
+```{r, out.width = '90%'}
+
+ggplot(data = tibble(x = c(0, 5,  0,  5,  0,  2, 2),
+                     y = c(5, 0, -1, -4, -6, -4, 2.5))
+) +
+    #First plot
+    geom_point(aes(x = x, y = y),
+               color = "blue",
+               size  = 3) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 5, yend = 0)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 0, yend = 5)) + 
+    geom_segment(aes(x = 0, y = 1.5, 
+                     xend = 4, yend = 3.5,
+    ),
+    color = 'red') +
+    geom_segment(aes(x = 0, y = 1, 
+                     xend = 4, yend = 2,
+    ),
+    color = 'green') +
+    geom_segment(aes(x = 0, y = 2, 
+                     xend = 4, yend = 3,
+    ),
+    color = 'purple') +
+    annotate(geom = 'text', 
+             x = 4, y = 3.75, 
+             label = TeX('$\\widehat{Z} = \\widehat{C}(\\widehat{Y}_R-\\widehat{T}) + \\widehat{I}(r,\\widehat{Y}_R) + \\widehat{G}')) +
+    annotate(geom = 'text', 
+             x = 4, y = 2.25, 
+             label = TeX('$\\widehat{Z} = \\widehat{C}(\\widehat{Y}_R-\\widehat{T}) + \\widehat{I}(r,\\widehat{Y}_R) + \\widehat{G} - \\epsilon\\widehat{M}(\\widehat{Y}_R,\\epsilon)')) +
+    annotate(geom = 'text', 
+             x = 4, y = 3.25, 
+             label = TeX('$\\widehat{Z} = \\widehat{C}(\\widehat{Y}_R-\\widehat{T}) + \\widehat{I}(r,\\widehat{Y}_R) + \\widehat{G} - \\epsilon\\widehat{IM}(\\widehat{Y}_R,\\epsilon) + \\widehat{X}(\\widehat{Y}^*,\\epsilon)$')) +
+    annotate(geom = 'text', 
+             x = 5.25, y = 0, 
+             label = TeX('$\\widehat{Y}_R$')) +
+    annotate(geom = 'text', 
+             x = 0, y = 5.25, 
+             label = TeX('$\\widehat{Z}')) +
+    
+    #Second plot
+    geom_segment(aes(x = 0, y = -6, 
+                     xend = 0, yend = -1)) +
+    geom_segment(aes(x = 0, y = -4, 
+                     xend = 5, yend = -4)) +
+    geom_segment(aes(x = 0, y = -2, 
+                     xend = 4, yend = -6),
+                 color = 'orange') +
+    geom_segment(aes(x = 2, y = 2.5, 
+                     xend = 2, yend = -4),
+                 linetype = 'dashed') +
+    annotate(geom = 'text', 
+             x = 5.25, y = -4, 
+             label = TeX('$\\widehat{Y}_R$')) +
+    annotate(geom = 'text', 
+             x = 0.25, y = -0.75, 
+             label = TeX('$\\widehat{X}(\\widehat{Y}^*,\\epsilon) - \\epsilon\\widehat{IM}(\\widehat{Y}_R,\\epsilon)$')) +
+    annotate(geom = 'text', 
+             x = 0.5, y = -3.5, 
+             label = 'Trade surplus') +
+    annotate(geom = 'text', 
+             x = 3.25, y = -4.5, 
+             label = 'Trade deficit') + 
+    annotate(geom = 'text', 
+             x = -0.1, y = -4, 
+             label = '0') +
+    theme_void()
+```
+
+# IS curve in an open economy
+
+- *IS* curve:
+
+    + $\widehat{Y} = \widehat{Z}$
+
+    + $\widehat{Y} = \widehat{C}(\widehat{Y}_R-\widehat{T}) + \widehat{I}(r,\widehat{Y}) + \widehat{G} + \widehat{X}(\widehat{Y}^*,\varepsilon) - \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$
+    
+- The **equilibrium condition** in the Goods Market for an Open Economy can by achieve with:
+
+    + $\widehat{X}(\widehat{Y}^*,\varepsilon) > \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$
+    
+    + $\widehat{X}(\widehat{Y}^*,\varepsilon) < \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$
+    
+    + $\widehat{X}(\widehat{Y}^*,\varepsilon) = \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$
+    
+        + With a **trade surplus**, **trade deficit** or **without them** the Goods Market can be in equilibrium.
+    
+# IS curve in an open economy
+
+- **Example** of the **equilibrium condition** in the Goods Market with $\widehat{X}(\widehat{Y}^*,\varepsilon) < \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$ (**Trade deficit**)[^3]
+
+```{r, out.width = '65%'}
+
+ggplot(data = tibble(x = c(0, 5,  0,  5,  0,  2, 8/3,  8/3),
+                     y = c(5, 0, -1, -4, -6, -4, 8/3, -14/3))
+) +
+    #First plot
+    geom_point(aes(x = x, y = y),
+               color = "blue",
+               size  = 3) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 5, yend = 0)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 0, yend = 5)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 4, yend = 4)) +
+    geom_segment(aes(x = 0, y = 2, 
+                     xend = 4, yend = 3,
+    ),
+    color = 'purple') +
+    annotate(geom = 'text', 
+             x = 4, y = 4.25, 
+             label = TeX('$\\widehat{Y} \\equiv \\widehat{Y}_R$')) +
+    annotate(geom = 'text', 
+             x = 4, y = 3.25, 
+             label = TeX('$\\widehat{Z} = \\widehat{C}(\\widehat{Y}_R-\\widehat{T}) + \\widehat{I}(r,\\widehat{Y}_R) + \\widehat{G} - \\epsilon\\widehat{IM}(\\widehat{Y}_R,\\epsilon) + \\widehat{X}(\\widehat{Y}^*,\\epsilon)$')) +
+    annotate(geom = 'text', 
+             x = 5.25, y = 0, 
+             label = TeX('$\\widehat{Y}_R$')) +
+    annotate(geom = 'text', 
+             x = 0, y = 5.25, 
+             label = TeX('$\\widehat{Z}\\;\\widehat{Y}')) +
+    
+    #Second plot
+    geom_segment(aes(x = 0, y = -6, 
+                     xend = 0, yend = -1)) +
+    geom_segment(aes(x = 0, y = -4, 
+                     xend = 5, yend = -4)) +
+    geom_segment(aes(x = 0, y = -2, 
+                     xend = 4, yend = -6),
+                 color = 'orange') +
+    geom_segment(aes(x = 8/3, y = 8/3, 
+                     xend = 8/3, yend = -14/3),
+                 linetype = 'dashed') +
+    annotate(geom = 'text', 
+             x = 5.25, y = -4, 
+             label = TeX('$\\widehat{Y}_R$')) +
+    annotate(geom = 'text', 
+             x = 0.25, y = -0.75, 
+             label = TeX('$\\widehat{X}(\\widehat{Y}^*,\\epsilon) - \\epsilon\\widehat{IM}(\\widehat{Y}_R,\\epsilon)$')) +
+    annotate(geom = 'text', 
+             x = 0.5, y = -3.5, 
+             label = 'Trade surplus') +
+    annotate(geom = 'text', 
+             x = 3.25, y = -4.5, 
+             label = 'Trade deficit') + 
+    annotate(geom = 'text', 
+             x = -0.1, y = -4, 
+             label = '0') +
+    theme_void()
+```
+
+[^3]: Remember that it can exist equilibriums where $\widehat{X}(\widehat{Y}^*,\varepsilon) \geq \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$
+
+# Marshall–Lerner condition
+
+- The **real** balance trade or **real** net exports, is defined as $\widehat{NX} \equiv \widehat{X} - \widehat{IM}$
+
+    + Using the **behavioral equations** we have that $\widehat{NX} = \widehat{X}(\widehat{Y}^*,\varepsilon) - \varepsilon\widehat{IM}(\widehat{Y},\varepsilon)$
+
+- A natural question that arises is how $\widehat{NX}$ depends on the **real multilateral** exchange rate, $\varepsilon$. If that question can be answered, we can also determine how $\varepsilon$ is related with the **real** GDP, $\widehat{Y}$.
+
+- To answer this question we need to use the concept of **derivative** from differential calculus and the concept of **elasticity** from microeconomics.[^4]
+
+[^4]: If you don't have these tools, please skip this section and focus on the numerical example at the end of the explanation
+
+# Marshall–Lerner condition
+
+- To know the relationship between $\widehat{NX}$ and $\varepsilon$ we must know what determines the sign of $\frac{d\widehat{NX}}{d\varepsilon}$:
+
+\footnotesize
+$$\begin{split}
+   \frac{d\widehat{NX}}{d\varepsilon} & = \frac{d\widehat{X}(\widehat{Y}^*,\varepsilon)}{d\varepsilon} - \frac{d\varepsilon\widehat{IM}(\widehat{Y},\varepsilon)}{d\varepsilon} \\
+   & = \frac{d\widehat{X}(\widehat{Y}^*,\varepsilon)}{d\varepsilon} - \left[\widehat{IM}(\widehat{Y},\varepsilon) + \varepsilon\frac{d\widehat{IM}(\widehat{Y},\epsilon)}{d\varepsilon}\right] \\
+   & = \frac{d\widehat{X}(\widehat{Y}^*,\varepsilon)}{d\varepsilon} - \widehat{IM}(\widehat{Y},\varepsilon)\left[1 + \frac{d\widehat{IM}(\widehat{Y},\varepsilon)}{d\varepsilon}\frac{\varepsilon}{\widehat{IM}(\widehat{Y},\varepsilon)}\right] \\
+   & = \frac{\widehat{X}(\widehat{Y}^*,\varepsilon)}{\varepsilon}\frac{d\widehat{X}(\widehat{Y}^*,\varepsilon)}{d\varepsilon}\frac{\varepsilon}{\widehat{X}(\widehat{Y}^*,\varepsilon)} - \widehat{IM}(\widehat{Y},\varepsilon)\left[1 + \frac{d\widehat{IM}(\widehat{Y},\varepsilon)}{d\varepsilon}\frac{\varepsilon}{\widehat{IM}(\widehat{Y},\varepsilon)}\right]
+   \end{split}$$
+
+# Marshall–Lerner condition
+
+- To know the relationship between $\widehat{NX}$ and $\varepsilon$ we must know what determines the sign of $\frac{d\widehat{NX}}{d\varepsilon}$:
+
+\footnotesize
+$$\begin{split}
+   \frac{d\widehat{NX}}{d\varepsilon} & =
+   \widehat{IM}(\widehat{Y},\varepsilon)\left[\frac{\widehat{X}(\widehat{Y}^*,\varepsilon)}{\varepsilon\widehat{IM}(\widehat{Y},\varepsilon)}\frac{d\widehat{X}(\widehat{Y}^*,\varepsilon)}{d\varepsilon}\frac{\varepsilon}{\widehat{X}(\widehat{Y}^*,\varepsilon)} -  \frac{d\widehat{IM}(\widehat{Y},\varepsilon)}{d\varepsilon}\frac{\varepsilon}{\widehat{IM}(\widehat{Y},\varepsilon)} - 1\right] \\
+   & = \widehat{IM}(\widehat{Y},\varepsilon)\left[\frac{\widehat{X}(\widehat{Y}^*,\varepsilon)}{\varepsilon\widehat{IM}(\widehat{Y},\varepsilon)}\eta_{\widehat{X},\varepsilon} - \eta_{\widehat{IM},\varepsilon} - 1\right]
+   \end{split}$$
+
+Where $\eta_{\widehat{X},\varepsilon} \equiv \frac{d\widehat{X}(\widehat{Y}^*,\varepsilon)}{d\varepsilon}\frac{\varepsilon}{\widehat{X}(\widehat{Y}^*,\varepsilon)}$ and $\eta_{\widehat{IM},\varepsilon} \equiv \frac{d\widehat{IM}(\widehat{Y},\varepsilon)}{d\varepsilon}\frac{\varepsilon}{\widehat{IM}(\widehat{Y},\varepsilon)}$
+
+# Marshall–Lerner condition
+
+- $\eta_{\widehat{X},\varepsilon}$ is the elasticity of the **real multilateral** exchange rate with respect to the **real** exports and $\eta_{\widehat{IM},\varepsilon}$ is the elasticity of the **real multilateral** exchange rate with respect to the **real** imports.
+
+- The sign of $\frac{d\widehat{NX}}{d\varepsilon}$ is determined by:
+
+$$\frac{d\widehat{NX}}{d\varepsilon} =
+\left\{
+	\begin{array}{ll}
+		>0  & \mbox{if } \frac{\widehat{X}(\widehat{Y}^*,\varepsilon)}{\varepsilon\widehat{IM}(\widehat{Y},\varepsilon)}\eta_{\widehat{X},\varepsilon} - \eta_{\widehat{IM},\varepsilon} > 1 \\
+		=0 & \mbox{if }  \frac{\widehat{X}(\widehat{Y}^*,\varepsilon)}{\varepsilon\widehat{IM}(\widehat{Y},\varepsilon)}\eta_{\widehat{X},\varepsilon} - \eta_{\widehat{IM},\varepsilon} = 1 \\
+		<0 & \mbox{if }  \frac{\widehat{X}(\widehat{Y}^*,\varepsilon)}{\varepsilon\widehat{IM}(\widehat{Y},\varepsilon)}\eta_{\widehat{X},\varepsilon} - \eta_{\widehat{IM},\varepsilon} < 1
+	\end{array}
+\right.$$
+
+- If $\frac{\widehat{X}(\widehat{Y}^*,\varepsilon)}{\varepsilon\widehat{IM}(\widehat{Y},\varepsilon)}\eta_{\widehat{X},\varepsilon} - \eta_{\widehat{IM},\varepsilon} > 1$ then $\frac{d\widehat{NX}}{d\varepsilon} > 0$ and this situation is known as the **Marshall–Lerner condition**. Also if this condition is fulfilled then there is a positive relation between $\varepsilon$ and $\widehat{Y}$. 
+
+# Marshall–Lerner condition
+
+- Numerical example of the **Marshall–Lerner condition**
+
+    + Let us assume that $\varepsilon$ increases by 1% and we want to know how much $\widehat{X}$ and $\widehat{IM}$ decrease or increase in percentage terms. 
+    
+        + The concept of **elasticity** allows us to answer the previous question where it indicates that happens to a dependent variable in percentage terms when an independent variable increases by 1% starting from some initial values of the dependent and independent variable.
+        
+    + Let us assume that $\widehat{X}(\widehat{Y}^*,\varepsilon) = \varepsilon\widehat{IM}(\widehat{Y},\varepsilon) > 0$ so $\frac{\widehat{X}(\widehat{Y}^*,\varepsilon)}{\varepsilon\widehat{IM}(\widehat{Y},\varepsilon)} = 1$. 
+    
+    + Also assume that $\eta_{\widehat{X},\varepsilon} = 0.9$ and $\eta_{\widehat{IM},\varepsilon} = -0.8$. This means that if $\varepsilon$ increases by 1% then $\widehat{X}$ increases by 0.9% and $\widehat{IM}$ decreases by -0.8%.
+    
+        + In this case $\frac{\widehat{X}(\widehat{Y}^*,\varepsilon)}{\varepsilon\widehat{IM}(\widehat{Y},\varepsilon)}\eta_{\widehat{X},\varepsilon} - \eta_{\widehat{IM},\varepsilon} = 1*0.9 - (-0.8) = 1.7 > 1$. Therefore, the **Marshall–Lerner condition** is fulfilled for this particular **numerical example**, $\frac{d\widehat{NX}}{d\varepsilon} > 0$.
+
+# IS curve and the Balance of Payments (BOP)
+
+- The **IS** curve for an open economy represents the equilibrium in the Goods Market:
+
+\footnotesize
+$$\begin{split}
+   \widehat{Y} & = \widehat{C}(\widehat{Y}_R-\widehat{T}) + \widehat{I}(r,\widehat{Y}) + \widehat{G} + \widehat{X}(\widehat{Y}^*,\varepsilon) - \varepsilon\widehat{IM}(\widehat{Y},\varepsilon) \\
+   \widehat{Y} & = \widehat{C}(\widehat{Y}_R-\widehat{T}) + \widehat{I}(r,\widehat{Y}) + \widehat{G} + \widehat{NX}(\widehat{Y}^*,\widehat{Y},\varepsilon) \\
+   \widehat{Y} - \widehat{C}(\widehat{Y}_R - \widehat{T}) & = \widehat{I}(r,\widehat{Y}) + \widehat{G} + \widehat{NX}(\widehat{Y}^*,\widehat{Y},\varepsilon) \\
+   \widehat{Y} - \widehat{C}(\widehat{Y}_R - \widehat{T}) - \widehat{T} & = \widehat{I}(r,\widehat{Y}) - (\widehat{T} - \widehat{G}) + \widehat{NX}(\widehat{Y}^*,\widehat{Y},\varepsilon)
+   \end{split}$$
+    
+- In an open economy the income of individuals **within** a territory includes the income obtained **within** the territory and represented by $\widehat{Y}$ as well as other income from the **rest of the world**. 
+
+- We are going to include this aspect using elements from the **Balance of Payments (BOP)** and taking into account [@internationalmonetaryfundBalancePaymentsInternational2009]
+    
+# IS curve and the Balance of Payments (BOP)
+
+\tiny
+```{r}
+
+read_excel(path  = '009_bp_resumen_IQY.xlsx',
+           sheet = 1,
+           range = 'A11:V53') %>%
+  select(1:2) %>%
+  set_names(nm = c('Account', 'Value (Millons USD)')) %>%
+  slice(1:6, 13:21, 24, 27:28, 31, 34:41) %>%
+  kable(format = 'latex',
+        digits = 2, caption = 'Balance of Payments (BOP) for Colombia in 2000') %>%
+  kable_styling(latex_options = 'scale_down') %>%
+  row_spec(c(1, 13, 27), bold = TRUE, color = 'white', background = '#e31a1c') %>%
+  row_spec(c(4, 7, 10, 14, 17, 20, 23, 26), bold = TRUE, color = 'white', background = '#18BC9C') %>%
+  footnote(general           = 'Banco de la República - Colombia',
+           general_title     = 'Source: ',
+           number            = 'Methodology: Sixth version of the Balance of Payments Manual of the International Monetary Fund (IMF)',
+           alphabet = 'The Capital account does not appear because the sources of information currently available do not allow the identification and registration of capital transfers for Colombia',
+           footnote_as_chunk = TRUE)
+```
+
+# IS curve and the Balance of Payments (BOP)
+
+- The **Primary Income** (**Ingreso primario (Renta factorial)**) and the **Secondary Income** (**Ingreso secundario (Transferencias corrientes)**) represents the other income from the **rest of the world**.
+
+- If the **Primary Income** (**Ingreso primario (Renta factorial)**) is represented by $\widehat{NI}$ and the **Secondary Income** (**Ingreso secundario (Transferencias corrientes)**) is represented by $\widehat{NT}$ we can rewrite the **IS** curve for an open economy as:
+
+\footnotesize
+$$\begin{split}
+  (\widehat{Y} + \widehat{NI} + \widehat{NT} - \widehat{T}) - \widehat{C}(\widehat{Y}_R - \widehat{T}) & = \widehat{I}(r,\widehat{Y}) - (\widehat{T} - \widehat{G}) + \widehat{NX}(\widehat{Y}^*,\widehat{Y},\varepsilon) + \widehat{NI} + \widehat{NT} \\
+  \widehat{S}^{pr} & = \widehat{I}(r,\widehat{Y}) - \widehat{S}^{pu} + \widehat{CA} \\
+  \widehat{S}^{pr} + \widehat{S}^{pu} - \widehat{I}(r,\widehat{Y}) & = \widehat{CA}
+  \end{split}$$
+  
+ - Where $\widehat{S}^{pr} \equiv (\widehat{Y} + \widehat{NI} + \widehat{NT} - \widehat{T}) - \widehat{C}(\widehat{Y}_R - \widehat{T})$  is the **real** private savings in an open economy, $\widehat{S}^{pu} \equiv \widehat{T} - \widehat{G}$ is the **real** public savings in an open economy and $\widehat{CA} \equiv \widehat{NX}(\widehat{Y}^*,\widehat{Y},\varepsilon) + \widehat{NI} + \widehat{NT}$ is the **current account**.
+
+# IS curve and the Balance of Payments (BOP)
+        
+- In that sense, if the Goods Market is in equilibrium then the difference between savings and investment is equal to the **current account**.
+
+\footnotesize
+$$\begin{split}
+  (\widehat{Y} + \widehat{NI} + \widehat{NT} - \widehat{T}) - \widehat{C}(\widehat{Y}_R - \widehat{T}) & = \widehat{I}(r,\widehat{Y}) - (\widehat{T} - \widehat{G}) + \widehat{NX}(\widehat{Y}^*,\widehat{Y},\varepsilon) + \widehat{NI} + \widehat{NT} \\
+  \widehat{S}^{pr} & = \widehat{I}(r,\widehat{Y}) - \widehat{S}^{pu} + \widehat{CA} \\
+  \widehat{S}^{pr} + \widehat{S}^{pu} - \widehat{I}(r,\widehat{Y}) & = \widehat{CA}
+  \end{split}$$
+  
+ - Where $\widehat{S}^{pr} \equiv (\widehat{Y} + \widehat{NI} + \widehat{NT} - \widehat{T}) - \widehat{C}(\widehat{Y}_R - \widehat{T})$  is the **real** private savings in an open economy, $\widehat{S}^{pu} \equiv \widehat{T} - \widehat{G}$ is the **real** public savings in an open economy and $\widehat{CA} \equiv \widehat{NX}(\widehat{Y}^*,\widehat{Y},\varepsilon) + \widehat{NI} + \widehat{NT}$ is the **current account**.
+ 
+# Acknowledgments
+
+- To my family that supports me
+
+- To the taxpayers of Colombia and the __[UMNG students](https://www.umng.edu.co/estudiante)__ who pay my salary
+
+- To the __[Business Science](https://www.business-science.io/)__ and __[R4DS Online Learning](https://www.rfordatasci.com/)__ communities where I learn __[R](https://www.r-project.org/about.html)__ 
+- To the __[R Core Team](https://www.r-project.org/contributors.html)__, the creators of __[RStudio IDE](https://rstudio.com/products/rstudio/)__ and the authors and maintainers of the packages __[tidyverse](https://CRAN.R-project.org/package=tidyverse)__, __[tidyquant](https://CRAN.R-project.org/package=tidyquant)__, __[latex2exp](https://CRAN.R-project.org/package=latex2exp)__,
+__[readxl](https://CRAN.R-project.org/package=readxl)__, __[knitr](https://CRAN.R-project.org/package=knitr)__,
+__[kableExtra](https://CRAN.R-project.org/package=kableExtra)__ and __[tinytex](https://CRAN.R-project.org/package=tinytex)__ for allowing me to access these tools without paying for a license
+
+- To the __[Linux kernel community](https://www.kernel.org/category/about.html)__ for allowing me the possibility to use some __[Linux distributions](https://static.lwn.net/Distributions/)__ as my main __[OS](https://en.wikipedia.org/wiki/Operating_system)__ without paying for a license
+
+# References

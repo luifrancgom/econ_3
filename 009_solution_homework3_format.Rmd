@@ -1,0 +1,496 @@
+---
+title: "Homerwork 3"
+author: 
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+date: ""
+output:
+  html_document:
+    df_print: paged
+    highlight: tango
+    number_sections: yes
+    theme: flatly
+    toc: yes
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE,
+                      message   = FALSE, 
+                      fig.align = "center")
+```
+
+```{r}
+
+library(tidyverse)
+library(knitr)
+library(wbstats)
+library(tidyquant)
+library(plotly)
+library(readxl)
+library(lubridate)
+library(latex2exp)
+```
+
+# Exports and imports
+
+- Enter into the World Bank's Human Development Indicators database using the link:
+
+<**https://databank.worldbank.org/source/world-development-indicators**>
+
+- In *Country* select *Colombia*
+- In *Series* select *GDP (constant LCU)*, *Exports of goods and services (constant LCU)* and *Imports of goods and services (constant LCU)* 
+- In *Time* select *VIEW RECENT YEARS: 50*
+- Apply changes and download the data using *Download options > Excel* at the upper right corner of the platform
+
+1. Calculate the net exports, exports minus imports ($\widehat{NX}_t$ in the model expressed in real terms). **(3.5 points)**
+
+```{r}
+
+# Data
+data_trade <- wb_data(country   = c('COL'), 
+                      indicator = c('NE.EXP.GNFS.KN',
+                                    'NE.IMP.GNFS.KN', 
+                                    'NY.GDP.MKTP.KN')) %>% 
+    select(iso3c:NY.GDP.MKTP.KN) %>% 
+    set_names(nm = c("iso3c", "country", "date", "x", "im", "gdp")) %>%
+    mutate(net_x = x - im)
+
+data_trade %>%
+    select(date, x, im, net_x) %>% 
+    mutate_at(vars(x:net_x), scales::dollar) %>% 
+    set_names(nm = c("Date", "Exports", "Imports", "Net exports"))
+```
+
+
+2. Make a plot of *GDP (constant LCU)* ($\widehat{Y}_t$ in the model expressed in real terms), *Exports of goods and services (constant LCU)* ($\widehat{X}_t$ in the model expressed in real terms) *Imports of goods and services (constant LCU)* ($\widehat{IM}_t*\varepsilon_t$ in the model expressed in real terms) and *net exports* ($\widehat{NX}_t$ in the model expressed in real terms). **(3.5 points)**
+
+```{r}
+
+# Data clean
+data_trade_clean <- data_trade %>%
+    pivot_longer(cols       = x:net_x, 
+                  names_to  = "variable", 
+                  values_to = "value") %>% 
+    mutate(variable   = case_when(
+                          variable == 'gdp' ~ 'GDP',
+                          variable == 'x' ~ 'X',
+                          variable == 'im' ~ 'IM',
+                          variable == 'net_x' ~ 'NX',
+                          TRUE ~ variable),
+           label_text = str_glue("Year: {date}
+                                 {variable}: {value %>% scales::dollar()}"))
+# Plot
+static_plot1 <- data_trade_clean %>%  
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_point(aes(fill = variable, text = label_text), 
+               color = "black", 
+               shape = 21) +
+    geom_line(aes(color = variable, 
+                  group = variable)) +
+    geom_hline(yintercept = 0,
+               color      = palette_light()[[1]]) +
+    labs(x        = "Year",
+         y        = "Billions (Long scale)",
+         title    = "Real GDP, exports, imports and net exports in Colombia",
+         color = "") +
+    scale_y_continuous(labels = scales::number_format(scale  = 1e-12, 
+                                                      suffix = "B",
+                                                      accuracy = 1)) +
+    scale_color_tq() +
+    scale_fill_tq() +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+# Interactivity
+static_plot1 %>% 
+    ggplotly(tooltip = "text")
+```
+
+3. Calculate the exports as a percentage of GDP, $\frac{\widehat{X}_t}{\widehat{Y}_t}*100$, the imports as a percentage of GDP, $\frac{\widehat{IM}_t*\varepsilon_t}{\widehat{Y}_t}*100$ and net exports as a percentage of GDP, $\frac{\widehat{NX}_t}{\widehat{Y}_t}*100 \equiv \frac{\widehat{X}_t - \widehat{IM}_t*\varepsilon_t}{\widehat{Y}_t}*100$. **(3.5 points)**
+
+```{r}
+
+data_trade %>% 
+    mutate(x_gdp     = x/gdp,
+           im_gdp    = im/gdp,
+           net_x_gdp = net_x/gdp) %>% 
+  select(date, x_gdp:net_x_gdp) %>% 
+  mutate_at(vars(x_gdp:net_x_gdp), .funs = scales::percent, accuracy = 0.01) %>% 
+  set_names(nm = c("Date", "Exports (% GDP)", "Imports (% GDP)", "Net Exports (% GDP)"))
+```
+
+4. Make a plot of exports as a percentage of GDP, $\frac{\widehat{X}_t}{\widehat{Y}_t}*100$, the imports as a percentage of GDP, $\frac{\widehat{IM}_t*\varepsilon_t}{\widehat{Y}_t}*100$ and net exports as a percentage of GDP, $\frac{\widehat{NX}_t}{\widehat{Y}_t}*100 \equiv \frac{\widehat{X}_t - \widehat{IM}_t*\varepsilon_t}{\widehat{Y}_t}*100$ where the x-axis corresponds to the date and y-axis corresponds to the values of these variables. **(3.5 points)**
+
+```{r}
+
+# Data clean
+data_trade_gdp_clean <- data_trade %>% 
+    mutate(x_gdp     = x/gdp,
+           im_gdp    = im/gdp,
+           net_x_gdp = net_x/gdp) %>% 
+    select(iso3c:date, x_gdp:net_x_gdp) %>%
+    pivot_longer(cols       = x_gdp:net_x_gdp, 
+                 names_to  = "variable", 
+                 values_to = "value") %>% 
+    mutate(variable   = case_when(
+        variable == 'x_gdp' ~ 'X (% of GDP)',
+        variable == 'im_gdp' ~ 'IM (% of GDP)',
+        variable == 'net_x_gdp' ~ 'NX (% of GDP)',
+        TRUE ~ variable),
+        label_text = str_glue("Year: {date}
+                                 {variable}: {value %>% scales::percent(accuracy = 0.01)}"))
+
+# Plot
+static_plot2 <- data_trade_gdp_clean %>%  
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_point(aes(fill = variable, text = label_text), 
+               color = "black", 
+               shape = 21) +
+    geom_line(aes(color = variable, 
+                  group = variable)) +
+    geom_hline(yintercept = 0,
+               color      = palette_light()[[1]]) +
+    labs(x        = "Year",
+         y        = "Percent",
+         title    = "Exports, imports and net exports as percentage of GDP in Colombia",
+         color = "") +
+    scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+    scale_color_tq() +
+    scale_fill_tq() +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+# Interactivity
+static_plot2 %>% 
+    ggplotly(tooltip = "text")
+```
+
+# Can imports or exports exceed GDP?
+
+5. Point out if it is possible that **imports** or **exports** can be greater than **GDP**. Then explain why or why not imports can be greater than **GDP** supporting your answer with an example or using elements from macroeconomic theory. **(3.5 points)** 
+
+**Observation 1**: Be clear and precise in the explanation and please don’t include “bullshit” (Sorry for the last word but I did not find a better expression where I am using it in the sense indicated in **https://en.wikipedia.org/wiki/Bullshit**).
+
+Yes. It is possible that the **exports** or **imports** can be greater than **GDP**. This can happen because **exports** or **imports** can include intermediate goods. A "toy" example can be found in **Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 17 > Openness in Goods and Financial Markets > 17.1 Openness in Goods Markets > Exports and Imports > Can Exports Exceed GDP? and a real example is the case of Singapore:
+
+```{r}
+
+# Plot
+## Singapore: imports and exports as % GDP
+trade_sg <- wb_data(country     = c('SG'),
+        indicator   = c('NE.EXP.GNFS.ZS',
+                        'NE.IMP.GNFS.ZS'),
+        return_wide = FALSE) %>% 
+    select(iso3c, country, date, indicator, value) %>% 
+    arrange(date) %>% 
+    mutate(indicator = case_when(
+        indicator == 'Exports of goods and services (% of GDP)' ~ 'X (% of GDP)',
+        indicator == 'Imports of goods and services (% of GDP)' ~ 'IM (% of GDP)',
+        TRUE ~ indicator
+    )) %>% 
+    mutate(label_text = str_glue("Year: {date}
+                                  Variable: {indicator},
+                                  Value: {value %>% scales::number(accuracy = 1, suffix = '%')}"))
+
+# Plot
+static_plot3 <- trade_sg %>%  
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_point(aes(fill = indicator, text = label_text), 
+               color = "black", 
+               shape = 21) +
+    geom_line(aes(color = indicator, 
+                  group = indicator)) +
+    labs(x        = "Year",
+         y        = "Percent",
+         title    = "Exports and imports as percentage of GDP in Singapore",
+         color = "") +
+    scale_y_continuous(labels = scales::number_format(accuracy = 1, suffix = "%")) +
+    scale_color_tq() +
+    scale_fill_tq() +
+    expand_limits(y = 0) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+# Interactivity
+static_plot3 %>% 
+    ggplotly(tooltip = "text")
+```
+
+# Nominal exchange rate
+
+- Enter into the Bank of the Republic (Colombia) using the route:
+
+**http://www.banrep.gov.co/** > Estadísticas > Tasas de cambio, sector externo y derivados > 1. Tasas de cambio > Tasa Representativa del Mercado (TRM - Peso por dólar) > Descargar y consultar: Serie histórica completa (desde 27/11/1991)
+
+6. Make a plot of *Tasa Representativa del Mercado (TRM - Peso por dólar)* where the x-axis corresponds to the date and y-axis corresponds to the value of this variable. **(3.5 points)**
+
+```{r}
+
+# Data
+trm_cop_usd <- read_excel(path  = "009_tcm_serie_historica_IQY.xlsx", 
+           sheet = 1, range = "A8:B10514") %>% 
+    set_names(nm = c("date", "trm")) %>% 
+    mutate(date = ymd(date))
+
+# Plot
+static_plot4 <- trm_cop_usd %>%  
+    ggplot(aes(x = date, 
+               y = trm)) +
+    geom_line(color = palette_light()[[1]]) +
+    labs(x        = "",
+         y        = "COP/USD",
+         title    = "Market Representative Exchange Rate (MRE): COP/ USP",
+         color = "") +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+# Interactivity
+static_plot4 %>% 
+    ggplotly(tooltip = "text")
+```
+
+# Real exchange rate
+
+7. Assume that you want to calculate the *real exchange rate* for **Colombia** with reference to the **USA** and where only one product, the **Big Mac hamburger**, is taken into account. Calculate the *real exchange rate* for the dates in the table below using information of this table[^1], and data from point 5 about the *Tasa Representativa del Mercado (TRM - Peso por dólar)* in those dates **(3.5 points)**:
+
+```{r}
+
+# data taken from https://github.com/TheEconomist/big-mac-data > source-data > big-mac-source-data.csv
+big_mac <- read_csv(file = 'https://raw.githubusercontent.com/TheEconomist/big-mac-data/master/source-data/big-mac-source-data.csv') 
+
+
+dates_col <- big_mac %>% 
+    filter(name %in% c('Colombia')) %>%
+    pull(date)
+
+big_mac %>%     
+    select(date, name, local_price) %>%
+    filter(name %in% c('Colombia', 'United States')) %>% 
+    filter(date %in% dates_col) %>% 
+    pivot_wider(id_cols     = date, 
+                names_from  = name,
+                values_from = local_price) %>% 
+    set_names(nm = 'Date', 'Price Big Mac Colombia', 'Price Big Mac USA') %>% 
+    knitr::kable(align = 'l')
+```
+
+[^1]: The data of the table was taken from https://github.com/TheEconomist/big-mac-data
+
+- **Bilateral Real Exchange Rate Colombia-USA with 1 product (Big Mac hamburger)**
+
+```{r}
+
+# Data
+real_exchange_rate_big_mac_clean <- big_mac %>%     
+    select(date, name, local_price) %>%
+    filter(name %in% c('Colombia', 'United States')) %>% 
+    filter(date %in% dates_col) %>% 
+    pivot_wider(id_cols     = date, 
+                names_from  = name,
+                values_from = local_price) %>% 
+    set_names(nm = 'date', 'price_big_mac_col', 'price_big_mac_usa') %>% 
+    left_join(trm_cop_usd, by = 'date') %>%
+    mutate(real_trm = ((price_big_mac_usa*trm)/price_big_mac_col) %>% round(digits = 2))
+
+real_exchange_rate_big_mac_clean %>% 
+    set_names(nm = c('Date', 'Price Big Mac Colombia', 'Price Big Mac USA', 'TRM', 'Real TRM'))
+```
+
+8. Maket a plot of the *real exchange rate* using the information you found in point 6 where the x-axis corresponds to the dates of the table above and y-axis corresponds to the value of the *real exchange rate*. **(3.5 points)**
+
+```{r}
+
+# Plot
+real_exchange_rate_big_mac_clean %>% 
+    ggplot(aes(x = date, y = real_trm)) +
+    geom_line(color = palette_light()[[1]]) +
+    geom_point(color = "black",
+               fill  = palette_light()[[2]],
+               shape = 21) +
+    geom_hline(yintercept = 1, 
+               color      = palette_light()[[3]]) +
+    expand_limits(y = 0) +
+    scale_x_date(breaks = c(ymd('2004-05-01'),
+                            ymd('2010-01-01'),
+                            ymd('2015-01-01'),
+                            ymd('2020-01-14'))) +
+    scale_y_continuous(breaks = c(0, 0.25,0.5, 0.75,1, 1.25, 1.50, 1.75, 2)) +
+    labs(x        = '',
+         y        = 'Real TRM',
+         caption  = str_glue('Sources: Own calculations
+                            Banco de la República - Colombia
+                            https://github.com/TheEconomist/big-mac-data'),
+         title    = str_glue('Bilateral Real Exchange Rate Colombia-USA with 1 product: 
+                             Big Mac hamburger'),
+         subtitle = TeX('(Real TRM)_t: $\\frac{(Price\\;Big\\;Mac\\;USA)_t\\;*\\;TRM_t}{(Price\\;Big\\;Mac\\;COL)_t\\;}$'))  +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+```
+
+# Uncovered interes parity relation
+
+- In the book **Oliver Blanchard (2017) Macroeconomics (7 Edition)** the **uncovered interes parity relation** is define as $(1 + i_t) = (1 + i_t^*)\frac{E_t}{E_{t+1}^e}$
+
+9. Describe what this expression refers to and what it represents. **(3.5 points)**
+
+**Observation 1**: Be clear and precise in the explanation and please don’t include “bullshit” (Sorry for the last word but I did not find a better expression where I am using it in the sense indicated in **https://en.wikipedia.org/wiki/Bullshit**).
+
+The **uncovered interes parity relation** represents a situation where the yield of a **national** financial product is equal to the yield of a financial product from the **rest of the world**. In order for residents to have both domestic and foreign financial products in an economy, the yield between both types of financial products must be equal and that represents the **uncovered interest parity relation**. This condition is consistent with the **Balance of Payments** of many countries like Colombia where individuals have both **national** financial products and financial products from the **rest of the world**.
+
+10. In Colombia, the **nominal exchange rate** between pesos and US dollars is expressed as $\frac{pesos}{1\; dollar}$. What modifications would have to be made to the condition pointed out in point 9 if someone want to write the **uncovered interes parity relation** for a resident in Colombia who has to decide to invest between financial products of Colombia and the USA? **(3.5 points)**
+
+If a resident in Colombia has to decide to invest between a financial product from Colombia or the USA, then he should compare the yield of these products. If $i_t$ is the interest rate of the financial product from Colombia then the yield is $1+i_t$. Also if $i_t^*$ is the interest rate of the financial product from USA he must firts convert his pesos into US dollars to buy the product and then convert the yield he recieve in US dollars into pesos. Therefore, the yield of the financial product from USA is $(1+i_t^*)\frac{E_{t+1}^e}{E_t}$. In that way, the **uncovered interest parity relation** is:
+
+$$(1 + i_t) = (1 + i_t^*)\frac{E_{t+1}^e}{E_t}$$
+The difference between the condition pointed out in point 9 and the above expression is how the **nominal** exchange rates, $(E_{t+1}^e, E_t)$, are included. If the **nominal** exchange rate is expressed as $\frac{pesos}{1\; dollar}$ then $E_{t+1}^e$ would be in the numerator and $E_t$ in the denominator.
+
+# Exercise 8
+
+This exercises is taken from:
+
+**Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 18 The Goods Market in an Open Economy > Questions and Problems > Exercise 8
+
+- Consider an open economy in which the real exchange rate is fixed and equal to one. Consumption, investment, government spending, and taxes are given by:
+
+$$\widehat{C}_t = 10 + 0.8(\widehat{Y}_t - \widehat{T}_t)$$
+
+$$\widehat{I}_t = 10$$ 
+
+$$\widehat{G}_t = 10$$
+
+$$\widehat{T}_t = 10$$
+
+- Imports and exports are given by:
+
+$$\widehat{IM}_t = 0.3\widehat{Y}_t$$
+
+$$\widehat{X}_t = 0.3\widehat{Y}_t^*$$
+where $\widehat{Y}_t^*$ denotes foreign output.
+
+11. Solve for equilibrium output, $\widehat{Y}_t$ and point out the multiplier for the domestic economy. **(3.5 points)**
+
+- The **IS** curve for the **domestic** economy is:
+
+$$\begin{split}
+   \widehat{Y}_t & = \widehat{Z}_t \\
+   \widehat{Y}_t & = \widehat{C}_t + \widehat{I}_t + \widehat{G}_t + \widehat{X}_t - \widehat{IM}_t \\
+   \widehat{Y}_t & = 10 + 0.8(\widehat{Y}_t - \widehat{T}_t) + \widehat{I}_t + \widehat{G}_t + 0.3\widehat{Y}_t^* - 0.3\widehat{Y}_t \\
+   \widehat{Y}_t & = 10 + 0.8(\widehat{Y}_t - 10) + 10 + 10 + 0.3\widehat{Y}_t^* - 0.3\widehat{Y}_t \\
+   \widehat{Y}_t & = 22 + 0.8\widehat{Y}_t - 0.3\widehat{Y}_t + 0.3\widehat{Y}_t^* \\
+   \widehat{Y}_t & = \frac{1}{1 - 0.8 + 0.3}(22 + 0.3\widehat{Y}_t^*) \\ 
+   \widehat{Y}_t & = 44 + 0.6\widehat{Y}_t^*
+   \end{split}$$
+Where $\frac{1}{1 - 0.8 + 0.3} = \frac{1}{0.5} = 2 > 1$ is the multiplier for the **domestic** economy.
+
+- **Observation**: If the economy were **closed**, $\widehat{IM}_t = 0$ and $\widehat{X}_t = 0$, then the multiplier for the **domestic** economy would be $\frac{1}{1 - 0.8} = \frac{1}{0.2} = 5 > 2$.
+
+12. Assume that the foreign economy is characterized by the same equations as the domestic economy (with asterisks reversed). Solve for the equilibrium output of each economy and point out the multiplier for the domestic and the  foreign economy. **(3.5 points)** 
+
+$$\widehat{C}_t^* = 10 + 0.8(\widehat{Y}_t^* - \widehat{T}_t^*)$$
+$$\widehat{I}_t^* = 10$$ 
+
+$$\widehat{G}_t^* = 10$$
+
+$$\widehat{T}_t^* = 10$$
+$$\widehat{IM}_t^* = 0.3\widehat{Y}_t^*$$
+
+$$\widehat{X}_t^* = 0.3\widehat{Y}_t$$
+- The process is practically the same as for the domestic economy but taking into account the asterisks. The **IS** curve for the **foreign** economy is:
+
+$$\begin{split}
+   \widehat{Y}_t^* & = \widehat{Z}_t^* \\
+   \widehat{Y}_t^* & = \widehat{C}_t^* + \widehat{I}_t^* + \widehat{G}_t^* + \widehat{X}_t^* - \widehat{IM}_t^* \\
+   \widehat{Y}_t^* & = 10 + 0.8(\widehat{Y}_t^* - \widehat{T}_t^*) + \widehat{I}_t^* + \widehat{G}_t^* + 0.3\widehat{Y}_t - 0.3\widehat{Y}_t^* \\
+   \widehat{Y}_t & = 22 + 0.8\widehat{Y}_t^* - 0.3\widehat{Y}_tt^* + 0.3\widehat{Y}_t \\ \widehat{Y}_t^* & = \frac{1}{1 - 0.8 + 0.3}(22 + 0.3\widehat{Y}_t) \\
+   \widehat{Y}_t^* & = 44 + 0.6\widehat{Y}_t
+   \end{split}$$
+Where $\frac{1}{1 - 0.8 + 0.3} = \frac{1}{0.5} = 2 > 1$ is the multiplier for the **foreign** economy **without** taking into account the effect of the *GDP* of the **national** economy.
+
+- If $\widehat{Y}_t = 44 + 0.6\widehat{Y}_t^*$ and $\widehat{Y}_t^* = 44 + 0.6\widehat{Y}_t$ then:
+
+$$\begin{split}
+   \widehat{Y}_t & = 44 + 0.6(44 + 0.6\widehat{Y}_t) \\
+   0.64\widehat{Y}_t & = 70.4 \\
+   \widehat{Y}_t & = 110
+   \end{split}$$
+
+- Also we have that $\widehat{Y}_t^* = 44 + 0.6*110 = 110$ so $\widehat{Y}_t = \widehat{Y}_t^* = 110$.
+
+- In the case of the multiplier because $\widehat{Y}_t = \frac{1}{1 - 0.8 + 0.3}(22 + 0.3\widehat{Y}_t^*)$ then:
+
+$$\begin{split}
+   \widehat{Y}_t & = \frac{1}{1 - 0.8 + 0.3}(22 + 0.3(44 + 0.6\widehat{Y}_t)) \\
+   \widehat{Y}_t & = \frac{1}{1 - 0.8 + 0.3}(22 + 0.3(44)) + \frac{0.3*0.6}{1 - 0.8 + 0.3}\widehat{Y}_t \\
+   \frac{1 - 0.8 + 0.3 - 0.3*0.6}{1 - 0.8 + 0.3}\widehat{Y}_t & = \frac{1}{1 - 0.8 + 0.3}(22 + 0.3(44)) \\
+   \widehat{Y}_t & = \frac{1}{1 - 0.8 + 0.3 - 0.3*0.6}(22 + 0.3(44))
+   \end{split}$$
+   
+Where $5 > \frac{1}{1 - 0.8 + 0.3 - 0.3*0.6} = \frac{1}{0.32} =  3.125 > 2$ is the multiplier for the **domestic** economy taking into account the effect of the *GDP* of the **foreign** economy. Also because $\widehat{Y}_t = \widehat{Y}_t^*$ this value is the multiplier for the **foreign** economy taking into account the effect of the *GDP* of the **domestic** economy.
+
+13. Assume that the domestic government has a target level of output of 125. Assuming that the foreign government does not change $\widehat{G}_t^*$, what is the increase in $\widehat{G}_t$ necessary to achieve the target output in the domestic economy? Also solve for net exports, $\widehat{NX}_t \equiv \widehat{X}_t - \widehat{IM}_t$ and $\widehat{NX}_t^* \equiv \widehat{X}_t^* - \widehat{IM}_t^*$, and the budget deficit, $\widehat{T}_t - \widehat{G}_t$ and $\widehat{T}_t^* - \widehat{G}_t^*$, in each country. **(3.5 points)**
+
+- If $\widehat{Y}_t = 125$ then $\widehat{Y}_t^* = 44 + 0.6*125 = 119$.
+
+- Also $\widehat{Y}_t = 10 + 0.8(\widehat{Y}_t - 10) + 10 + \widehat{G}_t + 0.3\widehat{Y}_t^* - 0.3\widehat{Y}_t$ because the **domestic** government want to change the value of $\widehat{G}_t$ we have that:
+
+    + $125 = 10 + 0.8(125 - 10) + 10 + \widehat{G}_t + 0.3*119 - 0.3*125$. Therefore:
+    
+        + $\widehat{G}_t = 125 - 10 - 0.8(125 - 10) - 10 - 0.3*119 + 0.3*125 = 14.8$.
+        
+- For the **domestic** economy we have $\widehat{T}_t -  \widehat{G}_t = 10 - 14.8 = -4.8$ and $\widehat{NX}_t = 0.3*119 - 0.3*125 = -1.8$. These situations generate a **budget deficit** and a **trade deficit** in the **domestic** economy as is explained in **Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 3 The Goods Market.
+
+- For the **foreign** economy we have $\widehat{T}_t -  \widehat{G}_t = 10 - 10 = 0$ and $\widehat{NX}_t = 0.3*125 - 0.3*119 = 1.8$.
+
+14. Suppose each government has a target level of output of 125 and that each government increases government spending by the same amount. What is the common increase in $\widehat{G}_t$ and $\widehat{G}_t^*$ necessary to achieve the target output in both countries? Also solve for net exports, $\widehat{NX}_t \equiv \widehat{X}_t - \widehat{IM}_t$ and $\widehat{NX}_t^* \equiv \widehat{X}_t^* - \widehat{IM}_t^*$, and the budget deficit, $\widehat{T}_t - \widehat{G}_t$ and $\widehat{T}_t^* - \widehat{G}_t^*$, in each country for this new situation. **(4.5 points)**
+
+- If $\widehat{Y}_t = \widehat{Y}_t^* = 125$, because the **domestic** and **foreign** governments are committed to increase government spending by the same amount and $\widehat{Y}_t = 10 + 0.8(\widehat{Y}_t - 10) + 10 + \widehat{G}_t + 0.3\widehat{Y}_t^* - 0.3\widehat{Y}_t$ then:
+
+    + $125 = 10 + 0.8(125 - 10) + 10 + \widehat{G}_t + 0.3*125 - 0.3*125$. Therefore:
+    
+        + $\widehat{G}_t = 125 - 10 - 0.8(125 - 10) - 10 - 0.3*125 + 0.3*125$ = 13. So $\widehat{G}_t = \widehat{G}_t^* = 13$.  
+        
+- For the **domestic** and **foreign** economies we have $\widehat{T}_t - \widehat{G}_t = \widehat{T}_t^* -  \widehat{G}_t^* = 10 - 13 = -3$ and $\widehat{NX}_t = \widehat{NX}_t^* = 0.3*125 - 0.3*125 = 0$. These situations generate only a **budget deficit** in both economies.

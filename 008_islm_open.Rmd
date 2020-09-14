@@ -1,0 +1,491 @@
+---
+title: "Openness in goods and financial markets"
+author: "Luis Francisco Gomez Lopez"
+date: 2020-08-31
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fonttheme: structurebold
+    theme: AnnArbor
+  ioslides_presentation: default
+  slidy_presentation: default
+bibliography: macro_faedis.bib
+link-citations: yes
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE, 
+                      message   = FALSE,
+                      fig.align = "center")
+```
+
+```{r}
+
+library(tidyverse)
+library(tidyquant)
+library(wbstats)
+library(readxl)
+library(lubridate)
+library(zoo)
+library(knitr)
+library(kableExtra)
+```
+
+# Contents
+
+- Please Read Me
+- Purpose
+- Openness in macroeconomics
+- Can exports or imports be greater than GDP?
+- Nominal Exchange Rate and TRM COP/USD
+- Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
+- Balance of Payments
+- Uncovered interest parity relation
+- Acknowledgments
+- References
+
+# Please Read Me
+
+- Check the message __Welcome greeting__ published in the News Bulletin Board.
+
+- Dear student please edit your profile uploading a photo where your face is clearly visible.
+
+- The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
+
+- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 17]
+
+# Purpose
+
+Analyze the consequences of openness in the markets of goods and in the financial markets.
+
+# Openness in macroeconomics[^1]
+
+- **Openness in goods market**: consumers and companies can choose between obtaining goods produced within a territory or produced in the rest of the world.
+
+- **Openness in the financial market**: individuals can choose between having assets within a territory or assets in the rest of the world.
+
+- **Openness in the factor markets**: companies can choose to locate their production within a territory or in the rest of the world and workers can choose between working within a territory or in the rest of the world.
+
+[^1]: For the remainder of the course we will focus on the first 2 types of openness from the macroeconomic point of view.
+
+# Can exports or imports be greater than GDP?
+
+- Singapore is a good example to answer this question:
+
+```{r, out.width="80%"}
+
+# Plot
+## Singapore: imports and exports as % GDP
+trade_sg <- wb_data(country     = c('SG'),
+                    indicator   = c('NE.EXP.GNFS.ZS',
+                                    'NE.IMP.GNFS.ZS'),
+                    return_wide = FALSE) %>% 
+    select(iso3c, country, date, indicator, value) %>% 
+    arrange(date) %>% 
+    mutate(indicator = case_when(
+        indicator == 'Exports of goods and services (% of GDP)' ~ 'X (% of GDP)',
+        indicator == 'Imports of goods and services (% of GDP)' ~ 'IM (% of GDP)',
+        TRUE ~ indicator
+    ))
+
+# Plot
+trade_sg %>%  
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_point(aes(fill = indicator), 
+               color = "black", 
+               shape = 21) +
+    geom_line(aes(color = indicator, 
+                  group = indicator)) +
+    geom_hline(yintercept = 100, 
+               color      = palette_light()[[1]]) +
+    labs(x        = "Year",
+         y        = "Percent",
+         title    = "Singapore imports and exports as percent of GDP",
+         subtitle = str_glue("Variables Units: percent
+                              Imports WDI code : NE.IMP.GNFS.ZS
+                              Exports WDI: NE.IMP.GNFS.ZS"),
+         caption  = str_glue("Source: World Development Indicators - World Bank,
+                              Last update: 2020-08-18"),
+         color = "") +
+    scale_y_continuous(labels = scales::number_format(accuracy = 1, suffix = "%")) +
+    scale_color_tq() +
+    scale_fill_tq() +
+    expand_limits(y = 0) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+```
+
+# Nominal Exchange Rate and TRM COP/USD
+
+- A **nominal** exchange rate is the amount of **units of national currency** that must be given in exchange for a **unit of foreign currency**. However this above definition is not standard and homogeneous around the world. 
+
+- An alternative definition is that a **nominal** exchange rate is the amount of **units of foreign currency** that must be given in exchange for a **unit of national currency**.
+
+# Nominal Exchange Rate and TRM COP/USD
+
+- If the **nominal** exchange rate between COP and EUR[^2] is 3793 COP/EUR, it means that 3793 COP must be given to obtain 1 EUR. However, we can express it also as $\frac{1}{3793}$ COP/EUR where it means that $\frac{1}{3793} \approx 0.00026$ EUR must be given to obtain 1 COP. 
+
+- Due to the importance of USD[^3] globally, in Colombia the **nominal** exchange rate with the greatest relevance is the TRM[^4] COP/USD.
+
+[^2]: Euro according to ISO 4217 code
+[^3]: United States dollar according to ISO 4217 code
+[^4]: "Tasa de Cambio Representativa del Mercado" in spanish
+
+# Nominal Exchange Rate and TRM COP/USD
+
+- To have a reference of the **nominal** exchange rate between COP and USD, the **"Superintendencia Financiera de Colombia (SFC)"** currently calculates and certifies an *average* **nominal** exchange rate called TRM COP/USD on a daily basis.
+
+- The TRM COP/USD is a *weighted average* as a result of the purchase and sale operations of USD in exchange for COP made between the **"Intermediarios del Mercado Cambiario (IMC)"**, as well as the operations carried out by the **IMC** with other entities supervised by **SFC** and those that the **IMC** perform with the Bank of the Republic or the **"Ministerio de Hacienda y Crédito Público (MHCP)"**.
+
+# Nominal Exchange Rate and TRM COP/USD
+
+- If you want more information about the legal regulations you can check out:
+
+    + https://www.superfinanciera.gov.co > Informes y cifras > Cifras > Establecimientos de crédito > Información periódica > Diaria > Tasa de Cambio - TRM
+
+# Nominal Exchange Rate and TRM COP/USD
+
+```{r, out.width = '90%'}
+
+# Data
+cop_usd_trm <- read_csv(file   = "008_trm_cop_usd_consolidado_series.csv", 
+                        locale = locale(decimal_mark = ",")) %>% 
+    select(`Fecha (dd/mm/aaaa)`, TRM) %>% 
+    set_names(nm = c("date", "trm")) %>% 
+    arrange(date) %>% 
+    mutate(trm_change = (trm - lag(trm)))
+
+    # Plot
+cop_usd_trm %>%
+    ggplot(aes(x = date, y = trm)) +
+    geom_line(color = palette_light()[[1]]) +
+    geom_vline(xintercept = ymd("1999-09-25"),
+               color      = palette_light()[[3]]) +
+    annotate(x     = ymd("1995-01-01"), 
+             y     = 3500, 
+             geom  = "label",
+             color = "white",
+             fill  = palette_light()[[1]],
+             label = str_glue("On 1999-09-25
+                              the currency band system 
+                              was abandoned by
+                              the Bank of the
+                              Republic")) +
+    labs(x        = "",
+         y        = "COP/USD",
+         title    = "Daily MRE (COP/USD)", 
+         subtitle = str_glue("Period: {cop_usd_trm$date[1]} - {cop_usd_trm$date[length(cop_usd_trm$date)]},
+                             Observations: {length(cop_usd_trm$trm)}"),
+         caption  = str_glue("Data source: Banco de la República (Colombia) & Superintendencia Financiera de Colombia (SFC) 
+                             Last update: {cop_usd_trm$date[length(cop_usd_trm$date)]}")) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+```
+
+# Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
+
+- The **real** exchange rate for 1 product between 2 territories ($i$ and $j$), that use different currencies, represents how many units of the product in the territory $i$ must be given in exchange for a unit of a product in territory $j$. In this case it is define as $\varepsilon_t = \frac{P_{jt}*E_t}{P_{it}}$.[^5]
+  
+    + Where $E_t$ is the *nominal* exchange rate expressed as the amount of **units of national currency** that must be given in exchange for a **unit of foreign currency**, $P_{jt}$ is the price of foreign product and $P_{it}$ is the price of the national product.
+    
+- We are going to make an example between Colombia, $i$, and USA, $j$, where the product is going to be a **Big Mac hamburger**.
+
+[^5]: $\varepsilon_t = \frac{P_{it}*E_t}{P_{jt}}$ if $E_t$ is expressed as the amount of **units of foreign currency** that must be given in exchange for a **unit of national currency**
+
+# Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
+
+- For the example we are going to take:
+
+    + $P_{jt}$ as the price of a Big Mac hamburger on 2004-05-01 in USA: $\frac{2.90\;USD}{1\;Big\;Mac\;USA}$.
+
+    + $E_t$ as the TRM COP/USD on 2004-05-01 in Colombia: $\frac{2655.18\;COP}{USD}$.
+    
+    + $P_{it}$ as the price of a Big Mac hamburger on 2004-05-01 in Colombia: $\frac{6500\;COP}{1\;Big\;Mac\;COL}$.
+    
+        + $\varepsilon_t = \frac{\frac{2.90\;USD}{1\;Big\;Mac\;USA}*\frac{2655.18\;COP}{USD}}{\frac{6500\;COP}{1\;Big\;Mac\;COL}} = \frac{\frac{7700.022\;COP}{1\;Big\;Mac\;USA}}{\frac{6500\;COP}{1\;Big\;Mac\;COL}}$
+
+        + $\varepsilon_t = \frac{7700.022}{6500}*\frac{1\;Big\;Mac\;COL}{1\;Big\;Mac\;USA} \approx \frac{1.18\;Big\;Mac\;COL}{1\;Big\;Mac\;USA} > 1$
+        
+# Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
+
+- On 2004-05-01 1.18 Big Macs in COL was equivalent to 1 Big Mac in USA. Therefore, 1 Big Mac in USA was more expensive in COP than in COL. 
+
+    + In particular 1 Big Mac in USA was $\frac{7700.022 - 6500}{6500} * 100 \approx 18.46\%$ more expensive than 1 Big Mac in COL
+    
+- Therefore it would make sense to obtain COP, use them to buy Big Macs in COL and sell them in USA  because  the  same  good  can  be purchased  more  cheaply  in  COL and sell it more costly in USA.  
+
+- Because people would like to have more COP the demand of COP will rise and the nominal exchange will tend to decrease.
+
+# Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
+
+- If the transportation cost related to sending Big Macs between COL and USA tend to be zero we will have the following results:
+
+    + If $\varepsilon_t > 1$ then $E_t$ will tend to decrease
+    
+    + If $\varepsilon_t < 1$ then $E_t$ will tend to increase
+    
+    + If $\varepsilon_t = 1$ then $E_t$ will not increase or decrease
+
+# Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
+
+- A **bilateral real** exchange rate for multiple products between 2 territories ($i$ and $j$) that use different currencies, compares the value of a basket of products in territory $i$ with the value of a basket of products in territory $j$. In this case it is define as $\varepsilon_t = \frac{P_{jt}*E_t}{P_{it}}$.
+
+    + Where $E_t$ is the *nominal* exchange rate expressed as the amount of **units of national currency** that must be given in exchange for a **unit of foreign currency**, $P_{jt}$ is a price index used abroad and $P_{it}$ is a national price index.
+    
+- If you want to construct your own bilateral real exchange rate or see a specific example see [@neelyConstructingBilateralReal2020]
+    
+# Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
+
+```{r, out.width = '80%'}
+
+# Data
+bi_itcr_usa <- read_excel(path  = '008_bilaterales_IQY.xlsx',
+           sheet = 1,
+           range = 'A11:W415') %>%
+    select(1, 12) %>%
+    set_names(nm = c('date', 'bi_itcr_usa')) %>%
+    mutate(date  = as.character(date),
+           year  = str_sub(date, end = 4),
+           month = str_sub(date, start = -2)) %>%
+    select(-date) %>%
+    unite(col = 'date', year, month, sep = '-') %>%
+    mutate(date = as.yearmon(date, '%Y-%m') %>%
+             as.Date(frac = 1))
+
+# Plot
+bi_itcr_usa %>% 
+    ggplot(aes(x = date, y = bi_itcr_usa)) +
+    geom_line(color = palette_light()[[1]]) +
+    geom_hline(yintercept = 100,
+               color      = palette_light()[[3]]) +
+    scale_x_date(breaks = c(ymd('1986-12-31'),
+                            ymd('1990-01-31'),
+                            ymd('2000-01-31'),
+                            ymd('2010-01-31'),
+                            ymd('2020-01-31')),
+                 date_labels = '%Y-%m') +
+    labs(x       = '',
+         y       = 'ITCR (Mean 2010 = 100)',
+        title    = 'Monthly Bilateral ITCR Colombia - USA',
+        subtitle = str_glue('ITCR: "Índice de la tasa de cambio real"
+                            Base period: Mean 2010 = 100
+                            Used price indices: Producer Price Index (PPI) for Colombia and USA
+                            Observation: The data for the last 12 months are provisional'),
+        caption  = str_glue('Source: Banco de la República - Colombia
+                            Methodology: (Banrep 2015)')) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+```
+
+# Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
+
+- A **multilateral real** exchange rate for multiple products between a territory and other territories ($i$ and $j$) where $i$ use a different currency in relation to $j$, compares the value of a basket of products in territory $i$ with the value of a basket of products in the other territories $j$. 
+
+- A detailed explanation of the calculation of the **multilateral real** exchange rate is beyond the scope of this course since it is necessary to incorporate not only one but several nominal exchange rates and also a price index for each of the other territories.
+
+- For Colombia, the **multilateral real** exchange rate is calculated by the Bank of the Republic. If you want to know in detail the way it is calculated you can check out [@banrepMetodologiaCalculoIndice2015]
+
+# Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
+
+```{r, out.width = '80%'}
+
+# Data
+multi_itcr_ipp <- read_excel(path  = '008_serie_historica_IQY-1.xlsx',
+           sheet = 1,
+           range = 'A9:G413') %>%
+    select(1, 5) %>%
+    set_names(nm = c('date', 'multi_itcr_ipp')) %>%
+    mutate(date  = as.character(date),
+           year  = str_sub(date, end = 4),
+           month = str_sub(date, start = -2)) %>%
+    select(-date) %>%
+    unite(col = 'date', year, month, sep = '-') %>%
+    mutate(date = as.yearmon(date, '%Y-%m') %>%
+             as.Date(frac = 1),
+           multi_itcr_ipp = as.numeric(multi_itcr_ipp))
+
+# Plot
+multi_itcr_ipp %>% 
+    ggplot(aes(x = date, y = multi_itcr_ipp)) +
+    geom_line(color = palette_light()[[1]]) +
+    geom_hline(yintercept = 100,
+               color      = palette_light()[[3]]) +
+    scale_x_date(breaks = c(ymd('1986-12-31'),
+                            ymd('1990-01-31'),
+                            ymd('2000-01-31'),
+                            ymd('2010-01-31'),
+                            ymd('2020-01-31')),
+                 date_labels = '%Y-%m') +
+    labs(x       = '',
+         y       = 'ITCR (Mean 2010 = 100)',
+        title    = 'Monthly Multilateral ITCR for Colombia',
+        subtitle = str_glue('ITCR: "Índice de la tasa de cambio real"
+                            Base period: Mean 2010 = 100
+                            Number of other territories included: 22 countries (Germany, Argentina, Brazil, Belgium, Canada, Chile, China, South Korea, Ecuador, 
+                            Spain, United States, France, Netherlands, England, Italy, Japan, Mexico, Panama, Peru, Sweden, Switzerland, Venezuela)
+                            Used price indices: Producer Price Index (PPI) for every country except Panama where Consumer Price Index (IPC) is used'),
+        caption  = str_glue('Source: Banco de la República - Colombia
+                            Methodology: http://www.banrep.gov.co/sites/default/files/paginas/Metodologia_ITCR_u.PDF')) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+```
+
+# Balance of Payments
+
+- To understand an open economy in macroeconomics, it is necessary to understand the concept of **Balance of Payments (BOP)**, which is an accounting record of the economic transactions that residents of a territory make with the rest of the world in a certain period of time.
+
+- In the case of Colombia, this accounting record can be checked at http://www.banrep.gov.co > Estadísticas > Tasas de cambio, sector externo y derivados > 2. Sector Externo > Balanza de pagos
+
+- Also review the videos found in:
+
+    + **Tercer corte 40% > Learning Resources > Links of interest**
+    
+# Balance of Payments
+
+- The **BOP** consists of different accounts where the main are[^6]:
+
+    + **Current account**:
+    
+        + Flows of goods and services (**Example**: import/exports of a product)
+        + Primary income flows between resident and nonresident institutional units (**Example**: salary pay to a resident by a non-resident company)
+        + Current transfers between residents and nonresidents (**Example**: "Remesas")
+        
+    + **Capital account**: Credit and debit entries for nonproduced nonfinancial assets and capital transfers between residents and nonresidents (**Example**: A resident buys a patent from a nonresident company)
+    
+[^6]: Based on [@internationalmonetaryfundBalancePaymentsInternational2009]
+    
+# Balance of Payments
+
+- The **BOP** consists of different accounts where the main are[^7]:
+        
+    + **Financial account**: Net acquisition and disposal of financial assets and liabilities (**Example**: A resident buys stocks from a nonresident company)
+        
+    + **Net errors and omissions**: imperfections in source data and compilation
+
+[^7]: Based on [@internationalmonetaryfundBalancePaymentsInternational2009]
+
+# Balance of Payments
+
+\tiny
+```{r}
+
+read_excel(path  = '008_bp_resumen_IQY.xlsx',
+           sheet = 1,
+           range = 'A11:V53') %>%
+  select(1:2) %>%
+  set_names(nm = c('Account', 'Value (Millons USD)')) %>%
+  slice(1:6, 13:21, 24, 27:28, 31, 34:41) %>%
+  kable(format = 'latex',
+        digits = 2, caption = 'Balance of Payments (BOP) for Colombia in 2000') %>%
+  kable_styling(latex_options = 'scale_down') %>%
+  row_spec(c(1, 13, 27), bold = TRUE, color = 'white', background = '#e31a1c') %>%
+  row_spec(c(4, 7, 10, 14, 17, 20, 23, 26), bold = TRUE, color = 'white', background = '#18BC9C') %>%
+  footnote(general           = 'Banco de la República - Colombia',
+           general_title     = 'Source: ',
+           number            = 'Methodology: Sixth version of the Balance of Payments Manual of the International Monetary Fund (IMF)',
+           alphabet = 'The Capital account does not appear because the sources of information currently available do not allow the identification and registration of capital transfers for Colombia',
+           footnote_as_chunk = TRUE)
+```
+
+# Uncovered interest parity relation
+
+- The IS-LM model of an open economy includes the ability of individuals within an economy to choose between national assets or assets from the rest of the world.
+
+    + __Option 1__: Invest in a national financial instrument with and interest rate $i_t$ in COP
+        
+    + __Option 2__: Invest in a foreign financial instrument with and interest rate $i_t^*$ in USD
+        
+# Uncovered interest parity relation
+
+- Yield obtained in $t + 1$:
+
+    + __Option 1__: $$(1 + i_t) \times 100$$
+
+    + __Option 2__: $$\begin{split}
+                       100 & \rightarrow \frac{100}{E_t} \\
+                       & \rightarrow (1 + i_t^*) \times \frac{100}{E_t} \\
+                       & \rightarrow (1 + i_t^*) \times \frac{100}{E_t} \times E_{t + 1} \\
+                       & \rightarrow (1 + i_t^*) \times 100 \times \frac{E_{t + 1}}{E_t} 
+                       \end{split}$$
+        
+- However, when making an investment it is not possible to know $E_{t+1}$ so we have to predict it, where we will call that forecast, $E_{t+1}^e$
+        
+# Uncovered interest parity relation
+
+- Once the yields of the **national** financial product and the financial product of the **rest of the world** are clear, then if:
+
+    + $(1 + i_t) \times 100 > (1 + i_t^*) \times 100 \times \frac{E_{t+1}^e}{E_t}$ individuals will have only national financial instruments
+    
+    + $(1 + i_t) \times 100 < (1 + i_t^*) \times 100 \times \frac{E_{t+1}^e}{E_t}$ individuals will have only foreign financial instruments
+    
+    + $(1 + i_t) \times 100 = (1 + i_t^*) \times 100 \times \frac{E_{t+1}^e}{E_t}$ individuals will have national and foreign financial instruments
+
+# Uncovered interest parity relation
+
+- If the Balance of Payments of the countries is examined, individuals have both **national** financial products and financial products from the **rest of the world**.
+    
+    + Therefore, the most reasonable thing is to assume that $1 + i_t = (1 + i_t^*)*\frac{E_{t+1}^e}{E_t}$, where this equilibrium condition is known as **uncovered interest parity relation**
+    
+        + In order for this condition to be fulfilled, it is assumed that the operations of buying and selling the **national** financial product or the financial product of the rest of the world can be carried out immediately and are not expensive.
+        
+        + Also it is assumed that it is not expensive to convert from one currency to another or that there are no risks other than those represented by the interest rates, $(i_t,\;i_t^*)$, and the **nominal** exchange rates, $(E_t,\;E_{t+1}^e)$.
+        
+# Acknowledgments
+
+- To my family that supports me
+
+- To the taxpayers of Colombia and the __[UMNG students](https://www.umng.edu.co/estudiante)__ who pay my salary
+
+- To the __[Business Science](https://www.business-science.io/)__ and __[R4DS Online Learning](https://www.rfordatasci.com/)__ communities where I learn __[R](https://www.r-project.org/about.html)__ 
+- To the __[R Core Team](https://www.r-project.org/contributors.html)__, the creators of __[RStudio IDE](https://rstudio.com/products/rstudio/)__ and the authors and maintainers of the packages __[tidyverse](https://CRAN.R-project.org/package=tidyverse)__, __[tidyquant](https://CRAN.R-project.org/package=tidyquant)__, __[wbstats](https://CRAN.R-project.org/package=wbstats)__,
+__[readxl](https://CRAN.R-project.org/package=readxl)__,
+__[lubridate](https://CRAN.R-project.org/package=lubridate)__, __[zoo](https://CRAN.R-project.org/package=zoo)__,  __[knitr](https://CRAN.R-project.org/package=knitr)__,
+__[kableExtra](https://CRAN.R-project.org/package=kableExtra)__ and __[tinytex](https://CRAN.R-project.org/package=tinytex)__ for allowing me to access these tools without paying for a license
+
+- To the __[Linux kernel community](https://www.kernel.org/category/about.html)__ for allowing me the possibility to use some __[Linux distributions](https://static.lwn.net/Distributions/)__ as my main __[OS](https://en.wikipedia.org/wiki/Operating_system)__ without paying for a license
+        
+# References

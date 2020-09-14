@@ -1,0 +1,117 @@
+---
+title: "Midterm Exam 1"
+author:
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+date: ""
+output:
+  word_document: 
+    toc: yes
+    toc_depth: '3'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE,
+                      message   = FALSE, 
+                      fig.align = "center")
+```
+
+```{r libraries}
+
+library(tidyverse)
+library(knitr)
+library(readxl)
+
+```
+
+# Labor clasification in Colombia
+
+- The data below were estimated by **Departamento Nacional de Estadística - DANE** using the **Gran encuesta integrada de hogares - GEIH**:
+
+```{r table, ft.align = 'center'}
+
+tibble(Indicator = c('Total Population (TP)',
+                     'Working Age Population (WAP)',
+                     'Economically Active Population (EAP)',
+                     'Employed (E)',
+                     'Unemployed (U)',
+                     'Visible Unemployment (VU)',
+                     'Invisible Unemployment (IU)',
+                     'Economically Inactive Population (EIP)')) %>% 
+    bind_cols(read_excel(path = '004_anexo_empleo_jun_2020.xlsx',
+                         sheet = 2, range = 'IA29:IA36', 
+                         col_names = "Individuals")) %>% 
+    mutate(Individuals = Individuals*1e3,
+           Indicator = factor(Indicator, 
+                              levels = c('Total Population (TP)',
+                                         'Working Age Population (WAP)',
+                                         'Economically Active Population (EAP)',
+                                         'Economically Inactive Population (EIP)',
+                                         'Employed (E)',
+                                         'Unemployed (U)',
+                                         'Visible Unemployment (VU)',
+                                         'Invisible Unemployment (IU)'))) %>% 
+    arrange(Indicator) %>% 
+    slice(1:3, 5,7) %>% 
+    kable(caption = 'Some labor clasification data in Colombia on June 2020')
+```
+
+1. Calculate the Population below 10 or 12 years (Rural or Urban) **(4 points)**
+
+2. Calculate the Economically Inactive Population (EIP) **(4 points)**
+
+3. Calculate the Unemployed (U) **(4 points)**
+
+4. Calculate the Invisible Unemployment (IU) **(3 points)**
+
+# Main indicators of the labor market
+
+Using the information and the results calculated above find:
+
+5. Gross participation rate (GPR) **(3 points)**
+
+6. Labor participation rate (LPR) ("Tasa Global de Participación" in Spanish) **(3 points)**
+
+7. Unemployment rate (UR) **(3 points)**
+
+8. Employment rate (ER) **(3 points)**
+
+# Finding the truth about statements on twitter
+
+- Enter into the Bank of the Republic (Colombia) using the route:
+
+**http://www.banrep.gov.co/** > Estadísticas > Actividad económica, mercado laboral y cuentas financieras > 
+4. Empleo y desempleo > Tasas de empleo y desempleo > Descargar y consultar: Total Nacional
+
+- Enter into the link:
+<**https://twitter.com/AlvaroUribeVel/status/1025061735554842625**>
+
+9. Point out if the 9.1% value is true based on the Bank of the Republic (Colombia) information. **(3 points)**
+
+10. Point out if in any of the presidential periods of Álvaro Uribe Vélez the *unemployment rate (UR)* was lower than 9.1% at some time. **(3 points)**
+
+11. Point out if the hashtag on the twitter message is valid. **(3 points)**
+
+# The goods market
+
+This exercise is taken from: 
+
+**Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 3 The Goods Market > Questions and Problems > Exercise 2
+
+- The following equations refer to the goods market of an economy in billions of euros:
+
+$$C_t = 480 + 0.5Y_{tD}$$
+$$I_t = 110$$
+$$T_t = 70$$
+$$G_t = 250$$
+
+12. Solve for the goods market equilibrium  **(5 points)**
+
+13. Find equilibrium disposable income $(Y_{tD})$ **(5 points)**
+
+14. Find equilibrium consumption $(C_t)$ **(4 points)**

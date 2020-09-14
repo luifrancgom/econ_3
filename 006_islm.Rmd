@@ -1,0 +1,429 @@
+---
+title: "Goods and financial markets: IS-LM model"
+author: "Luis Francisco Gomez Lopez"
+date: 2020-08-17
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fonttheme: structurebold
+    theme: AnnArbor
+  ioslides_presentation: default
+  slidy_presentation: default
+bibliography: macro_faedis.bib
+link-citations: yes
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE, 
+                      message   = FALSE,
+                      fig.align = "center")
+```
+
+```{r libraries}
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(latex2exp)
+```
+
+# Contents
+
+- Please Read Me
+- Purpose
+- IS-LM model and some behavioral equations
+- Transform a nominal variable into real terms
+- Variables of the IS-LM model in real terms
+- IS-LM model graphically
+- Equilibrium condition IS-LM model
+- Regional transmission of monetary policy in Colombia
+- Acknowledgments
+- References
+
+# Please Read Me
+
+- Check the message __Welcome greeting__ published in the News Bulletin Board.
+
+- Dear student please edit your profile uploading a photo where your face is clearly visible.
+
+- The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
+
+- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 5]
+
+# Purpose
+
+Analyze the market of goods and financial markets jointly to examine the role of fiscal policy and monetary policy through the IS-LM model.
+
+# IS-LM model and some behavioral equations
+
+- The equilibrium in the goods market is described by the **IS** curve: **Investment = Savings**.
+
+    + The condition **Investment = Savings** occurs if the goods market is in equilibrium and if there are **no commercial relationship with the rest of the world**.
+
+- The **IS** curve also captures the fact that final production (**GDP**) or the added value that companies generate, **in an economy with no commercial relations**, is equal to what individuals demand in a given territory: $Y(t) = C(t) + I(t) + G(t)$.
+
+# IS-LM model and some behavioral equations
+
+- We are going to include a behavioral equation for the case of $I(t)$, generalize the behavioral equation for $C(t)$ and point out the **equilibrium condition**:
+
+    + $Z(t) \equiv C(Y(t) - T(t)) + I(Y(t), i(t)) + G(t)$ (**Aggregate Demand**)
+    
+    + $Y(t)$ (**Agregate Supply**)
+    
+    + $Y(t) = Z(t) \Rightarrow Y(t) = C(Y(t) - T(t)) + I(Y(t), i(t)) + G(t)$ (**IS curve**)
+
+- In $I(Y(t), i(t))$ we are assuming that sales of companies are equal to their production in $t$.
+
+# IS-LM model and some behavioral equations
+
+- The equilibrium in the financial market is described by the **LM** curve: **Liquidity = Money**. The condition **Liquidity = Money** means that in this market the interaction between the demand for money by individuals and the supply of money by a central bank determines an interest rate, $i(t)$.
+
+    + $M^d(t) = M^d(Y(t), i(t))$ (**Money Demand**)
+    
+    + $M^o(t) = \overline{M}(t)$ (**Money Supply**)
+    
+    + $M^o(t) = M^d(t) \Rightarrow \overline{M}(t) = M^d(Y(t), i(t))$ (**LM curve**)
+    
+- **Note**: From now on to facilitate notation, the variable that captures the fact that all variables are measured within a period, $t$, will be deleted for the variables in the IS-LM model.
+
+# Transform a nominal variable into real terms
+
+- One way to control the effect of prices on a variable that is measured in monetary units is to express it in **real** terms. This means that we seek to transform a variable in **nominal** to **real** terms. To understand the logic of the above process we are going to develop a simple example in which we review the purchasing power of 1000 **COP**[^1].
+
+    + **Example**: 1 good, 2 periods, expenditure in 2 periods (information about prices in 2 periods and quantities for a base period) [@ralphPracticalIntroductionIndex2015, p 40]
+    
+```{r table_price_level}
+
+# Table
+tibble(Good          = c('Apples'),
+       Price_2012    = c('800 COP/unit'),
+       Price_2013    = c('900 COP/unit'),
+       Quantity_2012 = c('6 units')) %>% 
+    set_names(nm = c('Goods', 'Price 2012', 
+                     'Price 2013', 'Quantity 2012')) %>%
+  kable(format = "latex", booktabs = TRUE, caption = "Good prices and quantities") %>% 
+  kable_styling(font_size = 9, latex_options = "striped") %>% 
+  row_spec(row = 0, bold = TRUE)
+```
+
+[^1]: Colombian peso according to ISO 4217 code
+
+# Transform a nominal variable into real terms
+
+- Laspeyres Index for 2013 (Base 2012):
+
+$$\frac{Basket\;2013}{Basket\;2012} = \frac{900*\textbf{6}}{800*\textbf{6}} * 100 = \frac{5400}{4800} *100 = 112.5$$
+
+- If the expenditure in 2012 is $6*800 = 4800$ then with 1000 **COP** in 2012 we could buy $4800/1000 = 4.8$ apples.
+
+    + ¿How many monetary units we need to purchase the same quantity of apples in 2013?
+    
+         + $\frac{4800}{1000} = \frac{5400}{x} \Rightarrow x = 1000 * \frac{5400}{4800} \Rightarrow x = 1000* \frac{112.5}{100} \Rightarrow x = 1125$.
+         
+         + In this simple example 1000 **COP** in 2012 is equivalent to 1125 **COP** in 2013 because we can purchase the same amount of apples. Also if we want to express 1125 **COP** in real terms of the year 2012 what we can do is $\frac{1125}{\frac{112.5}{100}} = \frac{1125}{\frac{Laspeyres \; Index \; for \; 2013 \; (Base \; 2012)}{100}} = 1000$.
+
+# Transform a nominal variable into real terms
+
+- Therefore if we want to express a **nominal** variable in **real** terms of a particular period what we need to do is to divide the nominal variable by a **price index** expressed in its decimal form.
+
+$$Real \; value(t) = \frac{Nominal \; value(t)}{Price \; Index(t) \; (Expressed \; in \; its \; decimal \; form)}$$
+
+- If you want to know more about transforming **nominal** values into **real** values you cant read [@federalreservebankofdallasDeflatingNominalValues2020]
+
+- In [@federalreservebankofdallasDeflatingNominalValues2020] you can find more information about how to remove the price effect from a data series or change nominal data to real values.
+
+# Variables of the IS-LM model in real terms
+
+- **IS curve**:
+
+$$\begin{split}
+  Y & = C + I + G \\
+  \frac{Y}{P} & = \frac{C}{P} + \frac{I}{P} + \frac{G}{P} \\
+  \widehat{Y} & = \widehat{C} + \widehat{I} + \widehat{G}
+  \end{split}$$
+
+Where $P$ is the **GDP Deflator** expressed in its decimal form and $\;\widehat{}\;$ in the top of a variable refers to the fact that it is expressed in **real** terms.
+
+- **IS curve** including behavioral equations:
+
+    + $\widehat{Y} = \widehat{C}(\widehat{Y} - \widehat{T}) + \widehat{I}(i,\widehat{Y}) + \widehat{G}$
+    
+Where for now we do not include the interest rate, $i$,in real terms since this aspect requires an additional explanation that will be carried out later in the course.
+
+# Variables of the IS-LM model in real terms
+
+- Money Demand and Supply: 
+
+    + $M^d = M^d(Y,i) = Y*L(i)$
+
+    + $M^o = \overline{M}$
+    
+Where we are going to assume a specific functional form for the money demand, $M^d = Y*L(i)$. In this expression $L$ is a function that depends negatively on $i$.
+
+# Variables of the IS-LM model in real terms
+
+- **LM** curve:
+    
+$$\begin{split}
+   \overline{M} & = Y*L(i) \\
+   \frac{\overline{M}}{P} & = \frac{Y}{P}*L(i) \\
+   \widehat{\overline{M}} & = \widehat{Y}*L(i)
+   \end{split}$$
+
+Where $P$ is the **GDP Deflator** expressed in its decimal form and $\;\widehat{}\;$ in the top of a variable refers to the fact that it is expressed in **real** terms.
+
+# IS-LM model graphically
+
+- If the central bank fix the interest rate then $i = \overline{i}$. In that case the **LM** curve is:
+
+    + $\widehat{\overline{M}} = \widehat{Y}*L(\overline{i})$
+
+```{r, out.width = '70%'}
+
+ggplot(data = tibble(x = c(0, 5),
+                     y = c(5, 0))
+) +
+    geom_point(aes(x = x, y = y),
+               color = "blue",
+               size  = 3) +
+    geom_segment(aes(x = 0, y = 2, 
+                     xend = 4, yend = 2),
+                 color = 'red') +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 0, yend = 5)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 5, yend = 0)) +
+    annotate(geom = 'text', 
+             x = 0.25, y = 2.25, 
+             label = TeX('$\\bar{i}$')) +
+    annotate(geom = 'text', 
+             x = 5.25, y = 0, 
+             label = TeX('$\\widehat{Y}$')) +
+    annotate(geom = 'text', 
+             x = 0, y = 5.25, 
+             label = TeX('$i')) +
+    annotate(geom = 'text', 
+             x = 4.25, y = 2, 
+             label = TeX('$LM')) +
+    theme_void()
+```
+
+# IS-LM model graphically
+
+- Let us assume that the central bank decreases the interest rate from $\overline{i}^*$ to $\overline{i}^{**}$ where $\overline{i}^* > \overline{i}^{**}$. In that case, graphically the **IS** curve is:
+    
+```{r, out.width = '75%'}
+
+library(tidyverse)
+library(latex2exp)
+
+ggplot(data = tibble(x = c(0, 5, 2, 10/3,  0,  5,  2, 10/3),
+                     y = c(5, 0, 2, 10/3, -1, -6, -4, -2 - 10/3))
+) +
+    #First plot
+    geom_point(aes(x = x, y = y),
+               color = "blue",
+               size  = 3) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 5, yend = 0)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 0, yend = 5)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 4, yend = 4)) +
+    geom_segment(aes(x = 0, y = 1.5, 
+                     xend = 4, yend = 2.5,
+    ),
+    color = 'red')  +
+    geom_segment(aes(x = 0, y = 2.5, 
+                     xend = 4, yend = 3.5,
+    ),
+    color = 'red') +
+    geom_segment(aes(x = 2, y = 2, 
+                     xend = 2, yend = -6),
+                 linetype = 'dashed') +
+    geom_segment(aes(x = 10/3, y = 10/3, 
+                     xend = 10/3, yend = -6),
+                 linetype = 'dashed') +
+    annotate(geom = 'text', 
+             x = 1.75, y = 0.25, 
+             label = TeX('$\\widehat{Y}^*$')) +
+    annotate(geom = 'text', 
+             x = 10/3 - 0.25, y = 0.25, 
+             label = TeX('$\\widehat{Y}^{**}$')) +
+    annotate(geom = 'text', 
+             x = 4, y = 2.75, 
+             label = TeX('$\\widehat{Z} = \\widehat{C}(\\widehat{Y}_R-\\widehat{T}) + \\widehat{I}(\\bar{i}^*,\\widehat{Y}_R) + \\widehat{G}')) +
+    annotate(geom = 'text', 
+             x = 4, y = 3.75, 
+             label = TeX('$\\widehat{Z} = \\widehat{C}(\\widehat{Y}_R-\\widehat{T}) + \\widehat{I}(\\bar{i}^{**},\\widehat{Y}_R) + \\widehat{G}')) +
+    annotate(geom = 'text', 
+             x = 4, y = 4.25, 
+             label = TeX('$\\widehat{Y} \\equiv \\widehat{Y}_R$')) +
+    annotate(geom = 'text', 
+             x = 5.25, y = 0, 
+             label = TeX('$\\widehat{Y}_R$')) +
+    annotate(geom = 'text', 
+             x = 0, y = 5.25, 
+             label = TeX('$\\widehat{Z}\\;\\widehat{Y}$')) +
+    
+    #Second plot
+    geom_segment(aes(x = 0, y = -6, 
+                     xend = 0, yend = -1)) +
+    geom_segment(aes(x = 0, y = -6, 
+                     xend = 5, yend = -6)) +
+    geom_segment(aes(x = 0, y = -2, 
+                     xend = 4, yend = -6),
+                 color = 'green') +
+    geom_segment(aes(x = 0, y = -4, 
+                     xend = 2, yend = -4), 
+                 linetype = 'dashed') +
+    geom_segment(aes(x = 0, y = -2 - 10/3, 
+                     xend = 10/3, yend = -2 - 10/3), 
+                 linetype = 'dashed') +
+    annotate(geom = 'text', 
+             x = 1.75, y = -5.75, 
+             label = TeX('$\\widehat{Y}^*$')) +
+    annotate(geom = 'text', 
+             x = 10/3 - 0.25, y = -5.75, 
+             label = TeX('$\\widehat{Y}^{**}$')) +
+    annotate(geom = 'text', 
+             x = 0.25, y = -2 - 10/3 + 0.25, 
+             label = TeX('$\\bar{i}^{**}$')) +
+    annotate(geom = 'text', 
+             x = 0.25, y = -3.75, 
+             label = TeX('$\\bar{i}^{*}$')) +
+    annotate(geom = 'text', 
+             x = 5.25, y = -6, 
+             label = TeX('$\\widehat{Y}$')) +
+    annotate(geom = 'text', 
+             x = 0, y = -0.75, 
+             label = TeX('$i$')) +
+    annotate(geom = 'text', 
+             x = 4, y = -2 - 10/3 - 0.25, 
+             label = TeX('$IS')) +
+theme_void()
+```
+
+# Equilibrium condition IS-LM model
+
+- The equilibrium condition in the IS-LM model occurs when the goods market and the financial market are in equilibrium simultaneously.
+
+```{r, out.width = '75%'}
+
+library(tidyverse)
+library(latex2exp)
+
+ggplot(data = tibble(x = c(0, 5, 2),
+                     y = c(5, 0, 2))
+) +
+    geom_point(aes(x = x, y = y),
+               color = "blue",
+               size  = 3) +
+    geom_segment(aes(x = 0, y = 2, 
+                     xend = 4, yend = 2),
+                 color = 'red') +
+    geom_segment(aes(x = 0, y = 4, 
+                     xend = 4, yend = 0),
+                 color = 'green') +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 0, yend = 5)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 5, yend = 0)) +
+    geom_segment(aes(x = 2, y = 2, 
+                     xend = 2, yend = 0),
+                 linetype = 'dashed') +
+    annotate(geom = 'text', 
+             x = 2.25, y = 0.25, 
+             label = TeX('$\\widehat{Y}^*$')) +
+    annotate(geom = 'text', 
+             x = 0.25, y = 2.25, 
+             label = TeX('$\\bar{i}$')) +
+    annotate(geom = 'text', 
+             x = 5.25, y = 0, 
+             label = TeX('$\\widehat{Y}$')) +
+    annotate(geom = 'text', 
+             x = 0, y = 5.25, 
+             label = TeX('i')) +
+    annotate(geom = 'text', 
+             x = 4.25, y = 2, 
+             label = TeX('LM')) +
+    annotate(geom = 'text', 
+             x = 4, y = 0.25, 
+             label = TeX('IS')) +
+    annotate(geom = 'text', 
+             x = 1.25, y =  1.75, 
+             label = str_glue('Equilibrium in the goods
+                              and the financial markets')) +
+    theme_void()
+```
+
+# Regional transmission of monetary policy in Colombia
+
+- To see an application of how interest rates affect real **GDP**, we will review an exercise carried out at the regional and national level in Colombia by [@romeroprietoTransmisionRegionalPolitica2008].
+
+- 32 departments and Bogotá are included for the period 1990:Q1 to 1993:Q4.
+
+- The variables that are used are:
+
+    + Real **GDP** for Colombia, Bogotá and the 32 departments at constant prices using the 1994 year as base period.
+    
+    + "Tasa de interés interbancaria (TIB)"[^2]
+    
+[^2]: It is and interest rate at which financial intermediaries lend funds to each other for one day (overnight loans) and that it tends to be similar to the interest rate set by the Bank of the Republic of Colombia.
+
+# Regional transmission of monetary policy in Colombia
+
+- Percentage variation in the real GDP growth quarter by quarter due to a $1 \%$ increase in TIB [@romeroprietoTransmisionRegionalPolitica2008, p 17, fig 1]
+
+```{r, out.width = '65%'}
+
+include_graphics(path = '006_col_islm1.png')
+```
+
+# Regional transmission of monetary policy in Colombia
+
+- Percentage variation in the real GDP growth quarter by quarter due to a $1 \%$ increase in TIB [@romeroprietoTransmisionRegionalPolitica2008, p 18, fig 2]
+
+```{r, out.width = '65%'}
+
+include_graphics(path = '006_col_islm2.png')
+```
+
+# Regional transmission of monetary policy in Colombia
+
+- Percentage variation in the real GDP growth quarter by quarter due to a $1 \%$ increase in TIB [@romeroprietoTransmisionRegionalPolitica2008, p 19, fig 3]
+
+```{r, out.width = '65%'}
+
+include_graphics(path = '006_col_islm3.png')
+```
+
+# Acknowledgments
+
+- To my family that supports me
+
+- To the taxpayers of Colombia and the __[UMNG students](https://www.umng.edu.co/estudiante)__ who pay my salary
+
+- To the __[Business Science](https://www.business-science.io/)__ and __[R4DS Online Learning](https://www.rfordatasci.com/)__ communities where I learn __[R](https://www.r-project.org/about.html)__ 
+
+- To the __[R Core Team](https://www.r-project.org/contributors.html)__, the creators of __[RStudio IDE](https://rstudio.com/products/rstudio/)__ and the authors and maintainers of the packages __[tidyverse](https://CRAN.R-project.org/package=tidyverse)__, __[knitr](https://CRAN.R-project.org/package=knitr)__, __[kableExtra](https://CRAN.R-project.org/package=kableExtra)__, __[latex2exp](https://CRAN.R-project.org/package=latex2exp)__ and __[tinytex](https://CRAN.R-project.org/package=tinytex)__ for allowing me to access these tools without paying for a license
+
+- To the __[Linux kernel community](https://www.kernel.org/category/about.html)__ for allowing me the possibility to use some __[Linux distributions](https://static.lwn.net/Distributions/)__ as my main __[OS](https://en.wikipedia.org/wiki/Operating_system)__ without paying for a license
+
+# References

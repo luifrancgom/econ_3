@@ -1,0 +1,143 @@
+---
+title: "Homerwork 3"
+author: 
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+date: ''
+output:
+  word_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE,
+                      message   = FALSE, 
+                      fig.align = "center")
+```
+
+```{r}
+
+library(tidyverse)
+library(knitr)
+```
+
+
+# Exports and imports
+
+- Enter into the World Bank's Human Development Indicators database using the link:
+
+<**https://databank.worldbank.org/source/world-development-indicators**>
+
+- In *Country* select *Colombia*
+- In *Series* select *GDP (constant LCU)*, *Exports of goods and services (constant LCU)* and *Imports of goods and services (constant LCU)* 
+- In *Time* select *VIEW RECENT YEARS: 50*
+- Apply changes and download the data using *Download options > Excel* at the upper right corner of the platform
+
+1. Calculate the net exports, exports minus imports ($\widehat{NX}_t$ in the model expressed in real terms). **(3.5 points)** 
+
+2. Make a plot of *GDP (constant LCU)* ($\widehat{Y}_t$ in the model expressed in real terms), *Exports of goods and services (constant LCU)* ($\widehat{X}_t$ in the model expressed in real terms) *Imports of goods and services (constant LCU)* ($\widehat{IM}_t*\varepsilon_t$ in the model expressed in real terms) and *net exports* ($\widehat{NX}_t$ in the model expressed in real terms). **(3.5 points)**
+
+3. Calculate the exports as a percentage of GDP, $\frac{\widehat{X}_t}{\widehat{Y}_t}*100$, the imports as a percentage of GDP, $\frac{\widehat{IM}_t*\varepsilon_t}{\widehat{Y}_t}*100$ and net exports as a percentage of GDP, $\frac{\widehat{NX}_t}{\widehat{Y}_t}*100 \equiv \frac{\widehat{X}_t - \widehat{IM}_t*\varepsilon_t}{\widehat{Y}_t}*100$. **(3.5 points)**
+
+4. Make a plot of exports as a percentage of GDP, $\frac{\widehat{X}_t}{\widehat{Y}_t}*100$, the imports as a percentage of GDP, $\frac{\widehat{IM}_t*\varepsilon_t}{\widehat{Y}_t}*100$ and net exports as a percentage of GDP, $\frac{\widehat{NX}_t}{\widehat{Y}_t}*100 \equiv \frac{\widehat{X}_t - \widehat{IM}_t*\varepsilon_t}{\widehat{Y}_t}*100$ where the x-axis corresponds to the date and y-axis corresponds to the values of these variables. **(3.5 points)**
+
+# Can imports or exports exceed GDP?
+
+5. Point out if it is possible that **imports** or **exports** can be greater than **GDP**. Then explain why or why not imports can be greater than **GDP** supporting your answer with an example or using elements from macroeconomic theory. **(3.5 points)** 
+
+**Observation 1**: Be clear and precise in the explanation and please don’t include “bullshit” (Sorry for the last word but I did not find a better expression where I am using it in the sense indicated in **https://en.wikipedia.org/wiki/Bullshit**).
+
+# Nominal exchange rate
+
+- Enter into the Bank of the Republic (Colombia) using the route:
+
+**http://www.banrep.gov.co/** > Estadísticas > Tasas de cambio, sector externo y derivados > 1. Tasas de cambio > Tasa Representativa del Mercado (TRM - Peso por dólar) > Descargar y consultar: Serie histórica completa (desde 27/11/1991)
+
+6. Make a plot of *Tasa Representativa del Mercado (TRM - Peso por dólar)* where the x-axis corresponds to the date and y-axis corresponds to the value of this variable. **(3.5 points)**
+
+# Real exchange rate
+
+7. Assume that you want to calculate the *real exchange rate* for **Colombia** with reference to the **USA** and where only one product, the **Big Mac hamburger**, is taken into account. Calculate the *real exchange rate* for the dates in the table below using information of this table[^1], and data from point 5 about the *Tasa Representativa del Mercado (TRM - Peso por dólar)* in those dates **(3.5 points)**:
+
+```{r}
+
+# data taken from https://github.com/TheEconomist/big-mac-data > source-data > big-mac-source-data.csv
+big_mac <- read_csv(file = 'https://raw.githubusercontent.com/TheEconomist/big-mac-data/master/source-data/big-mac-source-data.csv') 
+
+
+dates_col <- big_mac %>% 
+    filter(name %in% c('Colombia')) %>%
+    pull(date)
+
+big_mac %>%     
+    select(date, name, local_price) %>%
+    filter(name %in% c('Colombia', 'United States')) %>% 
+    filter(date %in% dates_col) %>% 
+    pivot_wider(id_cols     = date, 
+                names_from  = name,
+                values_from = local_price) %>% 
+    set_names(nm = 'Date', 'Price Big Mac Colombia', 'Price Big Mac USA') %>% 
+    knitr::kable(align = 'l')
+```
+
+[^1]: The data of the table was taken from https://github.com/TheEconomist/big-mac-data
+
+8. Maket a plot of the *real exchange rate* using the information you found in point 6 where the x-axis corresponds to the dates of the table above and y-axis corresponds to the value of the *real exchange rate*. **(3.5 points)**
+
+# Uncovered interes parity relation
+
+- In the book **Oliver Blanchard (2017) Macroeconomics (7 Edition)** the **uncovered interes parity relation** is define as $(1 + i_t) = (1 + i_t^*)\frac{E_t}{E_{t+1}^e}$
+
+9. Describe what this expression refers to and what it represents. **(3.5 points)**
+
+**Observation 1**: Be clear and precise in the explanation and please don’t include “bullshit” (Sorry for the last word but I did not find a better expression where I am using it in the sense indicated in **https://en.wikipedia.org/wiki/Bullshit**).
+
+10. In Colombia, the **nominal exchange rate** between pesos and US dollars is expressed as $\frac{pesos}{1\; dollar}$. What modifications would have to be made to the condition pointed out in point 9 if someone want to write the **uncovered interes parity relation** for a resident in Colombia who has to decide to invest between financial products of Colombia and the USA? **(3.5 points)**
+
+# Exercise 8
+
+This exercises is taken from:
+
+**Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 18 The Goods Market in an Open Economy > Questions and Problems > Exercise 8
+
+- Consider an open economy in which the real exchange rate is fixed and equal to one. Consumption, investment, government spending, and taxes are given by:
+
+$$\widehat{C}_t = 10 + 0.8(\widehat{Y}_t - \widehat{T}_t)$$
+
+$$\widehat{I}_t = 10$$ 
+
+$$\widehat{G}_t = 10$$
+
+$$\widehat{T}_t = 10$$
+
+- Imports and exports are given by:
+
+$$\widehat{IM}_t = 0.3\widehat{Y}_t$$
+
+$$\widehat{X}_t = 0.3\widehat{Y}_t^*$$
+where $\widehat{Y}_t^*$ denotes foreign output.
+
+11. Solve for equilibrium output, $\widehat{Y}_t$ and point out the multiplier for the domestic economy. **(3.5 points)**
+
+12. Assume that the foreign economy is characterized by the same equations as the domestic economy (with asterisks reversed). Solve for the equilibrium output of each economy and point out the multiplier for the domestic and the  foreign economy. **(3.5 points)** 
+
+$$\widehat{C}_t^* = 10 + 0.8(\widehat{Y}_t^* - \widehat{T}_t^*)$$
+
+$$\widehat{I}_t^* = 10$$ 
+
+$$\widehat{G}_t^* = 10$$
+
+$$\widehat{T}_t^* = 10$$
+$$\widehat{IM}_t^* = 0.3\widehat{Y}_t^*$$
+
+$$\widehat{X}_t^* = 0.3\widehat{Y}_t$$
+
+13. Assume that the domestic government has a target level of output of 125. Assuming that the foreign government does not change $\widehat{G}_t^*$, what is the increase in $\widehat{G}_t$ necessary to achieve the target output in the domestic economy? Also solve for net exports, $\widehat{NX}_t \equiv \widehat{X}_t - \widehat{IM}_t$ and $\widehat{NX}_t^* \equiv \widehat{X}_t^* - \widehat{IM}_t^*$, and the budget deficit, $\widehat{T}_t - \widehat{G}_t$ and $\widehat{T}_t^* - \widehat{G}_t^*$, in each country. **(3.5 points)**
+
+14. Suppose each government has a target level of output of 125 and that each government increases government spending by the same amount. What is the common increase in $\widehat{G}_t$ and $\widehat{G}_t^*$ necessary to achieve the target output in both countries? Also solve for net exports, $\widehat{NX}_t \equiv \widehat{X}_t - \widehat{IM}_t$ and $\widehat{NX}_t^* \equiv \widehat{X}_t^* - \widehat{IM}_t^*$, and the budget deficit, $\widehat{T}_t - \widehat{G}_t$ and $\widehat{T}_t^* - \widehat{G}_t^*$, in each country for this new situation. **(4.5 points)**

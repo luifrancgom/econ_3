@@ -1,0 +1,389 @@
+---
+title: "The Board of Directors' Report to the Congress of Colombia (March 2020)"
+date: 2020-09-10
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fonttheme: structurebold
+    theme: AnnArbor
+  ioslides_presentation: default
+  slidy_presentation: default
+bibliography: macro_faedis.bib
+link-citations: yes
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE, 
+                      message   = FALSE,
+                      fig.align = "center")
+```
+
+```{r libraries}
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(readxl)
+library(lubridate)
+library(zoo)
+library(tidyquant)
+```
+
+# Contents
+
+- Please Read Me
+- Purpose
+- Why read the Board of Directors' Report to the Congress of Colombia?
+- Variables indicated in the report and seen throughout the course
+- Observations about data of the Labor Market shown in the report
+- Inflation measures mentioned in the report
+- Acknowledgments
+- References
+
+# Please Read Me
+
+- Check the message __Welcome greeting__ published in the News Bulletin Board.
+
+- Dear student please edit your profile uploading a photo where your face is clearly visible.
+
+- The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
+
+- This presentation is based on [@bancodelarepublicaInformeJuntaDirectiva2020, Chapter 2]
+
+# Purpose
+
+Examine an application of the macroeconomic concepts seen throughout the course.
+
+# Why read the Board of Directors' Report to the Congress of Colombia?
+
+- The Bank of the Republic of Colombia publishes different institutional reports such as:
+
+    + The Board of Directors' Report to the Congress of Colombia
+    + Monetary Policy Report (former Inflation Report)
+    + Governor´s Report
+    + Financial Stability Report
+    + Foreign Reserve Management Report
+    + Payment Systems Report
+
+[^1]: Ley 31 de 1992, Artículo 5
+
+# Why read the Board of Directors' Report to the Congress of Colombia?
+
+- One way to know in general the macroeconomic environment that affects companies is the **The Board of Directors' Report to the Congress of Colombia** where by law[^1] the Bank of the Republic presents to the congress the execution of monetary, exchange and credit policies, the foreign reserve management and the financial situation of the central bank.
+
+- This report usually includes information about economic activity, the labor market, inflation, the financial sector and a balance of the external sector. The above aspects are relevant to understand the macroeconomic environment of the companies in Colombia.
+
+# Why read the Board of Directors' Report to the Congress of Colombia?
+
+- Although there are other more detailed reports regarding certain aspects[^2], this report gives an overview of the landscape facing Colombian companies.
+
+[^2]: For example the __Monetary Policy Report (former Inflation Report)__, __Financial Stability Report__, __Foreign Reserve Management Report__ and the __Payment Systems Report__ 
+
+# Variables indicated in the report and seen throughout the course
+
+\tiny
+- Real GDP growth [@bancodelarepublicaInformeJuntaDirectiva2020, p 33, table 2.1]
+
+```{r, out.width = '65%'}
+
+library(knitr)
+
+include_graphics(path = '011_Cuadro_2-1.png')
+```
+
+# Variables indicated in the report and seen throughout the course
+
+- "Gasto de consumo final de los hogares": $\widehat{C}_t$
+
+- "Gasto de consumo final del gobierno general": $\widehat{G}_t$
+
+- "Formación Bruta de Capital": $\widehat{I}_t$
+
+- "Demand Interna": $\widehat{C}_t + \widehat{I}_t + \widehat{G}_t$
+
+- "Exportaciones": $\widehat{X}_t$
+
+- "Importaciones": $\widehat{IM}_t$
+
+- "PIB"[^3]: $\widehat{Z}_t \equiv \widehat{C}_t + \widehat{I}_t + \widehat{G}_t + \widehat{X}_t - \widehat{IM}_t$
+
+[^3]: Measure using the macroeconomic identity
+
+# Variables indicated in the report and seen throughout the course
+
+\tiny
+- Real GDP growth by sectors [@bancodelarepublicaInformeJuntaDirectiva2020, p 34, table 2.2]
+
+```{r, out.width = '65%'}
+
+include_graphics(path = '011_Cuadro_2-2.png')
+```
+
+# Variables indicated in the report and seen throughout the course
+
+- "PIB"[^4]: $\widehat{Y}_t$ which includes taxes minus subsidies, $\widehat{T}_t$[^5], and where 12 sectors are taking into account:
+
+```{r}
+
+tibble(Sector = c("Agriculture, hunting, forestry and fishing",
+                  "Mining and quarrying",
+                  "Manufacturing Industries", 
+                  "Electricity, gas and water supply", 
+                  "Construction",
+                  "Wholesale and retail trade, repair, transport and accommodation",
+                  "Information and communication",
+                  "Financial and insurance activities",
+                  "Real estate activities",
+                  "Professional, scientific and technical activities",
+                  "Public administration and defence, education and human health",
+                  "Arts, entertainment and recreation")) %>% 
+  kable(format = "latex", booktabs = TRUE) %>% 
+  kable_styling(font_size = 5, latex_options = "striped") %>%
+  row_spec(row = 0, bold = TRUE)
+```
+  
+[^4]: Measure as the sum of the aggregate value of companies
+[^5]: An explanation about, $\widehat{T}_t$, can be found in [@unitednationsNationalAccountsPractical2004, Chapter 1, p 5, Item 1.5]
+
+# Observations about data of the Labor Market used in the report
+
+\tiny
+- Unemployment rate [@bancodelarepublicaInformeJuntaDirectiva2020, p 37, plot 2.2]
+
+```{r, out.width = '60%'}
+
+include_graphics(path = '011_Grafico_2-2a.png')
+```
+
+# Observations about data of the Labor Market used in the report
+
+\tiny
+- Employment rate [@bancodelarepublicaInformeJuntaDirectiva2020, p 37, plot 2.2]
+
+```{r, out.width = '60%'}
+
+include_graphics(path = '011_Grafico_2-2b.png')
+```
+
+# Observations about data of the Labor Market shown in the report
+
+- **Seasonally adjusted series** (*Serie desestacionalizada*)[^6]: result of adjusting and removing from the original series the effects of the seasonal component and the calendar effect (**Holy week and holidays**) in order to make a reasonable comparison of the data between different periods.
+
+- **Quarterly moving average** (*Trimestre Móvil*): $$\overline{x}_{t,qma} = \frac{1}{3}\sum\limits_{n\;=\:t-2}^{t} x_n$$ 
+
+    + Where $x_n$ is monthly data.
+
+[^6]: For more information about the methods used please check [@beedagumSeasonalAdjustmentMethods2016]
+
+# Observations about data of the Labor Market shown in the report
+
+- The data used to generate **"Gráfico 2. Tasa de desempleo y de ocupación por dominios (trimestre móvil desestacionalizado)"** can be examine in:
+
+    + https://www.dane.gov.co/ > "Estadísticas por Tema" > Mercado Laboral > "Gran Encuesta Integrada de Hogares - GHEI -" > "Empleo y Desempleo" > "Series desestacionalizadas" 
+    
+# Observations about data of the Labor Market shown in the report
+
+```{r, out.width = '80%'}
+
+# Data not seasonally adjusted series
+vars <- read_excel(path      = "011_anexo_empleo_jul_20-1.xlsx", 
+           sheet     = 2, 
+           range     = "A14:IB17", 
+           col_names = FALSE) %>% 
+    slice(3:4) %>% 
+    set_names(c("variable", seq.Date(from = ymd("2001-01-01"), 
+                                     to   = ymd("2020-07-01"), by = "1 month") %>% as.character())) %>% 
+    pivot_longer(cols      = -variable, 
+                 names_to  = "date", 
+                 values_to = "value") %>% 
+    pivot_wider(id_cols = date, names_from = variable, values_from = value) %>% 
+    set_names(nm = c("date", "er", "ur")) %>% 
+    mutate(date = ymd(date))
+
+# Data seasonally adjusted series
+vars_season_adj <- read_excel(path      = "011_anexo_desestacionalizado_empleo_jul_20.xlsx", 
+                              sheet     = 2, 
+                              range     = "A14:IB16", 
+                              col_names = FALSE) %>% 
+    slice(2:3) %>% 
+    set_names(c("variable", seq.Date(from = ymd("2001-01-01"), 
+                                     to   = ymd("2020-07-01"), by = "1 month") %>% as.character()))  %>% 
+    pivot_longer(cols      = -variable, 
+                 names_to  = "date", 
+                 values_to = "value") %>% 
+    pivot_wider(id_cols = date, names_from = variable, values_from = value) %>% 
+    set_names(nm = c("date", "er_season_adj", "ur_season_adj")) %>% 
+    mutate(date = ymd(date))
+
+# Data clean
+vars_vs_vars_season_adj_roll <- vars %>% 
+    left_join(vars_season_adj, by = "date") %>% 
+    mutate(er_season_adj_roll3 = rollmean(er_season_adj, 
+                                          k     = 3, 
+                                          align = "right", 
+                                          fill  = NA),
+           ur_season_adj_roll3 = rollmean(ur_season_adj, 
+                                          k     = 3, 
+                                          align = "right", 
+                                          fill  = NA)) %>%
+    drop_na() %>% 
+    select(date, er, ur, er_season_adj_roll3, ur_season_adj_roll3)
+
+# Plot ur vs ur_season_adj_roll3 
+vars_vs_vars_season_adj_roll %>% 
+    select(date, ur, ur_season_adj_roll3) %>% 
+    pivot_longer(cols     = ur:ur_season_adj_roll3, 
+                 names_to = "variable", values_to = "value") %>%
+    mutate(variable = case_when(
+                        variable == "ur" ~ "Total unemployment rate (UR)",
+                        variable == "ur_season_adj_roll3" ~ "Total unemployment rate (UR)\nseasonally adjusted quarterly moving average",
+                        TRUE ~ variable)) %>% 
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_line(aes(color = variable, 
+                  group = variable)) +
+    labs(x        = "",
+         y        = "Percent",
+         color    = "",
+         title    = str_glue("Total monthly unemployment rate (UR) vs 
+                             total  monthly unemployment rate (UR) seasonally adjusted quarterly moving average"),
+         subtitle = str_glue("Period: from {vars_vs_vars_season_adj_roll$date[1] %>% format(format = '%Y-%m') } to {vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)] %>% format(format = '%Y-%m')}
+                             Data points: {nrow(vars_vs_vars_season_adj_roll)}"),
+         caption  = str_glue("Source: Departamento Admnistrativo Nacional de Estadística - DANE
+                             Last update date: 2020-08-31")) +
+    scale_y_continuous(labels = scales::number_format(suffix = "%", accuracy = 1)) +
+    scale_x_date(breaks      = seq.Date(from = vars_vs_vars_season_adj_roll$date[1],
+                                        to = vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)], 
+                                        by = "1 year"),
+                 date_labels = "%Y-%m", limits = c(vars_vs_vars_season_adj_roll$date[1], 
+                                                   vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)]))  +
+    scale_color_tq() +
+    scale_fill_tq() +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"), 
+          legend.position   = "bottom", 
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"),
+          axis.text.x       = element_text(angle = 90, vjust = 0.5))
+```
+
+# Observations about data of the Labor Market shown in the report
+
+```{r, out.width="80%"}
+
+# Plot er vs er_season_adj_roll3 
+vars_vs_vars_season_adj_roll %>% 
+    select(date, er, er_season_adj_roll3) %>% 
+    pivot_longer(cols     = er:er_season_adj_roll3, 
+                 names_to = "variable", values_to = "value") %>%
+    mutate(variable = case_when(
+        variable == "er" ~ "Total employment rate (ER)",
+        variable == "er_season_adj_roll3" ~ "Total employment rate (ER)\nseasonally adjusted quarterly moving average",
+        TRUE ~ variable)) %>% 
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_line(aes(color = variable, 
+                  group = variable)) +
+    labs(x        = "",
+         y        = "Percent",
+         color    = "",
+         title    = str_glue("Total monthly employment rate (ER) vs 
+                             total  monthly employment rate (ER) seasonally adjusted quarterly moving average"),
+         subtitle = str_glue("Period: from {vars_vs_vars_season_adj_roll$date[1] %>% format(format = '%Y-%m') } to {vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)] %>% format(format = '%Y-%m')}
+                             Data points: {nrow(vars_vs_vars_season_adj_roll)}"),
+         caption  = str_glue("Source: Departamento Admnistrativo Nacional de Estadística - DANE
+                             Last update date: 2020-08-31")) +
+    scale_y_continuous(labels = scales::number_format(suffix = "%", accuracy = 1)) +
+    scale_x_date(breaks      = seq.Date(from = vars_vs_vars_season_adj_roll$date[1],
+                                        to = vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)], 
+                                        by = "1 year"),
+                 date_labels = "%Y-%m", limits = c(vars_vs_vars_season_adj_roll$date[1], 
+                                                   vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)]))  +
+    scale_color_tq() +
+    scale_fill_tq() +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"), 
+          legend.position   = "bottom", 
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"),
+          axis.text.x       = element_text(angle = 90, vjust = 0.5))
+```
+
+# Inflation measures mentioned in the report
+
+\tiny
+- Inflation [@bancodelarepublicaInformeJuntaDirectiva2020, p 41, table 2.3]
+
+```{r, out.width = '55%'}
+
+include_graphics(path = '011_Cuadro_2-3.png')
+```
+
+# Inflation measures mentioned in the report
+
+- **Tradable inflation**
+
+    + Include domestic market products that compete with foreign products and therefore their prices are affected by external factors.
+    
+- **Non-Tradable inflation**
+
+    + Include domestic market products that do not compete abroad and their price is determined by domestic demand.
+    
+- **Regulated products inflation**
+
+    + Products whose prices have a defined regulatory framework:
+    
+        + Fuels
+        + Public services
+        + Some transportation services
+    
+# Inflation measures mentioned in the report
+
+- **Food inflation**
+
+    + Food prices are affected by supply factors. Therefore they are not easily predictable and are not directly affected by monetary policy decisions.
+
+- **Core Inflation Indicators**
+
+    + Is the inflation that is directly affected by monetary policy decisions. Therefore, items with volatile prices or that are outside the control of monetary policy are excluded from the Consumer Price Index (CPI) basket like:  
+    
+        + Food
+        + Fuels, public services or transportation services that are regulated
+        
+# Acknowledgments
+
+- To my family that supports me
+
+- To the taxpayers of Colombia and the __[UMNG students](https://www.umng.edu.co/estudiante)__ who pay my salary
+
+- To the __[Business Science](https://www.business-science.io/)__ and __[R4DS Online Learning](https://www.rfordatasci.com/)__ communities where I learn __[R](https://www.r-project.org/about.html)__ 
+
+- To the __[R Core Team](https://www.r-project.org/contributors.html)__, the creators of __[RStudio IDE](https://rstudio.com/products/rstudio/)__ and the authors and maintainers of the packages __[tidyverse](https://CRAN.R-project.org/package=tidyverse)__, __[tidyquant](https://CRAN.R-project.org/package=tidyquant)__, __[lubridate](https://CRAN.R-project.org/package=lubridate)__, __[knitr](https://CRAN.R-project.org/package=knitr)__, __[kableExtra](https://CRAN.R-project.org/package=kableExtra)__, __[readxl](https://CRAN.R-project.org/package=readxl)__, __[zoo](https://CRAN.R-project.org/package=zoo)__ and __[tinytex](https://CRAN.R-project.org/package=tinytex)__ for allowing me to access these tools without paying for a license
+
+- To the __[Linux kernel community](https://www.kernel.org/category/about.html)__ for allowing me the possibility to use some __[Linux distributions](https://static.lwn.net/Distributions/)__ as my main __[OS](https://en.wikipedia.org/wiki/Operating_system)__ without paying for a license
+
+# References

@@ -1,0 +1,403 @@
+---
+title: "Homework 2"
+author:
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+date: ""
+output:
+  html_document:
+    df_print: paged
+    highlight: tango
+    number_sections: yes
+    theme: flatly
+    toc: yes
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE,
+                      message   = FALSE, 
+                      fig.align = "center")
+```
+
+```{r}
+
+library(tidyverse)
+library(tidyquant)
+library(plotly)
+library(readxl)
+library(wbstats)
+```
+
+# Financial markets I
+
+## Exercise 2
+
+This exercises is taken from: 
+
+**Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 4 Financial Markets I > Questions and Problems > Exercise 2 
+
+Suppose that the houselhold nominal income for an economy, $Y_t$, is $\$50,000$ billions and the nominal demand for money, $M_t^d$, in this economy is given by:
+
+$$M_t^d = Y_t*(0.2 - 0.8i_t)$$
+
+Where $i_t$ is the nominal interest rate fixed by the central bank.
+
+1. What is the demand for money when the interest rate is $i_t = 0.01 (1\%)$ and $i_t = 0.05 (5\%)$? **(3.5 points)**
+
+$$\left. M_t^d \right|_{i_t = 0.01,Y_t=50000} = 50000*(0.2-0.8*0.01) = 9600$$
+$$\left. M_t^d \right|_{i_t = 0.05,Y_t=50000} = 50000*(0.2-0.8*0.05) = 8000$$
+Where $M_t^d$ is expressed in billions.
+
+2. What will be the impact on the demand of money, $M_t^d$, if the nominal income, $Y_t$, declines by $20\%$? **(3.5 points)**
+
+- **Possible answer 1**:
+
+    + New nominal income: $$\begin{split}Y_t & = 50000 - 50000*0.2 \\ 
+                             & = 40000
+                             \end{split}$$
+    
+    + New demand money: $$\begin{split}
+                           \left. M_t^d \right|_{Y_t=40000} = 40000*(0.2-0.8*i_t)
+                           \end{split}$$
+
+Therefore $\left. M_t^d \right|_{Y_t=50000} > \left. M_t^d \right|_{Y_t=40000}$ and this means that $M_t^d$ also declines
+
+- **Possible answer 2 using the concept of elasticity from microeconomics**:
+
+$$\begin{split}
+   \epsilon_{M_t^d,Y_t} & = \frac{dM_t^d}{dY_t}*\frac{Y_t}{M_t^d} \\ 
+   & = (0.2-0.8*i_t)\frac{Y_t}{Y_t*(0.2-0.8*i_t)} \\
+   & = 1 > 0
+   \end{split}$$ 
+   
+Where we are assuming that $(0.2-0.8*i_t) \neq 0$ and $Y_t \neq 0$. If this is true then $\epsilon_{M_t^d,Y_t} = 1$ means that if $Y_t$ increases by $20\%$ then $M_t^d$ also increases by $20\%$
+
+3. What is the relation between the demand of money, $M_t^d$, and the nominal income, $Y_t$? **(3.5 points)**
+
+The demand of money, $M_t^d$, depends positively on nominal income, $Y_t$:
+
+$$\frac{dM_t^d}{dY_t} = (0.2−0.8i_t) > 0 $$
+If $0.25 > i_t$. But this is true because $M_t^d$ can't be negative so $M_t^d > 0$ and this implies that $Y_t*(0.2−0.8i_t) > 0$ where $Y_t > 0$ so $(0.2−0.8i_t) > 0$.
+
+This means that if nominal income increases then people tend to demand more money. This occurs because people want to purchase more products and this implies that they need to have more money in their pockets. 
+
+Consider, for example, the colombian case where some workers receive an additional income, known as __"prima"__, at the end of the year where individuals use this additional income to buy more products than usual and they need more money in their pockets to do that.
+
+4. What is the relation between the demand of money, $M_t^d$, and the nominal interest rate fixed by the central bank, $i_t$? **(3.5 points)**
+
+The demand of money, $M_t^d$, depends negatively on the interest rate, $i_t$:
+
+$$\frac{dM_t^d}{di_t} = -0.8*Y_t < 0 $$
+Because $Y_t > 0$. This means that if the interest rate increases then people tend to demand less money. This occurs because people have the incentives to save more. Therefore, they tend to give their money to financial intermediaries and will have less money in their pockets.
+
+5. Explain what the central bank should do to the interest rate, $i_t$, if it needs to increase the demand of money, $M_t^d$. **(3.5 points)**
+
+The central bank should decrease the interest rate so there will exist fewer incentives to save. In that way people will have the desire to have more money in their pockets. This situation will generate an increase in the amount of money demanded.
+
+## Data from Colombia in relation to the financial market
+
+### Demand for central bank money
+
+In the appendix of *Chapter 4 Financial Markets I* from the book **Oliver Blanchard (2017) Macroeconomics (7 Edition)** there is an explanation about the demand for central bank money. 
+
+- Enter into the Bank of the Republic (Colombia) using the route:
+
+**http://www.banrep.gov.co/** > Estadísticas > Tasas de interés y sector financiero > 3. Agregados monetarios, encaje y cartera > Agregados monetarios > Descargar y consultar: Efectivo, Base monetaria, M3 y sus componentes - Mensual > Exportar
+
+6. Make a plot of **Efectivo** ($CU_t^d$ in the model), **Reserva Bancaria** ($R_t^d$ in the model) and **Total** as the sum of **Efectivo** plus **Reserva Bancaria** ($H_t^d$ in the model) for *Colombia* where the x-axis corresponds to the date and y-axis corresponds to the values of **Efectivo**, **Reserva Bancaria** and **Total**. **(3.5 points)**
+
+```{r}
+
+monetary_basse_col <- read_csv("006_depositos_en_el_sistema_financiero_PSE.csv", 
+         col_types = cols(Valor = col_number()), 
+         locale = locale(decimal_mark = ".", grouping_mark = "")) %>% 
+    select(1, 5, 10) %>% 
+    set_names(nm = c("date", "variable", "value")) %>%
+    filter(variable %in% c("Efectivo", "Reserva Bancaria")) %>%
+    mutate(variable = case_when(
+                        variable == "Efectivo" ~ "Currency",
+                        variable == "Reserva Bancaria" ~ "Bank Reserves",
+                        variable == "Reserva Bancaria" ~ "Bank Reserves",
+                        TRUE ~ variable)) %>% 
+    pivot_wider(id_cols = date, names_from = variable, values_from = value) %>%  
+    mutate(Total = Currency + `Bank Reserves`) %>% 
+    pivot_longer(cols = Currency:Total, names_to = "variable", values_to = "value") %>% 
+    mutate(label_text = str_glue("Date: {date}
+                                 Variable: {variable}
+                                 Value: {value %>% scales::number(suffix = 'B', accuracy = 1)}"))  
+    
+    # Plot
+static_plot1 <- monetary_basse_col %>% 
+    ggplot(aes(x = date, y = value, group = variable)) +
+    geom_line(aes(color = variable)) + 
+    geom_point(aes(text = label_text, fill = variable), 
+               color = "black",
+               shape = 21) +
+    geom_line() +
+    labs(x        = "Year",
+         y        = "Billions (Long scale)",
+         title    = "Nominal GDP Argentina") +
+    scale_y_continuous(labels = scales::number_format(suffix = "B")) +
+    scale_color_tq() +
+    labs(x     = '',
+         y     = 'Billions (Short Scale) of COP ',
+         title = 'Monthly nominal Monetary Base in Colombia',
+         fill  = "") +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+    # Interactivity
+    static_plot1 %>% 
+      ggplotly(tooltip = "text")
+```
+
+### Nominal interest rate fixed by the central bank
+
+Section *4-3 Determining the interest rate II* mentions the **federals fund rate** as the $i_t$ for the model in the USA. In Colombia $i_t$ is know as **“Tasa de intervención del Banco de la República”**.  
+
+- Enter into the Bank of the Republic (Colombia) using the route:
+
+**http://www.banrep.gov.co/** > Estadísticas > Tasas de interés y sector financiero > 1. Tasas de interés de política monetaria > Tasas de interés de política monetaria > Descargar y consultar: Serie diaria (desde 04/01/1999)
+
+7. Make a plot of **Tasa de intervención de política monetaria** ($i_t$ in the model) for *Colombia* where the x-axis corresponds to the date and y-axis corresponds to the value of **Tasa de intervención de política monetaria**. **(3.5 points)**
+
+```{r}
+
+i_daily <- read_excel(path  = '006_tip_serie_historica_diaria_IQY.xlsx', 
+                      sheet = 1, range = 'A8:B5277') %>% 
+    set_names(nm = c('date', 'i')) %>% 
+    mutate(date = ymd(date)) %>% 
+    arrange(date) %>% 
+    mutate(label_text = str_glue("Date: {date}
+                                  i: {i %>% scales::percent()}"))
+    # Plot
+static_plot2 <- i_daily %>% 
+    ggplot(aes(x = date, y = i)) +
+    geom_line(color = palette_light()[[1]]) +
+    labs(x        = '', 
+         y        = 'Percent',
+         title    = 'Monetary policy intervention rate 
+         of the Bank of the Republic (Colombia)') +
+    scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
+                       breaks = seq(from = 0, to = 0.25, by = 0.025)) + 
+    expand_limits(y = 0) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+    # Interactivity
+    static_plot2 %>% 
+        ggplotly(tooltip = "text")
+```
+
+# Goods and financial markets: The IS-LM model
+
+## Goods market and real variables
+
+- Enter into the World Bank's Human Development Indicators database using the link:
+
+<**https://databank.worldbank.org/source/world-development-indicators**>
+
+- In *Country* select *Colombia*
+- In *Series* select *GDP (constant LCU)*, *Households and NPISHs Final consumption expenditure (constant LCU)*, *Gross capital formation (constant LCU)* and *General government final consumption expenditure (constant LCU)* 
+- In *Time* select *VIEW RECENT YEARS: 50*
+- Apply changes and download the data using *Download options > Excel* at the upper right corner of the platform
+
+8. Make a plot of *GDP (constant LCU)* ($Y_t$ in the model expressed in real terms), *Households and NPISHs Final consumption expenditure (constant LCU)* ($C_t$ in the model expressed in real terms), *Gross capital formation (constant LCU)* ($I_t$ in the model expressed in real terms) and *General government final consumption expenditure (constant LCU)* ($G_t$ in the model expressed in real terms)  for *Colombia* where the x-axis corresponds to the date and y-axis corresponds to the values of *GDP (constant LCU)*, *Households and NPISHs Final consumption expenditure (constant LCU)*, *Gross capital formation (constant LCU)* and *General government final consumption expenditure (constant LCU)*. **(3.5 points)**
+
+```{r}
+
+col_islm_real_nocommercial <- wb_data(country   = c('COL'), 
+                                      indicator = c('NY.GDP.MKTP.KN', 
+                                                    'NE.CON.PRVT.KN', 
+                                                    'NE.GDI.TOTL.KN', 
+                                                    'NE.CON.GOVT.KN'), 
+                                      return_wide = FALSE) %>%
+    select(date, value, indicator) %>% 
+    mutate(indicator = case_when(
+                            indicator == 'GDP (constant LCU)' ~ 'GDP',
+                            indicator == 'Households and NPISHs Final consumption expenditure (constant LCU)' ~ 'C',
+                            indicator == 'Gross capital formation (constant LCU)' ~ 'I',
+                            indicator == 'General government final consumption expenditure (constant LCU)' ~ 'G',
+                            TRUE ~ indicator),
+           label_text = str_glue("Year: {date}
+                                 Variable: Real {indicator}
+                                 Value: {value %>% scales::dollar()}
+                                 Units: constant COP Base Year 2015"))
+
+    # Plot
+static_plot3 <- col_islm_real_nocommercial %>% 
+    ggplot(aes(x     = date, 
+               y     = value)) + 
+    geom_point(aes(fill = indicator, text = label_text), 
+               color = "black", 
+               shape = 21, 
+               show.legend = FALSE) +
+    geom_line(aes(color = indicator, 
+                  group = indicator)) +
+    scale_color_tq() +
+    scale_fill_tq() +
+    scale_y_continuous(labels = scales::number_format(scale  = 1e-12, 
+                                                      suffix = "B")) +
+    labs(x        = "Year",
+         y        = "Billions (Long scale)",
+         title    = "Colombia real domestic aggregate demand components 
+         and real GDP") +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+                    
+    # Interactivity
+    static_plot3 %>% 
+        ggplotly(tooltip = "text")
+```
+
+## Exercise 5
+
+This exercises is taken from: 
+
+**Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 5 Goods and Financial Markets; The IS-LM model > Questions and Problems > Exercise 5
+
+Consider the following numerical example of the IS-LM model:
+
+$$C_t = 100 + 0.3Y_{tD}$$
+
+$$I_t = 150 + 0.2Y_t - 1000i_t$$
+$$T_t = 100$$
+$$G_t = 200$$
+$$\overline{i}_t = 0.01 (1\%)$$
+$$(\frac{M}{P})^s = 1200$$
+$$(\frac{M}{P})^d = 2Y_t - 4000i_t$$
+
+9. Find the equation for aggregate demand. **(3.5 points)**
+
+$$\begin{split}
+   Z_t & \equiv C_t + I_t + G_t \\
+   Z_t & \equiv 100 + 0.3Y_{tD} + 150 + 0.2Y_t - 1000i_t + G_t \\
+   Z_t & \equiv 100 + 0.3(Y_t - 100) + 150 + 0.2Y_t - 1000i_t + 200 \\
+   Z_t & \equiv 450 + 0.3(Y_t - 100) + 0.2Y_t - 1000i_t \\
+   Z_t & \equiv 420 + 0.5Y_t - 1000i_t
+   \end{split}$$
+
+10. Derive the IS relation. **(3.5 points)**
+
+$$\begin{split}
+   Y_t & = Z_t \\
+   Y_t & = 420 + 0.5Y_t - 1000i_t \\
+   Y_t & = \frac{420 - 1000i_t}{0.5} \\
+   Y_t & = 840 - 2000i_t
+   \end{split}$$
+   
+11. Derive the LM relation assuming that the central bank fix $\overline{i}_t = 0.01 (1\%)$. **(3.5 points)**
+
+$$\begin{split}
+   i_t & = \overline{i_t} \\
+   i_t & = 0.01
+   \end{split}$$
+
+12. Solve for the equilibrium values of $Y_t$, $i_t$, $C_t$ and $I_t$. **(3.5 points)**
+
+- **Equilibrium value $Y_t$**:
+
+$$\begin{split} 
+   Y_t & = 840 − 2000*0.01 \\
+   Y_t & = 820
+   \end{split}$$ 
+
+- **Equilibrium value $i_t$**:
+
+$$i_t= 0.01$$
+
+- **Equilibrium value $C_t$**:
+
+$$\begin{split}
+   C_t & = 100 + 0.3(Y_t - 100) \\
+   C_t & = 100 + 0.3(820 - 100) \\
+   C_t & = 316
+   \end{split}$$
+   
+- **Equilibrium value $I_t$**:
+
+$$\begin{split}
+   I_t & = 150 + 0.2*820 - 1000*0.01 \\
+   I_t & = 304
+   \end{split}$$
+
+13. Suppose that the central bank increases money supply to $(\frac{M}{P})^s = 1500$. What is the impact of this expansionary monetary policy on the IS and LM curves? **(3.5 points)**
+
+Initially, if the central bank increases the money supply, $(\frac{M}{P})^s$, then also the central bank must decrease $i_t$ so people will accept to have money in their pockets. Therefore the **LM** will be affected taking into account that it is defined as $i_t = \overline{i}_t$. This effect can be seen later when we solve the next point where $\frac{di_t}{d(\frac{M}{P})^s} = -\frac{1}{4000} < 0$. 
+
+Also the **IS** curve will be affected because the increases in the money supply, $(\frac{M}{P})^s$, implies a change in the interest rate, $i_t$, that affects investment, $I_t$. Because investment, $I_t$ will change then the **IS** will be affected and the direction of the change will depend on how investment is affected because  $\frac{dIS_t}{dI_t} > 0$.
+
+**Observation**: This exercise is interesting because it shows how difficult is to think when you have to understand the dynamics of an economic model where different variables are interacting and affecting each other. If you solve the next point you will see that if $(\frac{M}{P})^s$ changes from $1200$ to $1500$ then, taking into account **the overall equilibrium** of the IS-LM model, $Y_t$ will change from $820$ t0 $795$ and $i_t$ will change from $0.01 (1\%)$ to $0.0225 (2.25\%)$. 
+
+Initially we said that if $(\frac{M}{P})^s$ increases then $i_t$ must decrease. However as you will see in the next point $i_t$ will depend also on $Y_t$. If $(\frac{M}{P})^s$ increases also $Y_t$ will increase but the effect of this 2 variables goes in opposite directions. In the next point you will see that the increase of $Y_t$ will be greater than the increase in $(\frac{M}{P})^s$, $2∗795 > 1500$. Therefore, taking into account **the overall equilibrium** of the IS-LM model $Y_t$ will decrease and $i_t$ will increase when $(\frac{M}{P})^s$ increases.
+
+14. Find the new equilibrium values of $Y_t$, $i_t$, $C_t$ and $I_t$ when $(\frac{M}{P})^s = 1500$. **(4 points)**
+
+- **Equilibrium value $Y_t$**:
+
+$$\begin{split}
+   (\frac{M}{P})^s & = (\frac{M}{P})^d \\
+   (\frac{M}{P})^s & = 2Yt−4000i_t \\
+   4000i_t & = 2Yt - (\frac{M}{P})^s \\
+   i_t & = \frac{2Yt - (\frac{M}{P})^s}{4000}
+   \end{split}$$
+If $(\frac{M}{P})^s = 1500$ then:
+
+$$i_t = \frac{2Yt - 1500}{4000}$$
+Replacing $i_t$ into the **IS** curve:
+
+$$\begin{split}
+   Yt & = 840−2000(\frac{2Yt - 1500}{4000}) \\
+   Yt & = 840−(\frac{2Yt - 1500}{2}) \\
+   Yt & = 840 − (Yt - 750) \\
+   2Yt & = 840 + 750 \\
+   Yt & = 795
+   \end{split}$$
+
+- **Equilibrium value $i_t$**:
+
+$$\begin{split}
+   i_t & = \frac{2*795 - 1500}{4000} \\
+   i_t & = 0.0225 \; (2.25\%)
+   \end{split}$$
+
+- **Equilibrium value $C_t$**:
+
+$$\begin{split}
+   C_t & = 100 + 0.3(795 - 100) \\
+   C_t & = 308.5
+   \end{split}$$
+
++ **Equilibrium value $I_t$**:
+
+$$\begin{split}
+   I_t & = 150 + 0.2*795 - 1000*0.0225 \\
+   I_t & = 286.5
+   \end{split}$$

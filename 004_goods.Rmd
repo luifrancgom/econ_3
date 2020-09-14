@@ -1,0 +1,446 @@
+---
+title: "The goods market"
+author: Luis Francisco Gomez Lopez
+date: 2020-07-29
+output:
+  beamer_presentation:
+    colortheme: dolphin
+    fonttheme: structurebold
+    theme: AnnArbor
+  ioslides_presentation: default
+  slidy_presentation: default
+bibliography: macro_faedis.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE, 
+                      message   = FALSE,
+                      fig.align = "center")
+```
+
+```{r libraries}
+
+library(knitr)
+library(tidyverse)
+library(latex2exp)
+library(tidyquant)
+library(wbstats)
+library(readxl)
+```
+
+# Contents
+
+- Please Read Me
+- Purpose
+- The macroeconomic identity
+- Imports
+- Aggregate supply and aggregate demand
+- Types of equations in the models
+- Goods market model
+- Components of aggregate demand in Colombia
+- Taxes in Colombia
+- Acknowledgments
+- References
+
+# Please Read Me
+
+- Check the message __Welcome greeting__ published in the News Bulletin Board.
+
+- Dear student please edit your profile uploading a photo where your face is clearly visible.
+
+- The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
+
+- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 3]
+
+# Purpose
+
+Examine the equilibrium of the goods market and the determination of production.
+
+# The macroeconomic identity
+
+- GDP refers to the final products that are produced within a territory. However, a key element to include are imports to examine the commercial relations with the rest of the world. 
+
+- GDP can be expressed as: $GDP_s^f(t)= C_s^f(t) + G_s^f(t) + I_s^f(t) + X_s^f(t)$
+
+    + Where $s$ refers to a certain territory, $t$ a period of time and $f$ are the monetary units in which the nominal GDP is measured. Also:
+
+        + $GDP_s^f(t)$ is the final production of products produced **within** $s$.
+        + $C_s^f(t)$ is the final consumption expenditure by households and the NPISHs[^1] of products produced **within** $s$.
+        + $G_s^f(t)$ is the final consumption expenditure by the government of products produced **within** $s$.
+        + $I_s^f(t)$ is the investment[^2] made with products produced **within** $s$.
+        + $X_s^f(t)$ is the use of products by economic units **outside** $s$ but produced **within** $s$, that is, exports.
+
+[^1]: Non-profit institutions serving households
+[^2]: Known as **gross capital formation** in the lingo of national accounts system
+
+# Imports
+
+- It is important to keep in mind that imports refer to final products produced **outside** the territory $s$ but used **within** the territory $s$. Imports can be used to consume or invest. In that sense: $IM_s^f(t)= C_{rw}^f(t) + I_{rw}^f(t) + G_{rw}^f(t)$
+
+    + Where:
+        + $IM_s^f(t)$ are the imports of the territory $s$.
+        + $C_{rw}^f(t)$ is the final consumption expenditure by households and the NPISHs of the territory $s$ of products produced in the rest of the world, $rw$.
+        + $I_{rw}^f(t)$ is the investment made with products produced in the rest of the world, $rw$.
+        + $G_{rw}^f(t)$ is the final consumption expenditure by the government of products produced in the rest of the world, $rw$.
+        
+# Imports
+
+- To include imports, we can add and subtract them as follows: $GDP_s^f(t)= [C_s^f(t) + C_{rw}^f(t)] + [G_s^f(t) + G_{rw}^f(t)] + [I_s^f(t) + I_{rw}^f(t)] + X_s^f(t) - IM_s^f(t)$
+
+- In that way we can group the following variables:
+
+    + $C^f(t) \equiv C_s^f(t) + C_{rw}^f(t)$ is the total final consumption expenditure by households and the NPISHs in $s$. 
+    + $I^f(t) \equiv I_s^f(t) + I_{rw}^f(t)$ is the total investment in $s$.
+    + $G^f(t) \equiv G_s^f(t) + G_{rw}^f(t)$ is the total final consumption expenditure by the government in $s$.
+
+- In that way $GDP_s^f(t) \equiv C_s^f(t) + I_s^f(t) + G_s^f(t) + X_s^f(t) - IM_s^f(t)$
+
+- If the subscripts and superscripts are removed to facilitate the notation, we have the expression that are usually found in the economics textbooks: $GDP(t) \equiv C(t) + I(t) + G(t) + X(t) - IM(t)$ 
+
+# Imports
+
+- What happens if a car is imported and a household acquires it within the territory?
+
+    + The value of the car is subtracted from $IM(t)$ but it is added to $C(t)$.
+
+- What happens if a machine is imported and a company acquires it within the territory to produce other products?
+
+    + The value of the machine is subtracted from IM(t) but added to the I(t).
+
+- What happens if a product is imported and the government acquires it to provide a service to citizens within the territory?
+
+    + The value of the product is subtracted from IM(t) but added to G(t).
+
+# Domestic production plus imports and aggregate demand
+
+$$\begin{split}
+   GDP(t) & \equiv C(t) + I(t) + G(t) + X(t) - IM(t) \\
+   \underbrace{GDP(t)}_\text{Domestic production} + \underbrace{IM(t)}_\text{Imports} & \equiv \underbrace{C(t) + I(t) + G(t)}_\text{Domestic aggregate demand} + \underbrace{X(t)}_\text{Exports} \\
+   \underbrace{GDP(t) + IM(t)}_\text{Aggregate supply} & \equiv \underbrace{C(t) + I(t) + G(t) + X(t)}_\text{Aggregate demand}
+   \end{split}$$
+
+# Types of equations in the models
+
+- **Identities**: it's a relationship that is true by definition.
+
+    + Accounting equation: $Assets \equiv Liabilities + Equity$
+    
+    + Accounting of GDP as the value of final products: $GDP(t) \equiv C(t) + I(t) + G(t) + X(t) - IM(t)$
+    
+    + Definition of tangent function in trigonometry: $tan\;\theta \equiv \frac{sin\;\theta}{cos\;\theta}$
+    
+# Types of equations in the models
+
+- **Behavioral equations**: represents a hypothesis about how a variable is determined.
+
+    + How does consumption behave? In economics, an **ideal** consumption function is assumed that explains how this variable is determined: $C(t) = c_0 + c_1Y_D(t)\;c_0 > 0\;0 < c_1 < 1$ 
+
+    + What is the maximum distance a projectile travels from the ground? In physics, an **ideal** projectile motion function is assumed that explains how this variable is determined: $X_{ideal}^{max} = \frac{v_0^2sin(2\theta)}{g}$ [@mattosMovimientoParabolicoProyectiles2014]
+        
+```{r, out.width = '45%'}
+
+include_graphics(path = '004_projectile_motion.png')
+```
+
+# Types of equations in the models
+
+- **Equilibrium conditions**: establishes a requirement that should be met.
+
+    + What condition must be met in a market so that resources are optimally allocated? The quantity demanded should tend to be equal to the quantity supplied **or there will be a surplus or shortage**.
+
+    + What condition must be met in a supermarket when people line up with their cart to pay? The length of the rows should tend to be the same **or people will change lines**.
+    
+        + **Disequilibrium** (left) and **equilibrium** (right) situations:
+        
+```{r, out.width = '50%'}
+
+include_graphics(path = '004_dise_equi.png')
+```
+
+# Goods market model
+
+- The models that will be seen can be expressed in three ways: algebraically, graphically and explained with words.
+
+- **Algebraically**
+
+    + Aggregate demand (identity) assuming no commercial relations with the rest of the world and that investment doesn't vary: $Z(t) \equiv C(t) + \overline{I} + G(t)$.
+    
+    + Aggregate supply as the added value of production: $Y(t)$.
+    
+    + Consumption (behavioral equation): $C(t) = c_0 + c_1Y_D(t)$.
+    
+    + Disposabel income (identity): $Y_D(t) \equiv Y_R(t) - T(t)$.
+    
+        + Where $T(t)$ includes taxes paid minus transfers from the state that consumers receive.
+        
+        + By definition aggregate value is equivalent to the sum of the different incomes in a territory (identity) $Y(t) \equiv Y_R(t)$. Therefore $Y_D(t) = Y(t) - T(t)$. 
+        
+# Goods market model
+
+- **Algebraically**
+
+    + Equilibrium condition:
+
+$$\begin{split}
+   Y(t) & = Z(t) \\
+   Y(t) & = C(t) + \overline{I} + G(t) \\
+   Y(t) & = c_0 + c_1Y_D(t) + \overline{I} + G(t) \\
+   Y(t) & = c_0 + c_1(Y(t) - T(t)) + \overline{I} + G(t) \\
+   Y^*(t) & = \frac{1}{1 - c_1}(c_0 + \overline{I} + G(t) - c_1T(t)
+   \end{split}$$
+
+# Goods market model
+
+- **Graphically**
+
+```{r, out.width = '80%'}
+
+ggplot(data = tibble(x = c(0, 5, 2),
+                     y = c(5, 0, 2))
+       ) +
+    geom_point(aes(x = x, y = y),
+               color = "blue",
+               size  = 3) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 5, yend = 0)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 0, yend = 5)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 4, yend = 4)) +
+    geom_segment(aes(x = 0, y = 1.5, 
+                     xend = 4, yend = 2.5,
+                     ),
+                 color = 'red')  +
+    geom_segment(aes(x = 2, y = 0, 
+                     xend = 2, yend = 2),
+                 linetype = 'dashed') +
+    geom_segment(aes(x = 0, y = 2, 
+                     xend = 2, yend = 2),
+                 linetype = 'dashed') +
+    annotate(geom = 'text', 
+             x = 2.25, y = 0.25, 
+             label = TeX('$Y^*(t)$')) +
+    annotate(geom = 'text', 
+             x = 0.25, y = 2.25, 
+             label = TeX('$Y^*(t)$')) +
+    annotate(geom = 'text', 
+             x = 4, y = 2.75, 
+             label = TeX('$Z(t) = c_0 + c_1(Y(t) - T(t)) + \\bar{I} + G(t)')) +
+    annotate(geom = 'text', 
+             x = 4, y = 4.25, 
+             label = TeX('$Y(t) \\equiv Y_R(t)$')) +
+    annotate(geom = 'text', 
+             x = 5.25, y = 0, 
+             label = TeX('$Y_R(t)$')) +
+    annotate(geom = 'text', 
+             x = 0, y = 5.25, 
+             label = TeX('$Z(t)\\;Y(t)$')) +
+    annotate(geom = 'text', 
+             x = 1.75, y = 2.25, 
+             label = TeX('$Y(t) = Z(t)$')) +
+    theme_void()
+```
+
+# Goods market model
+
+- Using **words**
+
+    + **Equilibrium condition**:
+    
+        + If $Y(t) > Z(t)$ then companies accumulate inventories by not selling everything they produce. Therefore they restrict production until they sell their inventories.
+        
+        + If $Y(t) < Z(t)$ households or NPISHs seek to consume more, companies want to invest more and government want to spend more. However, production is not enough, so a shortage is generated and the prices of final products rise. As prices rise there are incentives to produce more.
+        
+    + **Consumption function**: $C(t) = c_0 + c_1(Y(t) - T(t))$
+    
+         + If $c_0 > 0$ it means that if the disposable income is equal to zero, consumers can: dissave selling for example assets or using money accumulated in previous periods or borrowing.
+         
+         + If $0 < c_1 < 1$ it means that if the disposable income increases, consumers do not consume or save the entire increase.
+         
+# Goods market model
+
+- Using **words**
+
+    + **Equilibrium production**: $Y^*(t) = \frac{1}{1 - c_1}(c_0 + \overline{I} + G(t) - c_1T(t))$
+    
+        + If public spending increases, $G(t)$, the equilibrium production, $Y^*(t)$, increases more than the increase in spending but only in $t$.
+          
+        + Public spending cannot increase indefinitely and if it does then in later periods taxes will raise. That is to say, $T(t)$ will have to increase.
+          
+        + This effect occurs because $\frac{1}{1 - c_1} > 1$. Therefore, the government can boost the economy but only in $t$ and not indefinitely. How much? It will depend on $c_1$.
+        
+        + Let's assume that $c_1 = 0.6$, that is, for every 100 monetary units that disposable income increases, consumption increases by 60 monetary units. Therefore $\frac{1}{1 - c_1} = 1.5$, so for every 100 monetary units that public spending increases equilibrium production increases 150 monetary units. It is an excellent situation but only in $t$ since this cannot be done indefinitely. 
+
+# Components of aggregate demand in Colombia
+
+```{r, out.width = '90%'}
+
+# Data
+gdp_agg_demand_col <- wb_data(country   = c('COL'), 
+        indicator = c('NE.CON.PRVT.CN',
+                      'NE.GDI.TOTL.CN',
+                      'NE.CON.GOVT.CN',
+                      'NE.EXP.GNFS.CN',
+                      'NE.IMP.GNFS.CN', 
+                      'NY.GDP.MKTP.CN'), 
+        return_wide = FALSE) %>%
+    select(country, date, last_updated, indicator, value) %>% 
+    mutate(indicator = case_when(
+        indicator == 'Households and NPISHs Final consumption expenditure (current LCU)' ~ 'C',
+        indicator == 'Gross capital formation (current LCU)' ~ 'I',
+        indicator == 'General government final consumption expenditure (current LCU)' ~ 'G',
+        indicator == 'Exports of goods and services (current LCU)' ~ 'X',
+        indicator == 'GDP (current LCU)' ~ 'GDP',
+        indicator == 'Imports of goods and services (current LCU)' ~ 'IM',
+        TRUE ~ indicator
+    )) %>% 
+    pivot_wider(id_cols = country:last_updated, 
+                names_from = indicator, 
+                values_from = value) %>% 
+    mutate(`GDP + IM` = IM + GDP) %>% 
+    select(-c("IM", "GDP")) %>% 
+    pivot_longer(cols = C:`GDP + IM`, 
+                 names_to = "indicator", 
+                 values_to = "value") %>% 
+    mutate(indicator = fct_reorder(indicator, .x = value, ) %>% fct_rev())
+
+    # Plot
+gdp_agg_demand_col %>% 
+    ggplot(aes(x     = date, 
+               y     = value)) + 
+    geom_point(aes(fill = indicator), 
+               color = "black", 
+               shape = 21, 
+               show.legend = FALSE) +
+    geom_line(aes(color = indicator, 
+                  group = indicator)) +
+    scale_color_tq() +
+    scale_fill_tq() +
+    scale_y_continuous(labels = scales::number_format(scale  = 1e-12, 
+                                                      suffix = "B")
+    ) +
+    labs(x        = "Year",
+         y        = "Billions (Long scale)",
+         title    = "Colombia nominal aggregate demand and its components", 
+         subtitle = str_glue("GDP code WDI: NY.GDP.MKTP.CN
+                             IM code WDI: NE.IMP.GNFS.CN
+                             C code WDI: NE.CON.PRVT.CN
+                             I code WDI: NE.GDI.TOTL.CN
+                             G code WDI: NE.CON.GOVT.CN
+                             X code WDI: NE.EXP.GNFS.CN
+                             Variables units: current LCU"),
+         color    = 'Variables',
+         caption  = str_glue("Source: World Development Indicators (WDI) - World Bank
+                              Last update date: {gdp_agg_demand_col$last_updated %>% unique()}")) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "bottom",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+```
+
+# Taxes in Colombia
+
+- In the model taxes are part but not equal to $T(t)$ because $T(t)$ includes taxes paid minus transfers from the state that consumers receive.
+
+- In economics, taxes are understood as compulsory payments made by individuals to finance the activities that the government has decided to carry out, regardless of whether the compulsory payment has a specific destination or whether or not it is proportional to the goods or services received. [@observatoriofiscalpontificiauniversidadjaverianaGuiaCiudadanaTributacion2018a].
+
+- In Colombian tax law, taxes are divides in 3 categories: "impuestos", "tasas" and "contribuciones". In economics we don't make this distinction where we refer simply to the concept of tax (tributo in spanish). 
+
+# Taxes in Colombia
+
+- What are the main taxes paid in Colombia? [@observatoriofiscalpontificiauniversidadjaverianaGuiaCiudadanaTributacion2018a]
+
+    + __National taxes__: Carbono, Gasolina y ACPM, Consumo, IVA, GMF (4x1000), Renta Personas, Renta Empresas, Timbre nacional, Aranceles
+    
+    + __Local taxes__: ICA, Predial, Alcohol, cigarrillos y loterías, Sobretasa a la gasolina, Registro, Vehículos 
+
+# Taxes in Colombia
+
+- Annual tax revenue by tax type administered by DIAN (1970-2019) [@dianEstadisticasTributosAdministrados2020]
+
+```{r, out.width = '75%'}
+
+real_revenue_tax_dian <- read_excel(path  = "004_estadisticas_impuesto_dian1970_2020.xlsx", 
+           range = "A10:Z59", 
+           col_names = FALSE) %>% 
+    select(c(1, 3, 6, 9:16, 19:21, 23:25)) %>%
+    set_names(nm = c("date", "Renta y\ncomplementarios", "IVA\ninterno",
+                     "Timbre\nnacional", "GMF", "Patrimonio",
+                     "Riqueza", "Consumo", "Gasolina y\nACPM",
+                     "Carbono", "CREE", "Unificado\nRST",
+                     "Normalización\nTributaria", "Consumo\nbienes\ninmuebles", "IVA\nexterno", 
+                     "Arancel", "Por\nclasificar")) %>% 
+    pivot_longer(cols = 2:17, 
+                 names_to = "indicator",
+                 values_to = "value") %>%
+    mutate(value = value * 1e6,
+           date  = str_remove_all(string = date, pattern = "[()p*]"),
+           date  = as.numeric(date)) %>% 
+    left_join(wb_data(indicator = "FP.CPI.TOTL", 
+                      country = "COL", 
+                      start_date = 1970, 
+                      end_date = 2019, return_wide = FALSE) %>% 
+                  select(date, value, last_updated) %>%
+                  set_names(nm = c("date", "cpi", "last_updated")) %>% 
+                  mutate(cpi = cpi / 100), 
+              by = "date") %>% 
+    mutate(real_value = value / cpi,
+           indicator  = fct_reorder(indicator, real_value, .fun = max) %>% fct_rev())
+
+real_revenue_tax_dian %>% 
+    ggplot(aes(x = date, 
+               y = real_value)) + 
+    geom_point(aes(fill = indicator), color = "black", shape = 21, show.legend = FALSE) +
+    geom_line(aes(color = indicator, 
+                  group = indicator)) +
+    labs(x        = "Year",
+         y        = "Billions (Long scale)",
+         title    = "Annual real tax revenue by tax type", 
+         subtitle = str_glue("Consumer Price Index (CPI) was used to deflate the annual nominal tax revenue by tax type
+                              CPI code WDI: FP.CPI.TOTL,
+                              Variables units: constant COP Base Year 2010"),
+         caption  = str_glue("Source 1: DIAN
+                              Last update date source 1: 2020-04    
+                              Source 2:World Development Indicators (WDI) - World Bank
+                              Last update date source 2: {real_revenue_tax_dian$last_updated %>% unique()}"),
+         color = "") +
+    scale_y_continuous(labels = scales::number_format(scale  = 1e-12, 
+                                                      suffix = "B")) +
+    scale_color_manual(values = c("#2C3E50", "#E31A1C", "#18BC9C", "#CCBE93", 
+                                  "#A6CEE3", "#1F78B4", "#B2DF8A", "#FB9A99",
+                                  "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A",
+                                  "#EAC862", "#C3EF00", "592E2E", "#675d50")) +
+    scale_fill_manual(values = c("#2C3E50", "#E31A1C", "#18BC9C", "#CCBE93", 
+                                 "#A6CEE3", "#1F78B4", "#B2DF8A", "#FB9A99",
+                                 "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A",
+                                 "#EAC862", "#C3EF00", "592E2E", "#675d50")) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+```
+
+# Acknowledgments
+
+- To my family that supports me
+
+- To the taxpayers of Colombia and the __[UMNG students](https://www.umng.edu.co/estudiante)__ who pay my salary
+
+- To the __[Business Science](https://www.business-science.io/)__ and __[R4DS Online Learning](https://www.rfordatasci.com/)__ communities where I learn __[R](https://www.r-project.org/about.html)__ 
+
+- To the __[R Core Team](https://www.r-project.org/contributors.html)__, the creators of __[RStudio IDE](https://rstudio.com/products/rstudio/)__ and the authors and maintainers of the packages __[tidyverse](https://CRAN.R-project.org/package=tidyverse)__, __[tidyquant](https://CRAN.R-project.org/package=tidyquant)__, __[wbstats](https://CRAN.R-project.org/package=wbstats)__, __[knitr](https://CRAN.R-project.org/package=knitr)__, __[latex2exp](https://CRAN.R-project.org/package=latex2exp)__, __[readxl](https://CRAN.R-project.org/package=readxl)__ and __[tinytex](https://CRAN.R-project.org/package=tinytex)__ for allowing me to access these tools without paying for a license
+
+- To the __[Linux kernel community](https://www.kernel.org/category/about.html)__ for allowing me the possibility to use some __[Linux distributions](https://static.lwn.net/Distributions/)__ as my main __[OS](https://en.wikipedia.org/wiki/Operating_system)__ without paying for a license
+
+# References

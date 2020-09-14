@@ -1,0 +1,392 @@
+---
+title: "Midterm Exam 2"
+author:
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+date: ""
+output:
+  html_document:
+    df_print: paged
+    highlight: tango
+    number_sections: yes
+    theme: flatly
+    toc: yes
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE,
+                      message   = FALSE, 
+                      fig.align = "center")
+```
+
+```{r, libraries}
+
+library(tidyverse)
+library(lubridate)
+library(tidyquant)
+library(readxl)
+library(zoo)
+library(timetk)
+library(modeest)
+library(latex2exp)
+```
+
+# Financial markets II
+
+## Nominal and real interest rate
+
++ Enter into the Bank of the Republic (Colombia) using the route:
+
+**http://www.banrep.gov.co/** > Estadísticas > Precios e inflación > 1. Inflación al consumidor > Índice de precios al consumidor (IPC) > Descargar y consultar:Series IPC total nacional e inflación (desde 07/1954)
+
+```{r}
+
+infla_monthly <- read_excel(path  = "007_ipc_serie_variaciones-2.xlsx", 
+           sheet = 1, 
+           range = "A13:B806") %>% 
+    set_names(nm = c("date", "ipc")) %>%
+    mutate(date  = as.yearmon(as.character(date), "%Y%m") %>% 
+                        as_date(),
+           infla = (ipc - lag(ipc, n = 12)) / lag(ipc, n = 12)) %>%
+    drop_na() %>% 
+    filter_by_time(.date_var = date, .start_date = "1980-01-01")
+```
+
+1. Calculate the annual inflation using the monthly CPI that you can find in the column "IPC" from `r (infla_monthly$date[1] %>% as.character() %>% str_sub(start = 1, end = 7))` to `r (infla_monthly$date[length(infla_monthly$date)] %>% as.character() %>% str_sub(start = 1, end = 7))`. **(5 points)**
+
+**Observation 1**: If the CPI is measured monthly then to calculate the annual inflation for a particular month you must use the formula, $\pi_t=\frac{CPI_t - CPI_{t-12}}{CPI_{t-12}}$. For example if you want to calculate the annual inflation of January 2000 you need to use the CPI of January 2000 and January 1999.
+
+**Observation 2**: If the calculations are correct, you will get similar results as in the column "Inflación anual %".
+
+```{r}
+
+infla_monthly <- read_excel(path  = "007_ipc_serie_variaciones-2.xlsx", 
+           sheet = 1, 
+           range = "A13:B806") %>% 
+    set_names(nm = c("date", "ipc")) %>%
+    mutate(date  = as.yearmon(as.character(date), "%Y%m") %>% 
+                        as_date(),
+           infla = (ipc - lag(ipc, n = 12)) / lag(ipc, n = 12)) %>%
+    drop_na() %>% 
+    filter_by_time(.date_var = date, .start_date = "1980-01-01")
+
+infla_monthly %>% 
+    mutate(infla = scales::percent(infla, accuracy = 0.01),
+           date  = date %>% as.character() %>% str_sub(start = 1, end = 7)) %>% 
+    set_names(c("Date", "IPC (Base 2018-12 = 100)", "Inflation"))
+```
+
+```{r}
+
+static_plot1 <- infla_monthly %>%  
+    ggplot(aes(x = date, 
+               y = infla)) +
+    geom_line(color = palette_light()[[1]]) +
+    labs(x        = "",
+         y        = "Percent",
+         title    = "Annual inflation: Colombia", 
+         subtitle = str_glue("Period: {infla_monthly$date[1] %>% as.character() %>% str_sub(start = 1, end = 7)} - {infla_monthly$date[length(infla_monthly$date)] %>% as.character() %>% str_sub(start = 1, end = 7)}"),
+         color    = "") +
+    scale_y_continuous(labels = scales::percent_format()) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+static_plot1
+```
+
++ Enter into the Bank of the Republic (Colombia) using the route:
+
+**http://www.banrep.gov.co/** > Estadísticas > Tasas de interés y sector financiero > 1. Tasas de interés de política monetaria > Tasas de interés de política monetaria > Descargar y consultar: Serie diaria (desde 04/01/1999)
+
+2. Calculate the mode (in statistics the mode is the value that appears most frequently) of the interest rate fixed by the Bank of the Republic (Colombia) (in the data it refers to the column "Tasa de intervención de política monetaria") **for each month in each year**. In case of a tie choose any value within the most frequent values **(5 points)**. 
+
+```{r}
+
+i_mode_monthly <- read_excel(path  = "007_tip_Serie histórica diaria IQY.xlsx", 
+           sheet = 1, 
+           range = "A8:B5285") %>% 
+    set_names(nm = c("date", "i")) %>% 
+    mutate(date = ymd(date)) %>% 
+    arrange(date) %>% 
+    summarize_by_time(.date_var = date, .by = "month", i = modeest::mfv1(i))
+
+i_mode_monthly %>% 
+    mutate(i = i %>% scales::percent(accuracy = 0.01)) %>% 
+    set_names(nm = c("Date", "i"))
+```
+
+```{r}
+
+static_plot2 <- i_mode_monthly %>%  
+    ggplot(aes(x = date, 
+               y = i)) +
+    geom_line(color = palette_light()[[1]]) +
+    labs(x        = "",
+         y        = "Percent",
+         title    = "Monthly mode of monetary policy intervention rate: Colombia", 
+         subtitle = str_glue("In the case of a tie the first most frequent value is choosen
+                             Period: {i_mode_monthly$date[1] %>% as.character() %>% str_sub(start = 1, end = 7)} - {i_mode_monthly$date[length(i_mode_monthly$date)] %>% as.character() %>% str_sub(start = 1, end = 7)}"),
+         color    = "") +
+    scale_y_continuous(labels = scales::percent_format()) +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "none",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+
+static_plot2
+```
+
+3. Calculate the real interest rate **for each month in each year** using the information found in point 1 and point 2, the information available and the formula $r_t = i_t - \pi_{t+12}$. **(5 points)**
+
+**Observation 1**: The interest rate fixed by the Bank of the Republic (Colombia) is measure daily but the inflation is measure monthly. Therefore we are using the mode of the interest rate fixed by the Bank of the Republic (Colombia) for each month in each year so $i_t$ and $\pi_{t+12}$ are measure using the same periods. In that way all the variables are expressed monthly and $i_t$ will be equal to the mode of the interest rate fixed by the Bank of the Republic (Colombia) **for each month in each year**.
+
+**Observation 2**: To calculate the real interest rate, keep in mind that it is not necessary to estimate an expected inflation rate since there is information from subsequent periods. Therefore $\pi_{t+12}$ is a variable that you already calculate in point 1.
+
+**Observation 3**: To calculate the real interest rate, keep in mind that the nominal interest rate is expressed as **annual effective overdue**. In that sense, $\pi_{t+12}$ must be the inflation but 12 months later and that is why $\pi$ has a subscript equal to $t+12$.
+
+```{r}
+
+r_approx <- i_mode_monthly %>% 
+    left_join(infla_monthly, by = "date") %>% 
+    mutate(r_approx = i - lead(infla, n = 12))
+
+r_approx %>% 
+    select(date, i, infla, r_approx) %>% 
+    mutate_if(.predicate = is.numeric, .funs = scales::percent, accuracy = 0.01) %>% 
+    set_names(c("Date", "i", "Inflation", "r (approx)"))
+```
+
+4. Calculate the real interest rate **for each month in each year** using the information found in point 1 and point 2, the information available, the formula $1+r_t = \frac{1+i_t}{1+\pi_{t+12}}$ and taking into account the observations pointed out in point 3. **(5 points)**
+
+**Observation 1**: Take into account that the objective is to calculate $r_t$ and not $1+r_t$.
+
+```{r}
+
+r_approx_exact <- r_approx %>%
+                    mutate(r_exact = ((1 + i) / (1 + lead(infla, n = 12))) - 1) %>% 
+                    drop_na()
+
+r_approx_exact %>% 
+    select(date, i, infla, r_approx, r_exact) %>% 
+    mutate_if(.predicate = is.numeric, .funs = scales::percent, accuracy = 0.01) %>% 
+    set_names(c("Date", "i", "Inflation", "r (approx)", "r (exact)"))
+```
+
+5. Plot the values of the interest rate fixed by the Bank of the Republic (Colombia) and the real interest rate for each month in each year using both formulas, $r_t = i_t - \pi_{t+12}$ and $1+r_t = \frac{1+i_t}{1+\pi_{t+12}}$, where the x-axis corresponds to the date and y-axis corresponds to the value of these variables. **(5 points)**
+
+**Observation 1**: In the development of items 1 to 4, you will lose information from some periods. Therefore, when there is no data, do not indicate in the plot that a variable is equal to zero. It is not the same that a variable is equal to zero and that there is no data of this variable.
+
+```{r}
+
+# Data
+r_approx_exact_clean <- r_approx_exact %>% 
+    select(date, i, r_approx, r_exact) %>% 
+    pivot_longer(cols = i:r_exact, names_to = "variable", values_to = "value") %>% 
+    mutate(variable = case_when(
+                        variable == "r_approx" ~ "r (approx)",
+                        variable == "r_exact" ~ "r (exact)",
+                        TRUE ~ variable),
+           variable = fct_relevel(variable, c("i", "r (exact)", "r (approx)")))
+    # Plot
+r_approx_exact_clean %>% 
+    ggplot(aes(x = date, 
+               y = value)) + 
+    geom_line(aes(color = variable, 
+                  group = variable)) +
+    geom_hline(yintercept = 0, color = palette_light()[[10]]) +
+    labs(x        = "",
+         y        = "Percent",
+         title    = "Monetary policy intervention rate: i and r (exact and approximated)", 
+         subtitle = str_glue("Period: {r_approx_exact_clean$date[1]} - {r_approx_exact_clean$date[length(r_approx_exact_clean$date)]}"),
+         color    = "") +
+    scale_y_continuous(labels = scales::percent_format()) +
+    scale_color_tq() +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          legend.position   = "bottom",
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          axis.text         = element_text(face = "bold"))
+```
+
+## Exercise 8
+
+This exercises is taken from:
+
+**Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 6 Financial Markets II: The extended IS-LM model > Questions and Problems > Exercise 8
+
+In Chapter 6 the following formula is presented:
+
+$$(1+i_t)=(1-p_t)(1+i_t+x_t)+p_t*0$$
+
+Where $p_t$ is the probability the bond does not pay at all (the bond issuer is bankrupt) and has a zero return, $i_t$ is the nominal policy interest rate and $x_t$ is the risk premium.
+
+6. If the probability of bankruptcy is zero, what is the rate of interest on the risk bond? **(5 points)**
+
+The rate of interest of the risk bond is $i_t + x_t$. Also the **risk premium** can be found as follows:
+
+$$\begin{split}
+   (1 + i_t) & = (1 - p_t)(1 + i_t + x_t) + p_t*0 \\
+   (1 + i_t) & = (1 - p_t)(1 + i_t)+ (1 - p_t)x_t
+   (1 + i_t)(1 - (1 - p_t)) & = (1 - p_t)x_t \\
+   (1 + i_t)p_t & = (1 - p_t)x_t \\
+   x_t & = \frac{(1 + i_t)p_t}{1 - p_t}
+   \end{split}$$
+   
+Therefore, if $p_t = 0$ then $x_t = 0$ and $i_t + x_t = i_t$. So the rate of interest of the risk bond will be equal to the nominal policy interest rate.
+
+7. Calculate the probability of bankruptcy when the nominal interest rate for a risk borrower is $0.08(8\%)$ and the nominal policy interest rate is $0.03(3\%)$. **(5 points)**
+
+Because $(1+i_t)=(1-p_t)(1+i_t+x_t) + 0*p_t$ then:
+
+$$\begin{split}
+   (1 + 0.03) & = (1 - p_t)(1 + 0.08) \\
+   1.03 & = (1 - p_t)*1.08 \\
+   \frac{1.03}{1.08} & = 1 - p_t \\
+   p_t & = 1 - \frac{1.03}{1.08} \\
+   p_t & = 1-\frac{1.03}{1.08} \\
+   p_t & \approx 0.046
+   \end{split}$$
+
+8. Calculate the nominal interest rate for a borrower when the probability of bankruptcy is $0.01$ and the nominal policy interest rate is $0.04(4\%)$. **(5 points)**
+
+Because $(1+i_t)=(1-p_t)(1+i_t+x_t) + 0*p_t$ then:
+
+$$\begin{split}
+   (1 + 0.04) & = (1 - 0.01)(1 + i_t + x_t) \\
+   \frac{1 + 0.04}{1-0.01} & = 1 + i_t + x_t \\
+   i_t + x_t & = \frac{1 + 0.04}{1 - 0.01} - 1 \\
+   i_t+x_t & = \frac{1.04}{0.99} - 1 \\
+   i_t+x_t & \approx 0.051 \; (5.1\%)
+   \end{split}$$
+
+9. The formula assumes that payment upon default is zero. In fact, it is often positive. How would you change the formula in this case? **(5 points)**
+
+If the payment upon default is positive then the formula would be:
+
+$$(1+i_t)=(1-p_t)(1+i_t+x_t) + p_t*\alpha*(1+i_t+x_t)$$
+
+Where $0 < \alpha <1$ because the borrower only pays a fraction. Therefore:
+
+$$\begin{split}
+   (1+i_t) & = (1 + i_t + x_t)(1 - p_t + p_t*\alpha) \\
+   (1+i_t) & = (1+i_t+x_t)(1-p_t(1 - \alpha))
+   \end{split}$$
+
+## Financial crisis of 2007–2008 in USA and IS-LM model
+
+10.	Explain **based on the extended IS-LM model**, using words and **attaching a plot**, how fiscal and monetary policy was used to mitigate the fall in real GDP during the financial crisis of 2007–2008 in USA. **(5 points)**
+
+**Observation 1**: Be clear and precise in the explanation and please don’t include “bullshit” (Sorry for the last word but I did not find a better expression where I am using it in the sense indicated in **https://en.wikipedia.org/wiki/Bullshit**).
+
+- The financial crisis of 2008 in the USA generated a shift of the **IS** curve to the left where equilibrium production went from $\widehat{Y}^*$ to $\widehat{Y}^{**}$ as shown in the graph below. To mitigate the effects of the crisis, the Obama administration used fiscal policy by cutting taxes, $\widehat{T}$, and increasing the public spending, $\widehat{G}$, causing the **IS** curve to shift to the right. 
+
+- In addition, from the point of view of monetary policy, the aim was to reduce the nominal intervention interest rate, $i$ and ,so that the real interest rate would decrease,$r$, moving the **LM** curve downward. 
+
+- Finally, the **Federal Reserve System (FED)** (central bank system of the USA) sought to reduce the risk premium, $x$, using an unconventional monetary policy that helped a greater shift of the IS curve to the right. 
+- These measures achieved that the equilibrium production was $\widehat{Y}^{***}$ mitigating the effects of the crisis, but they did not manage to return the economy to the initial level of production, $\widehat{Y}^{*}$.
+
+```{r}
+
+library(tidyverse)
+library(latex2exp)
+
+ggplot(data = tibble(x = c(0, 5, 2, 0.5, 1.5),
+                     y = c(5, 0, 2,   2, 1.5))
+) +
+    geom_point(aes(x = x, y = y),
+               color = "blue",
+               size  = 3) +
+    geom_segment(aes(x = 0, y = 2, 
+                     xend = 4, yend = 2),
+                 color = 'red') +
+    geom_segment(aes(x = 0, y = 1.5, 
+                     xend = 4, yend = 1.5),
+                 color = 'red') +
+    geom_segment(aes(x = 0, y = 4, 
+                     xend = 4, yend = 0),
+                 color = 'green') +
+    geom_segment(aes(x = 0, y = 2.5, 
+                     xend = 2.5, yend = 0),
+                 color = 'green') +
+    geom_segment(aes(x = 0, y = 3, 
+                     xend = 3, yend = 0),
+                 color = 'green') +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 0, yend = 5)) +
+    geom_segment(aes(x = 0, y = 0, 
+                     xend = 5, yend = 0)) +
+    geom_segment(aes(x = 2, y = 2, 
+                     xend = 2, yend = 0),
+                 linetype = 'dashed') +
+    geom_segment(aes(x = 0.5, y = 2, 
+                     xend = 0.5, yend = 0),
+                 linetype = 'dashed') +
+    geom_segment(aes(x = 1.5, y = 1.5, 
+                     xend = 1.5, yend = 0),
+                 linetype = 'dashed') +
+    geom_curve(aes(x = 0.5, y = 2, 
+                     xend = 1.5, yend = 1.5),
+                     arrow = arrow(length = unit(0.03, "npc"))) +
+    geom_curve(aes(x = 2, y = 2, 
+                   xend = 0.5, yend = 2),
+               arrow = arrow(length = unit(0.03, "npc"))) +
+    annotate(geom = 'text', 
+             x = 2.25, y = 0.25, 
+             label = TeX('$\\widehat{Y}^*$')) +
+    annotate(geom = 'text', 
+             x = 0.75, y = 0.25, 
+             label = TeX('$\\widehat{Y}^{**}$')) +
+    annotate(geom = 'text', 
+             x = 1.75, y = 0.25, 
+             label = TeX('$\\widehat{Y}^{***}$')) +
+    annotate(geom = 'text', 
+             x = 0.25, y = 2.25, 
+             label = TeX('$\\bar{r}^*$')) +
+    annotate(geom = 'text', 
+             x = 0.25, y = 1.75, 
+             label = TeX('$\\bar{r}^{**}$')) +
+    annotate(geom = 'text', 
+             x = 5.25, y = 0, 
+             label = TeX('$\\widehat{Y}$')) +
+    annotate(geom = 'text', 
+             x = 0, y = 5.25, 
+             label = TeX('$r')) +
+    annotate(geom = 'text', 
+             x = 4.25, y = 2, 
+             label = TeX('$LM^*')) +
+    annotate(geom = 'text', 
+             x = 4.25, y = 1.5, 
+             label = TeX('$LM^{**}')) +
+    annotate(geom = 'text', 
+             x = 4, y = 0.25, 
+             label = TeX('$IS^*')) +
+    annotate(geom = 'text', 
+             x = 2.5, y = 0.25, 
+             label = TeX('$IS^{**}')) +
+    annotate(geom = 'text', 
+             x = 3, y = 0.25, 
+             label = TeX('$IS^{***}')) +
+    theme_void()
+```

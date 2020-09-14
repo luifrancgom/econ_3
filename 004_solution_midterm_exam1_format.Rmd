@@ -1,0 +1,273 @@
+---
+title: "Midterm Exam 1"
+author:
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+- XXXXXXXX (Only code no name)
+date: ''
+output:
+  html_document:
+    toc: yes
+    toc_depth: '3'
+    df_print: paged
+  word_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE, 
+                      warning   = FALSE,
+                      message   = FALSE, 
+                      fig.align = "center")
+```
+
+```{r libraries}
+
+library(tidyverse)
+library(knitr)
+library(readxl)
+library(kableExtra)
+library(zoo)
+library(tidyquant)
+```
+
+# Labor clasification in Colombia
+
+- The data below were estimated by **Departamento Nacional de Estadística - DANE** using the **Gran encuesta integrada de hogares - GEIH**:
+
+```{r table, ft.align = 'center'}
+
+data_labor_col <- tibble(Indicator = c('Total Population (TP)',
+                     'Working Age Population (WAP)',
+                     'Economically Active Population (EAP)',
+                     'Employed (E)',
+                     'Unemployed (U)',
+                     'Visible Unemployment (VU)',
+                     'Invisible Unemployment (IU)',
+                     'Economically Inactive Population (EIP)')) %>% 
+    bind_cols(read_excel(path = '004_anexo_empleo_jun_2020.xlsx',
+                         sheet = 2, range = 'IA29:IA36', 
+                         col_names = "Individuals")) %>% 
+    mutate(Individuals = Individuals*1e3,
+           Indicator = factor(Indicator, 
+                              levels = c('Total Population (TP)',
+                                         'Working Age Population (WAP)',
+                                         'Economically Active Population (EAP)',
+                                         'Economically Inactive Population (EIP)',
+                                         'Employed (E)',
+                                         'Unemployed (U)',
+                                         'Visible Unemployment (VU)',
+                                         'Invisible Unemployment (IU)'))) %>% 
+    arrange(Indicator) %>% 
+    slice(1:3, 5,7)
+
+data_labor_col %>% 
+    kable(caption = 'Some labor clasification data in Colombia on June 2020')  %>% 
+    kable_styling(bootstrap_options = 'striped', full_width = FALSE)
+```
+
+1. Calculate the Population below 10 or 12 years (Rural or Urban) **(4 points)**
+
+2. Calculate the Economically Inactive Population (EIP) **(4 points)**
+
+3. Calculate the Unemployed (U) **(4 points)**
+
+4. Calculate the Invisible Unemployment (IU) **(3 points)**
+
+```{r}
+
+# Solution
+data_sol1 <- data_labor_col %>%
+    set_names(nm = c("indicator", "value")) %>% 
+    mutate(indicator = c("TP", "WAP", "EAP", "E", "VU")) %>% 
+    pivot_wider(names_from = indicator, values_from = value) %>% 
+    mutate(rural_urban = TP - WAP,
+           EIP         = WAP - EAP,
+           U           = EAP - E,
+           IU          = U - VU)
+  
+    # Table
+    data_sol1 %>% 
+    select(rural_urban: IU) %>% 
+    set_names(nm = c("Population below 10 or 12 years (Rural or Urban)",
+                     "Economically Inactive Population (EIP)",
+                     "Unemployed (U)",
+                     "Invisible Unemployment (IU)")) %>% 
+    pivot_longer(1:4, names_to = "Indicator", values_to = "Individuals") %>% 
+    kable()  %>% 
+    kable_styling(bootstrap_options = 'striped', full_width = FALSE)
+    
+```
+
+# Main indicators of the labor market
+
+Using the information and the results calculated above find:
+
+5. Gross participation rate (GPR) **(3 points)**
+
+6. Labor participation rate (LPR) ("Tasa Global de Participación" in Spanish) **(3 points)**
+
+7. Unemployment rate (UR) **(3 points)**
+
+8. Employment rate (ER) **(3 points)**
+
+```{r}
+
+# Solution
+data_sol2 <- data_sol1 %>% 
+  mutate(GPR = EAP / TP,
+         LPR = EAP / WAP,
+         UR  = U / EAP,
+         ER  = E / WAP) %>% 
+  select(GPR:ER) %>% 
+    set_names(nm = c("Gross participation rate (GPR)",
+                     "Labor participation rate (LPR)",
+                     "Unemployment rate (UR)",
+                     "Employment rate (ER)")) %>% 
+    pivot_longer(1:4, names_to = "Indicator", values_to = "Rates")
+    
+    # Table
+    data_sol2 %>% 
+    mutate(Rates = scales::percent(Rates)) %>% 
+    kable()  %>% 
+    kable_styling(bootstrap_options = 'striped', full_width = FALSE)
+```
+
+# Finding the truth about statements on twitter
+
+- Enter into the Bank of the Republic (Colombia) using the route:
+
+**http://www.banrep.gov.co/** > Estadísticas > Actividad económica, mercado laboral y cuentas financieras > 
+4. Empleo y desempleo > Tasas de empleo y desempleo > Descargar y consultar: Total Nacional
+
+- Enter into the link:
+<**https://twitter.com/AlvaroUribeVel/status/1025061735554842625**>
+
+9. Point out if the 9.1% value is true based on the Bank of the Republic (Colombia) information. **(3 points)**
+
+The value of 9.1% is true. Based on the Bank of the Republic (Colombia) information, the unemployment rate was 9.08% in June, 2018 so this value was rounded and pointed out on twitter.
+
+10. Point out if in any of the presidential periods of Álvaro Uribe Vélez the *unemployment rate (UR)* was lower than 9.1% at some time. **(3 points)**
+
+In none of the presidential terms of Alvaro Uribe Velez, unemployment was less than 9.1%. You can see that in the plot below.
+
+```{r, fig.width=10, fig.height=6}
+
+# Data 1: presidents Colombia
+presi_col <- read_excel(path = "004_presi_col.xlsx") %>% 
+                slice(2:5) %>% 
+                mutate(start      = ymd(start),
+                       end        = ymd(end),
+                       name_label = str_glue('{word(name,-2)} {word(name,-1)}') %>% 
+                                 fct_reorder(start)) 
+
+# Data 2: unemployment rate
+ur_col <- read_excel("004_1.1.1.EMP_Total_nacional_IQY.xlsx", 
+           sheet     = 1, 
+           range     = "A11:C243", 
+           col_names = c("date", "ER", "UR")) %>% 
+  mutate(ER = ER / 100,
+         UR = UR / 100) %>% 
+  mutate(date = as.yearmon(date, "%Y-%m") %>% 
+           as.Date(frac = 1)) %>% 
+  select(date, UR)
+
+  # Plot
+  ur_col %>% 
+    ggplot() +
+    geom_point(aes(x = date, y = UR), 
+               shape = 21, 
+               fill = palette_light()[[2]],
+               color = "black") + 
+    geom_line(aes(x = date, y = UR)) +
+    geom_hline(yintercept = 0.0908,
+               color      = palette_light()[[3]]) + 
+    geom_rect(data  = presi_col,
+              aes(xmin  = start, xmax = end, fill = name_label), 
+              ymin  = -Inf, 
+              ymax  = Inf, 
+              alpha = 0.3,
+              color = "black",
+              show.legend = TRUE) +
+    scale_y_continuous(breaks = c(0, 0.05, 0.0908, 0.15, 0.20), 
+                     labels = scales::percent_format(accuracy = 0.01)) +
+    scale_fill_tq() +
+    scale_x_date(breaks = c(ymd('2001-01-31'),
+                            ymd('2005-01-31'),
+                            ymd('2010-01-31'),
+                            ymd('2015-01-31'),
+                            ymd('2020-01-31')),
+                 date_labels = '%Y-%m') +
+  labs(x        = '',
+       y        = 'Percent',
+       fill     = 'Presidential period',
+       title    = 'Total national unemployment rate (UR) Colombia',
+       caption  = 'Source: Banco de la República - Colombia')  +
+    theme(panel.border      = element_rect(fill = NA, color = "black"),
+          plot.background   = element_rect(fill = "#f3fcfc"),
+          panel.background  = element_rect(fill = "#f3f7fc"),
+          legend.background = element_rect(fill = "#f3fcfc"),
+          plot.title        = element_text(face = "bold"),
+          axis.title        = element_text(face = "bold"),
+          legend.title      = element_text(face = "bold"),
+          legend.position   = "bottom", 
+          axis.text         = element_text(face = "bold"),
+          axis.text.x = element_text(angle = 90, vjust = 0.5))
+    
+```
+
+
+11. Point out if the hashtag on the twitter message is valid. **(3 points)**
+
+The hashtag is not valid and is also quite misleading. If it were true the country would be broken long ago.
+
+# The goods market
+
+This exercise is taken from: 
+
+**Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 3 The Goods Market > Questions and Problems > Exercise 2
+
+- The following equations refer to the goods market of an economy in billions of euros:
+
+$$C_t = 480 + 0.5Y_{tD}$$
+$$I_t = 110$$
+$$T_t = 70$$
+$$G_t = 250$$
+
+12. Solve for the goods market equilibrium  **(5 points)**
+
+- Goods market equilibrium  
+ 
+ $$Y_t = Z_t$$
+We are assuming that the economy is closed, that is, there are no commercial relationships with the rest of the world:
+
+$$\begin{split}
+  Y_t    & = C_t + I_t + G_t \\
+  Y_t    & = 480 + 0.5Y_{tD} + I_t + G_t \\
+  Y_t    & = 480 + 0.5(Y_t - T_t) + I_t + G_t \\
+  0.5Y_t & = 480 - 0.5T_t + I_t + G_t \\
+  Y_t    & = \frac{480 - 0.5T_t + I_t + G_t}{0.5} \\
+  Y_t    & = \frac{480 - (0.5*70) + 110 + 250}{0.5} \\
+  Y_t    & = \frac{805}{0.5} \\
+  Y_t    & = 1610
+  \end{split}$$
+
+13. Find equilibrium disposable income $(Y_{tD})$ **(5 points)**
+
+$$\begin{split}
+   Y_{tD} & = Y_t - T_t \\
+   Y_{tD} & = 1610 - 70 \\
+   Y_{tD} & = 1540
+   \end{split}$$
+
+14. Find equilibrium consumption $(C_t)$ **(4 points)**
+
+$$\begin{split}
+   C_t = 480 + 0.5Y_{tD} \\
+   C_t = 480 + 0.5*1540 \\
+   C_t = 1250
+   \end{split}$$
