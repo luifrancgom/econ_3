@@ -120,7 +120,7 @@ trade_sg %>%
          title    = "Singapore imports and exports as percent of GDP",
          subtitle = str_glue("Variables Units: percent
                               Imports WDI code : NE.IMP.GNFS.ZS
-                              Exports WDI: NE.IMP.GNFS.ZS"),
+                              Exports WDI: NE.EXP.GNFS.ZS"),
          caption  = str_glue("Source: World Development Indicators - World Bank,
                               Last update: 2020-08-18"),
          color = "") +

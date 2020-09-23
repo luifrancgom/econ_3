@@ -36,13 +36,15 @@ library(knitr)
 
 - __Communication through the virtual classroom__
 
-    + Every Friday between 19:30 hours and 20:30 hours: _Primer Corte 30% > Virtual Meetings > Meeting hours with students_
+    + Every Friday between 19:30 hours and 20:30 hours: 
+    
+        + _Primer Corte 30% > Virtual Meetings > Meeting hours with students_
     
     + Doubts and concerns of the topics of the course, please use the _Forum: Questions or concerns_ that can be accessed at the top of the platform
     
         + In this way, doubts can be shared with all students and all course participants can contribute to the learning process
     
-    + Complaints regarding grades, please use the _Mesa de Ayuda_, which can be accessed in the right vertical menu of the platform
+    + Complaints regarding grades, please send an email to __luis.gomezl@unimilitar.edu.co__
     
         + To make any complaints, you are asked to wait first for the grades to be published on the News Bulletin Board and to be made based on the feedbacks that will be made taking into account the evaluation parameters
 
