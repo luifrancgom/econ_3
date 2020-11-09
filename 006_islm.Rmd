@@ -230,9 +230,6 @@ ggplot(data = tibble(x = c(0, 5),
     
 ```{r, out.width = '75%'}
 
-library(tidyverse)
-library(latex2exp)
-
 ggplot(data = tibble(x = c(0, 5, 2, 10/3,  0,  5,  2, 10/3),
                      y = c(5, 0, 2, 10/3, -1, -6, -4, -2 - 10/3))
 ) +
@@ -325,9 +322,6 @@ theme_void()
 - The equilibrium condition in the IS-LM model occurs when the goods market and the financial market are in equilibrium simultaneously.
 
 ```{r, out.width = '75%'}
-
-library(tidyverse)
-library(latex2exp)
 
 ggplot(data = tibble(x = c(0, 5, 2),
                      y = c(5, 0, 2))
