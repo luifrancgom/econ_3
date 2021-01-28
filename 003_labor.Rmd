@@ -303,9 +303,11 @@ data %>%
 
 # Statistical sources on the labor market in Colombia
 
-- It is quite expensive to collect information from the entire **Total Population (TP)**.
+- It is quite expensive to collect information from the entire **Total Population (TP)**. 
 
 - Due to the above, a sample of the __Total Population (TP)__ is taken and, with _statistical tools_ plus using _probability theory_, the main indicators of the colombian labor market are estimated.
+
+# Statistical sources on the labor market in Colombia
 
 - The information to make these estimates is obtained from 2 sources:
 
@@ -317,6 +319,10 @@ data %>%
         + Módulo K Inactivos
     
     + **Census**
+    
+- Review the videos found in:
+
+    + __Primer corte 30% > Learning Resources > Links of interest__
     
 [^1]: The questionnaires are available at [@dane_metodologigeneral_2016] > Materiales relacionados > Cuestionarios
 
