@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.1.20)  27 JAN 2021 20:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.1.20)  28 JAN 2021 10:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1021,13 +1021,38 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-(./001_gdp.nav) [1
+(./001_gdp.nav)
+Overfull \hbox (6.67247pt too wide) in paragraph at lines 134--134
+ [][]|  []\T1/lmss/bx/n/6 (-20) 0/25|  
+ []
 
-{/home/usuario/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2
 
-] [3
+Overfull \hbox (6.67247pt too wide) has occurred while \output is active
+ [][]|  []\T1/lmss/bx/n/6 (-20) 1/25|  
+ []
 
-] [4
+[1
+
+{/home/usuario/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Overfull \hbox (6.67247pt too wide) has occurred while \output is active
+ [][]|  []\T1/lmss/bx/n/6 (-20) 2/25|  
+ []
+
+[2
+
+]
+Overfull \hbox (6.67247pt too wide) has occurred while \output is active
+ [][]|  []\T1/lmss/bx/n/6 (-20) 3/25|  
+ []
+
+[3
+
+]
+Overfull \hbox (6.67247pt too wide) has occurred while \output is active
+ [][]|  []\T1/lmss/bx/n/6 (-20) 4/25|  
+ []
+
+[4
 
 ]
 <001_gdp_files/figure-beamer/econ_env_macro-1.pdf, id=49, 722.7pt x 505.89pt>
@@ -1036,15 +1061,40 @@ File: 001_gdp_files/figure-beamer/econ_env_macro-1.pdf Graphic file (type pdf)
 Package pdftex.def Info: 001_gdp_files/figure-beamer/econ_env_macro-1.pdf  used
  on input line 198.
 (pdftex.def)             Requested size: 256.72151pt x 179.70413pt.
+
+Overfull \hbox (6.67247pt too wide) has occurred while \output is active
+ [][]|  []\T1/lmss/bx/n/6 (-20) 5/25|  
+ []
+
 [5
 
- <./001_gdp_files/figure-beamer/econ_env_macro-1.pdf>] [6
+ <./001_gdp_files/figure-beamer/econ_env_macro-1.pdf>]
+Overfull \hbox (6.67247pt too wide) has occurred while \output is active
+ [][]|  []\T1/lmss/bx/n/6 (-20) 6/25|  
+ []
 
-] [7
+[6
 
-] [8
+]
+Overfull \hbox (6.67247pt too wide) has occurred while \output is active
+ [][]|  []\T1/lmss/bx/n/6 (-20) 7/25|  
+ []
 
-] [9
+[7
+
+]
+Overfull \hbox (6.67247pt too wide) has occurred while \output is active
+ [][]|  []\T1/lmss/bx/n/6 (-20) 8/25|  
+ []
+
+[8
+
+]
+Overfull \hbox (6.67247pt too wide) has occurred while \output is active
+ [][]|  []\T1/lmss/bx/n/6 (-20) 9/25|  
+ []
+
+[9
 
 ]
 LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 
@@ -1094,7 +1144,7 @@ Overfull \vbox (0.29166pt too high) detected at line 368
  []
 
 
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 10/25|  
  []
 
@@ -1106,7 +1156,7 @@ p}) has been already used, duplicate ignored
                                                   
 l.368 \end{frame}
                  ]
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 11/25|  
  []
 
@@ -1116,49 +1166,49 @@ Overfull \hbox (1.47319pt too wide) has occurred while \output is active
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10.95> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 409.
 
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 12/25|  
  []
 
 [12
 
 ]
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 13/25|  
  []
 
 [13
 
 ]
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 14/25|  
  []
 
 [14
 
 ]
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 15/25|  
  []
 
 [15
 
 ]
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 16/25|  
  []
 
 [16
 
 ]
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 17/25|  
  []
 
 [17
 
 ]
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 18/25|  
  []
 
@@ -1174,7 +1224,7 @@ Package pdftex.def Info: 001_gdp_files/figure-beamer/plot_gdp_nominal-1.pdf  us
 ed on input line 592.
 (pdftex.def)             Requested size: 308.06374pt x 215.64496pt.
 
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 19/25|  
  []
 
@@ -1194,7 +1244,7 @@ LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <9> not available
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <6> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 622.
 
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 20/25|  
  []
 
@@ -1210,7 +1260,7 @@ Package pdftex.def Info: 001_gdp_files/figure-beamer/plot_gdp_nominal_real-1.pd
 f  used on input line 627.
 (pdftex.def)             Requested size: 308.06374pt x 215.64496pt.
 
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 21/25|  
  []
 
@@ -1226,7 +1276,7 @@ Package pdftex.def Info: 001_gdp_files/figure-beamer/plot_gdp_real_per_capita-1
 .pdf  used on input line 632.
 (pdftex.def)             Requested size: 308.06374pt x 215.64496pt.
 
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 22/25|  
  []
 
@@ -1242,14 +1292,14 @@ Package pdftex.def Info: 001_gdp_files/figure-beamer/plot_growth_gdp_real_per_c
 apita-1.pdf  used on input line 637.
 (pdftex.def)             Requested size: 308.06374pt x 215.64496pt.
 
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 23/25|  
  []
 
 [23
 
  <./001_gdp_files/figure-beamer/plot_growth_gdp_real_per_capita-1.pdf>]
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 24/25|  
  []
 
@@ -1263,7 +1313,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <8> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 690.
 
-Overfull \hbox (1.47319pt too wide) has occurred while \output is active
+Overfull \hbox (9.90646pt too wide) has occurred while \output is active
  [][]|  []\T1/lmss/bx/n/6 (-20) 25/25|  
  []
 
@@ -1289,7 +1339,7 @@ Package rerunfilecheck Info: File `001_gdp.out' has not changed.
 Here is how much of TeX's memory you used:
  24627 strings out of 481234
  447812 string characters out of 5914715
- 766676 words of memory out of 5000000
+ 766682 words of memory out of 5000000
  40767 multiletter control sequences out of 15000+600000
  493343 words of font info for 155 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -1300,7 +1350,7 @@ texmf-dist/fonts/type1/public/lm/lmss8.pfb></home/usuario/.TinyTeX/texmf-dist/f
 onts/type1/public/lm/lmss9.pfb></home/usuario/.TinyTeX/texmf-dist/fonts/type1/p
 ublic/lm/lmssbx10.pfb></home/usuario/.TinyTeX/texmf-dist/fonts/type1/public/lm/
 lmsso10.pfb>
-Output written on 001_gdp.pdf (25 pages, 191233 bytes).
+Output written on 001_gdp.pdf (25 pages, 191364 bytes).
 PDF statistics:
  306 PDF objects out of 1000 (max. 8388607)
  252 compressed objects within 3 object streams

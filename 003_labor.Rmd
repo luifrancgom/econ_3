@@ -1,7 +1,7 @@
 ---
 title: "Employment and unemployment indicators"
 author: Luis Francisco Gomez Lopez
-date: 2020-07-27
+date: 2020-01-28 16:12:53 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -46,7 +46,7 @@ library(wbstats)
 
 - The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
 
-- This presentation is based on [@loraTecnicasMedicionEconomica2016, Chapter 2]
+- This presentation is based on [@lora_tecnicas_2016, Chapter 2]
 
 # Purpose
 
@@ -54,7 +54,7 @@ Introduce the labor market indicators and statistical sources on employment in C
 
 # Labor classification of the population in Colombia
 
-- To understand the indicators of the labor market from an economic perspective, it is necessary to classify the population from a labor point of view. Initially, the total population of a territory could be included but in practice the __Total Population (TP)__ that is included __doesn't__ cover [@hussmannsSurveysEconomicallyActive1990, chapter 2]:
+- To understand the indicators of the labor market from an economic perspective, it is necessary to classify the population from a labor point of view. Initially, the total population of a territory could be included but in practice the __Total Population (TP)__ that is included __doesn't__ cover [@hussmanns_surveys_1990, chapter 2]:
 
     + Members of the armed forces because this information is considered secret or because it is not easy to obtain information when its members are in barracks and military areas.
     
@@ -66,7 +66,7 @@ Introduce the labor market indicators and statistical sources on employment in C
 
 - There are four (4) levels (we will not see a fifth (5) level in this presentation) to classify the __Total Population (TP)__ of a territory from a labor point of view. 
 
-- This classification follows recommendations of the __International Labor Organization (ILO)__ and is the methodology used by the __Departamento Administrativo Nacional de Estadística (DANE)__ in Colombia [@daneMetodologiaGeneralGran2016].
+- This classification follows recommendations of the __International Labor Organization (ILO)__ and is the methodology used by the __Departamento Administrativo Nacional de Estadística (DANE)__ in Colombia [@dane_metodologigeneral_2016].
 
     + **Level 1**: based on age to define who is able to work.
  
@@ -92,7 +92,7 @@ Introduce the labor market indicators and statistical sources on employment in C
 
     + **Employed (E)**: Individuals who belong to the **EAP** and who within a reference period they work at least one (1) hour in a reference week, they didn't work in the reference week but they had a job or they are unpaid workers and worked for at least one (1) hour in a reference week in a business
     
-        + Take into account the home is not considered a business in the case of homemakers
+        + Take into account that the home is not considered a business in the case of homemakers
     
     + **Unemployed (U)**: Individuals who are available and willing to work, but did not work in the reference period.
 
@@ -165,19 +165,17 @@ tibble(x = c( 0,
                      '2', '2', 
                      '3', '3',
                      '4', '4', '4', '4'),
-       value     = c(49234,
-                     49234 - 39668,
-                     39668,
-                     25051,
-                     39668 - 25051,
-                     22006,
-                     3045,
-                     22006 - (6414 + 2744),
-                     6414 + 2744,
-                     2895,
-                     150
-       )
-) %>% 
+       value     = c(49620207,
+                     49620207 - 40042205,  
+                     40042205,
+                     24585154,
+                     40042205 - 24585154, 
+                     21312577,
+                     3272577,
+                     21312577 - (6377404 + 2525329),
+                     6377404 + 2525329,
+                     3087084,
+                     185494)) %>% 
     mutate(label_text = str_glue('{indicator}
                                  {value %>% 
                                     scales::number(big.mark = ",")}')) %>% 
@@ -200,10 +198,9 @@ tibble(x = c( 0,
     coord_cartesian(xlim = c(-5, 5), 
                     ylim = c(-4.2, 0.2)) +
     labs(title    = 'Labor classification of the population in Colombia',
-         subtitle = str_glue('Period: February 2020
-                             Units  : Thousands of individuals'),
+         subtitle = str_glue('Period: November 2020'),
          caption  = str_glue('Sources: DANE, Gran Encuesta Integrada de Hogares - GEIH
-                              Last update: 2020-06-30'),
+                              Last update: 2020-12-30'),
          fill     = "Level"
     ) + 
     theme(panel.border      = element_rect(fill = NA, color = "black"),
@@ -252,17 +249,16 @@ $$\begin{aligned} ER = \frac{E}{WAP} * 100 \end{aligned}$$
 
 ```{r ur_er_rate, out.width = "85%"}
 
-wb(country   = c('COL'), 
-            indicator = c('SL.UEM.TOTL.ZS', 'SL.EMP.TOTL.SP.ZS')) %>% 
-    as_tibble() %>% 
-    select(country, date, value, indicator) %>% 
-    mutate(date = as.numeric(date)) %>% 
-    arrange(date) %>%
+data <- wbstats::wb_data(country     = c('COL'), 
+                         indicator   = c('SL.UEM.TOTL.ZS', 'SL.EMP.TOTL.SP.ZS'), 
+                         return_wide = FALSE)
+
+data %>%  
+    select(country, date, value, indicator) %>%
     mutate(indicator = case_when(
         indicator == 'Unemployment, total (% of total labor force) (modeled ILO estimate)' ~ 'Unemployment rate (UR) (ILO estimate))',
         indicator == 'Employment to population ratio, 15+, total (%) (modeled ILO estimate)' ~ 'Employment rate (ER) (ILO estimate))',
-        TRUE ~ indicator)
-    ) %>% 
+        TRUE ~ indicator)) %>% 
     ggplot(aes(x = date, 
                y = value)) + 
     geom_point(shape = 21, fill = palette_light()[[2]], color = "black") +
@@ -275,10 +271,10 @@ wb(country   = c('COL'),
                nrow     = 2, 
                scales   = "free_y", 
                labeller = ) +
-    scale_x_continuous(breaks = c(1991, 1999, 2010, 2018)) +
+    scale_x_continuous(breaks = c(1991, 1999, 2010, max(data$date))) +
     scale_y_continuous(labels = scales::number_format(accuracy = 1,
-                                                      suffix = "%")
-    ) +
+                                                      suffix = "%")) +
+    coord_cartesian(xlim = c(1991, 2020)) +
     labs(x        = 'Year',
          y        = 'Percent',
          title    = 'Annual Unemployment rate (UR) and Employment rate (ER) in Colombia', 
@@ -288,8 +284,7 @@ wb(country   = c('COL'),
                              ER units: percent
                              Observation: ILO estimations where ages 15 and older are considered the WAP'),
          caption  = str_glue('Source: World Development Indicators (WDI) - World Bank
-                             Last update date: 2020-0')
-    ) +
+                             Last update date: {unique(data$last_updated)}')) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),
@@ -303,15 +298,14 @@ wb(country   = c('COL'),
                                                       r = 5,
                                                       b = 5,
                                                       l = 5, 
-                                                      unit = "pt"), face = "bold")
-          )
+                                                      unit = "pt"), face = "bold"))
 ```
 
 # Statistical sources on the labor market in Colombia
 
 - It is quite expensive to collect information from the entire **Total Population (TP)**.
 
-- Due to the above, a sample of the **Total Population (TP)** is taken and, with _statistical tools_ plus using *probability theory*, the main indicators of the colombian labor market are estimated.
+- Due to the above, a sample of the __Total Population (TP)__ is taken and, with _statistical tools_ plus using _probability theory_, the main indicators of the colombian labor market are estimated.
 
 - The information to make these estimates is obtained from 2 sources:
 
@@ -324,7 +318,7 @@ wb(country   = c('COL'),
     
     + **Census**
     
-[^1]: The questionnaires are available at [@daneMetodologiaGeneralGran2016] > Materiales relacionados > Cuestionarios
+[^1]: The questionnaires are available at [@dane_metodologigeneral_2016] > Materiales relacionados > Cuestionarios
 
 # Acknowledgments
 

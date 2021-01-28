@@ -1,7 +1,7 @@
 ---
 title: "Inflation"
 author: Luis Francisco Gomez Lopez
-date: 2020-07-24
+date: 2020-01-28 10:41:17 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -64,7 +64,7 @@ library(tidyquant)
 
 - The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
 
-- This presentation is based on [@blanchardMacroeconomics2017a, Chapters 1 & 2]
+- This presentation is based on [@blanchard_macroeconomics_2017, Chapters 1 & 2]
 
 # Purpose
 
@@ -86,7 +86,7 @@ Introduce the students to the three (3) main variables in macroeconomics (produc
  
 # Price level
 
-- The __price level__ is an __index number__ [@ralphPracticalIntroductionIndex2015]
+- The __price level__ is an __index number__ [@ralph_practical_2015]
 
     + An __index number__ is a quantity that by varying shows the changes of a magnitude over time or space.
     
@@ -98,14 +98,13 @@ Introduce the students to the three (3) main variables in macroeconomics (produc
 
 ```{r table_price_level}
 
-#Table
+# Table
 ## Example from A Practical Introduction to Index Numbers, page 40 
 tibble(Fruits     = c('Apples', 'Bananas', 'Pineapples'),
        Price_2012 = c(0.4, 0.5, 1.25),
        Price_2013 = c(0.42, 0.55, 2),
        Quantity_2013 = c(220, 230, 50)) %>% 
-    mutate_at(.vars = vars(Price_2012:Price_2013), 
-              .funs = scales::dollar) %>% 
+    mutate(across(Price_2012:Price_2013, .fns = scales::dollar)) %>% 
     set_names(nm = c('Fruits', 'Price 2012', 
                      'Price 2013', 'Quantity 2012')) %>% 
     kable(format = "latex", booktabs = TRUE, caption = 'Fruits prices and quantities') %>% 
@@ -123,7 +122,9 @@ $$\begin{aligned}\frac{Basket\;2013}{Basket\;2012} = \frac{0.42*\textbf{220} + 0
 - The variation in the __price level__ from one period to another is used to measure inflation.
 
 - In our example:
+
 $$\begin{aligned}\frac{102\;-100}{100} * 100 = 0.02 * 100 = 2 \end{aligned}$$
+
 - The previous number means that the __price level__ increased by 2% between 2012 and 2013 where the __price level__ was calculated based on the year 2012.
 
 # Index numbers and inflation in Colombia
@@ -142,26 +143,26 @@ $$\begin{aligned} Inflation_t= \frac{Deflator_t-Deflator_{t-1}}{Deflator_{t-1}} 
 
 - __Indice de Precios al Productor (IPP)__ or __Producer Price Index (PPI)__.
 
-    + In Colombia, this index measures the average variation of the prices of a basket of products representative of the internal supply in its first stage of commercialization [@daneMetodologiaGeneralIndice2015]. 
+    + In Colombia, this index measures the average variation of the prices of a basket of products representative of the internal supply in its first stage of commercialization [@dane_metodologigeneral_2015]. 
     
 - __Indice de Precios al Consumidor (IPC)__ or __Consumer Price Index (CPI)__
 
-    + In Colombia, this index measures the average variation of the prices of a basket of products representative of household consumption [@daneIPCActualizacionMetodologica2019].
+    + In Colombia, this index measures the average variation of the prices of a basket of products representative of household consumption [@dane_metodologigeneral_2019].
     
-        + You can check out the basket of products included in the __(IPC)__ or __(CPI)__ in: [@daneIPCActualizacionMetodologica2019] > Actualización metodológica 2019 > Nomenclatura basada en la COICOP (canasta de bienes y servicios) > Estructura IPC 2018
+        + You can check out the historical basket of products included in the __(IPC)__ or __(CPI)__ in: [@dane_metodologigeneral_2019] > Información adicional > Estructura histórica de ponderaciones y canasta de seguimiento del IPC
 
 # Consumer Price Index (CPI) in Colombia
 
 - The __CPI__ is build using information from __Encuesta Nacional de Presupuesto de los Hogares –ENPH- (2016-2017)__ where it is conducted every 10 years. 
 
-- Additionally, monthly price information is collected for 443 items in 38 cities where divisions included in the __CPI__ are based on __Classification of Individual Consumption According to Purpose (COICOP)__
+- Additionally, usually monthly, but in some cases bimonthly, quadrimestral and biannual, price information is collected for 443 items in 38 cities where divisions included in the __CPI__ are based on __Classification of Individual Consumption According to Purpose (COICOP)__ and adapted for Colombia.
 
 # Consumer Price Index (CPI) in Colombia
 
 ```{r table_coicop_cpi}
 
 #Table
-## Divisions COICOP  
+## Divisions COICOP (International version)  
 tibble(Division = c("01", "02", "03",
                     "04", "05", "06",
                     "07", "08", "09",
@@ -179,7 +180,7 @@ tibble(Division = c("01", "02", "03",
                     "Restaurants and accommodation services",
                     "Insurance and financial services")
        ) %>% 
-  kable(format = "latex", booktabs = TRUE, caption = "COICOP divisions used in the CPI") %>% 
+  kable(format = "latex", booktabs = TRUE, caption = "COICOP divisions (International version)") %>% 
   kable_styling(font_size = 9, latex_options = "striped") %>% 
   row_spec(row = 0, bold = TRUE)
 ```
@@ -189,16 +190,12 @@ tibble(Division = c("01", "02", "03",
 ```{r cpi_col, out.width = "90%"}
 
 # Data
-wb(country   = c("COL"), 
-            indicator = c("FP.CPI.TOTL")) %>% 
-    as_tibble() %>% 
-    select(country, date, value) %>% 
-    mutate(date = as.numeric(date)) %>% 
-    arrange(date) %>%
-    
+wbstats::wb_data(country   = c("COL"), 
+                 indicator = c("FP.CPI.TOTL")) %>% 
+    select(country, date, FP.CPI.TOTL) %>%
     # Plot 
     ggplot(aes(x = date, 
-               y = value)) + 
+               y = FP.CPI.TOTL)) + 
     geom_point(fill = palette_light()[[2]], color = "black", shape = 21) +
     geom_line() +
     geom_vline(xintercept = 2010,
@@ -220,8 +217,7 @@ wb(country   = c("COL"),
          subtitle = str_glue("CPI code WDI: FP.CPI.TOTL
                              CPI units: none but Base Year 2010"),
          caption  = str_glue("Source: World Bank - World Development Indicators (WDI)
-                             Last update date: 2020-07-01")
-         ) +
+                             Last update date: 2020-12-16")) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),
@@ -238,22 +234,15 @@ wb(country   = c("COL"),
 
 # Plot
 ## Colombia Inflation
-wbstats::wb(country   = c("COL"), 
-            indicator = c("FP.CPI.TOTL.ZG")) %>% 
-    as_tibble() %>% 
-    select(country, date, value) %>% 
-    mutate(date = as.numeric(date)) %>% 
-    arrange(date) %>% 
+data <- wbstats::wb_data(country   = c("COL"), 
+            indicator = c("FP.CPI.TOTL.ZG")) 
+    
+data %>%  
+    select(country, date, FP.CPI.TOTL.ZG) %>%
     ggplot(aes(x = date, 
-               y = value)) + 
+               y = FP.CPI.TOTL.ZG)) + 
     geom_point(shape = 21, fill = palette_light()[[2]], color = "black") +
-    geom_smooth(data = wbstats::wb(country   = c("COL"), 
-                                   indicator = c("FP.CPI.TOTL.ZG")) %>% 
-                    as_tibble() %>% 
-                    select(country, date, value) %>% 
-                    mutate(date = as.numeric(date)) %>% 
-                    arrange(date) %>% 
-                    filter(date >= 1991),
+    geom_smooth(data = data %>% filter(date >= 1991),
                 method   = "loess",
                 span     = 0.5,
                 alpha    = 0.2,
@@ -282,8 +271,7 @@ wbstats::wb(country   = c("COL"),
          subtitle = str_glue("Variable code WDI: FP.CPI.TOTL.ZG
                              Variable units: annual percent Base Year 2010"),
          caption  = str_glue("Source: World Development Indicators (WDI) - World Bank
-                             Last update date: 2020-07-10")
-         ) +
+                             Last update date: 2020-12-16")) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),

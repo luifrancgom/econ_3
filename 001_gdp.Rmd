@@ -1,7 +1,7 @@
 ---
 title: "Gross Domestic Product (GDP)"
 author: Luis Francisco Gomez Lopez
-date: 2020-01-27 19:95 GMT -05:00
+date: 2020-01-27 19:45:02 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
