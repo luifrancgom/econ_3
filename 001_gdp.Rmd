@@ -1,7 +1,7 @@
 ---
 title: "Gross Domestic Product (GDP)"
 author: Luis Francisco Gomez Lopez
-date: 2020-07-23
+date: 2020-01-27 19:95 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -42,7 +42,6 @@ library(knitr)
 library(kableExtra)
 library(tidyquant)
 library(wbstats)
-library(tinytex)
 ```
 
 
@@ -66,7 +65,7 @@ library(tinytex)
 
 - The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
 
-- This presentation is based on [@blanchardMacroeconomics2017a, Chapters 1 & 2]
+- This presentation is based on [@blanchard_macroeconomics_2017, Chapters 1 & 2]
 
 # Purpose
 
@@ -136,40 +135,58 @@ ggplot(data = tibble(x = 0, y = 0)) +
 
 # Metrics: Economic macroenvironment
 
-* **Aggregate production**
+- **Aggregate production**
+
     + Gross Domestic Product (GDP)
+    
         + Nominal/Real, per-capita, purchase power parity
-* **Prices**
+- **Prices**
+
     + Index
+    
         + GDP deflator, Consumer price index, Producer Price Index
+        
     + Inflation
+    
         + Monthly, Annual, Accumulated (annual)
-* **Exchange rate**
-    + "Tasa Representativa del Mercado" (Colombia): 
+        
+# Metrics: Economic macroenvironment
+        
+- **Exchange rate**
+
+    + "Tasa Representativa del Mercado" (Colombia)
+    
         + COP/USD, COP/EUR 
-* **Interest rate**
+        
+- **Interest rate**
+
     + "Tasa de intervención del Banco de la República" (Colombia), Federal Funds Rate (USA), deposit rate (tasa de captación), placement rate (tasa de colocación)
     
 # Metrics: Economic macroenvironment
 
 Other metrics that we will not examine because the course is quite short but that are also relevant:
 
-* **Consumer confidence**
+- **Consumer confidence**
+
     + Índice de Confianza del Consumidor (Fedesarrollo, Colombia)
     + Consumer Confidence Index (The Conference Board, USA)
-* **Inequality**
+    
+- **Inequality**
+
     + Gini coefficient 
-* **Poverty**
+    
+- **Poverty**
+
     + Poverty line, Poverty Rate
     + Multidimensional Poverty Index
 
 # Gross Domestic Product (GDP)
 
-- **Product**: refers to what we are trying to measure as a result of a production process [@lequillerUnderstandingNationalAccounts2014a].
+- **Product**: refers to what we are trying to measure as a result of a production process [@lequiller_understanding_2014].
 
-- **Domestic**: indicates that the production to be taken into account is the one that is carried within a certain territory clearly delimited [@lequillerUnderstandingNationalAccounts2014a].
+- **Domestic**: indicates that the production to be taken into account is the one that is carried within a certain territory clearly delimited [@lequiller_understanding_2014].
 
-- **Gross**: It means that depreciation is not deducted (in economy it is called consumption of fixed capital). In other words, the decrease in the value of the assets due to physical deterioration, foreseeable wear or accidental damage is not deducted [@lequillerUnderstandingNationalAccounts2014a].
+- **Gross**: It means that depreciation is not deducted (in economy it is called consumption of fixed capital). In other words, the decrease in the value of the assets due to physical deterioration, foreseeable wear or accidental damage is not deducted [@lequiller_understanding_2014].
 
 # Gross Domestic Product (GDP)
 
@@ -194,8 +211,7 @@ tibble(Categories = c("Revenue from sales",
                       "Wages",
                       "Steel purchases",
                       "Profit"),
-       Value      = c(200, 170, 70, 100, 30) 
-) %>% 
+       Value      = c(200, 170, 70, 100, 30)) %>% 
     mutate(Value = Value %>% scales::dollar()) %>% 
   kable(format = "latex", booktabs = TRUE, caption = "Car Company (Firm 2)") %>% 
   kable_styling(font_size = 7, latex_options = "striped") %>%
@@ -287,7 +303,8 @@ In our example, the final production are the sales of the Car Company (Firm 2): 
 
 We do not have a government or non-profit institutions nor do we assume that production accumulates, that is, there is no Investment or Gross capital formation.
 
-* GDP
+- GDP
+
     + **Final production** = \$200 = **C + X + 0** = **C + I + G + X** = **GDP**
 
 # GDP: nominal and real
@@ -306,14 +323,11 @@ In that sense, production in monetary terms can increase in three (3) ways:
 
 # Plot
 ## Colombia GDP Nominal
-wbstats::wb(country   = c("COL"), 
-   indicator = c("NY.GDP.MKTP.CN")) %>% 
-    as_tibble() %>% 
-    select(country, date, value) %>% 
-    mutate(date = as.numeric(date)) %>% 
-    arrange(date) %>%
+wbstats::wb_data(country   = c("COL"), 
+            indicator = c("NY.GDP.MKTP.CN")) %>% 
+    select(country, date, NY.GDP.MKTP.CN) %>%
     ggplot(aes(x = date, 
-               y = value)) + 
+               y = NY.GDP.MKTP.CN)) + 
     geom_point(shape = 21, fill = palette_light()[[2]], color = "black") +
     geom_line() +
     labs(x        = "Year",
@@ -322,10 +336,9 @@ wbstats::wb(country   = c("COL"),
          subtitle = str_glue("Variable code WDI: NY.GDP.MKTP.CN
                              Variable units: current LCU"),
          caption  = str_glue("Source: World Development Indicators (WDI) - World Bank
-                             Last update date: 2020-07-01")) +
+                             Last update date: 2020-12-16")) +
     scale_y_continuous(labels = scales::number_format(scale  = 1e-12, 
-                                                      suffix = "B")
-                       ) +
+                                                      suffix = "B")) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),
@@ -350,33 +363,28 @@ wbstats::wb(country   = c("COL"),
 ## GDP: nominal and real
 tibble(Year = c(2008:2010),
        Quantity_Cars = c(10, 12, 13),
-       Price_Cars = c(20000, 24000, 26000)
-       ) %>% 
+       Price_Cars = c(20000, 24000, 26000)) %>% 
     mutate(Nominal_GDP = Quantity_Cars * Price_Cars) %>% 
     mutate(Real_GDP_Base_2009 = Quantity_Cars * Price_Cars[2]) %>%
     mutate_at(.vars = vars(Price_Cars:Real_GDP_Base_2009),
               .funs = scales::dollar) %>% 
     set_names(nm = c("Year", "Quantity Cars", 
                      "Price Cars", "Nominal GDP",
-                     "Real GDP Base 2009")
-              ) %>% 
+                     "Real GDP Base 2009")) %>% 
   kable(format = "latex", booktabs = TRUE) %>% 
   kable_styling(font_size = 9, latex_options = "striped") %>%
   row_spec(row = 0, bold = TRUE)
 ```
 
 # GDP: nominal and real
+
 ```{r plot_gdp_nominal_real, out.width = "90%"}
 # Plot
 ## Colombia GDP Nominal and Real
-wbstats::wb(country   = c("COL"), 
-            indicator = c("NY.GDP.MKTP.CN", "NY.GDP.MKTP.KN")) %>% 
-    as_tibble() %>% 
-    select(country, date, value, indicator) %>% 
-    mutate(date = as.numeric(date)) %>%
-    group_by(indicator) %>% 
-    arrange(date) %>% 
-    ungroup() %>% 
+wbstats::wb_data(country = c("COL"), 
+            indicator    = c("NY.GDP.MKTP.CN", "NY.GDP.MKTP.KN"), 
+            return_wide  = FALSE) %>% 
+    select(country, date, value, indicator) %>%
     ggplot(aes(x = date, 
                y = value)) + 
     geom_point(aes(fill = indicator), color = "black", shape = 21, show.legend = FALSE) +
@@ -385,15 +393,15 @@ wbstats::wb(country   = c("COL"),
     geom_vline(xintercept = 2015,
                color      = palette_light()[[1]]) +
     labs(x        = "Year",
-        y        = "Billions (Long scale)",
-        title    = "Nominal and Real GDP Colombia", 
-        subtitle = str_glue("Nominal GDP code WDI: NY.GDP.MKTP.CN
+         y        = "Billions (Long scale)",
+         title    = "Nominal and Real GDP Colombia", 
+         subtitle = str_glue("Nominal GDP code WDI: NY.GDP.MKTP.CN
                             Nominal GDP units: current LCU
                             Real GDP code WDI: NY.GDP.MKTP.KN
                             Real GDP units: constant LCU Base Year 2015"),
-        caption  = str_glue("Source: World Development Indicators (WDI) - World Bank
-                             Last update date: 2020-07-01"),
-        color = "") +
+         caption  = str_glue("Source: World Development Indicators (WDI) - World Bank
+                             Last update date: 2020-12-16"),
+         color = "") +
     scale_x_continuous(breaks = c(1960, 1980, 2000, 2015, 2020)) +
     scale_y_continuous(labels = scales::number_format(scale  = 1e-12, 
                                                       suffix = "B")) +
@@ -416,14 +424,11 @@ wbstats::wb(country   = c("COL"),
 
 # Plot
 ## Colombia Real GDP per-capita
-wbstats::wb(country   = c("COL"), 
-            indicator = c("NY.GDP.PCAP.KN")) %>% 
-    as_tibble() %>% 
-    select(country, date, value) %>% 
-    mutate(date = as.numeric(date)) %>% 
-    arrange(date) %>%
+wbstats::wb_data(country   = c("COL"), 
+            indicator = c("NY.GDP.PCAP.KN")) %>%
+    select(country, date, NY.GDP.PCAP.KN) %>%
     ggplot(aes(x = date, 
-               y = value)) + 
+               y = NY.GDP.PCAP.KN)) + 
     geom_point(color = "black", shape = 21, fill = palette_light()[[2]]) +
     geom_line() +
     geom_vline(xintercept = 2015,
@@ -446,12 +451,11 @@ wbstats::wb(country   = c("COL"),
          subtitle = str_glue("Variable code WDI: NY.GDP.PCAP.KN
                              Variable units: constant LCU Base Year 2015"),
          caption  = str_glue("Source: World Development Indicators (WDI) - World Bank 
-                             Last update date: 2020-07-01")) +
+                             Last update date: 2020-12-16")) +
     scale_x_continuous(breaks = c(1960, 1980, 2000, 2015, 2020)) +
     scale_y_continuous(labels = scales::number_format(scale    = 1e-6, 
                                                       suffix   = "M", 
-                                                      accuracy = 1)
-    ) +
+                                                      accuracy = 1)) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),
@@ -468,14 +472,11 @@ wbstats::wb(country   = c("COL"),
 
 # Plot
 ## Colombia Growth Real GDP per-capita
-wbstats::wb(country   = c("COL"), 
-            indicator = c("NY.GDP.PCAP.KD.ZG")) %>% 
-    as_tibble() %>% 
-    select(country, date, value) %>% 
-    mutate(date = as.numeric(date)) %>% 
-    arrange(date) %>%
+wbstats::wb_data(country   = c("COL"), 
+            indicator = c("NY.GDP.PCAP.KD.ZG")) %>%
+    select(country, date, NY.GDP.PCAP.KD.ZG) %>% 
     ggplot(aes(x = date, 
-               y = value)) + 
+               y = NY.GDP.PCAP.KD.ZG)) + 
     geom_point(color = "black", fill = palette_light()[[2]], shape = 21) +
     geom_line() +
     geom_vline(xintercept = 1999,
@@ -500,7 +501,7 @@ wbstats::wb(country   = c("COL"),
          subtitle = str_glue("Variable code WDI: NY.GDP.PCAP.KD.ZG
                              Variable units: annual percent using constant LCU Base Year 2015"),
          caption  = str_glue("Source: World Development Indicators (WDI) - World Bank
-                             Last update date: 2020-07-01")) +
+                             Last update date: 2020-12-16")) +
     scale_x_continuous(breaks = c(1960, 1980, 1999,2020)) +
     scale_y_continuous(labels = scales::number_format(suffix = "%")) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
