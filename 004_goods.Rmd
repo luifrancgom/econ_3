@@ -1,7 +1,7 @@
 ---
 title: "The goods market"
 author: Luis Francisco Gomez Lopez
-date: 2020-07-29
+date: 2020-02-05 11:29:42 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -52,7 +52,7 @@ library(readxl)
 
 - The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
 
-- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 3]
+- This presentation is based on [@blanchard_macroeconomics_2017, Chapter 3]
 
 # Purpose
 
@@ -123,7 +123,7 @@ $$\begin{split}
 
 # Types of equations in the models
 
-- **Identities**: it's a relationship that is true by definition.
+- **Identities**: are relationships that are true by definition.
 
     + Accounting equation: $Assets \equiv Liabilities + Equity$
     
@@ -133,11 +133,11 @@ $$\begin{split}
     
 # Types of equations in the models
 
-- **Behavioral equations**: represents a hypothesis about how a variable is determined.
+- **Behavioral equations**: represent hypotheses about how a variable is determined.
 
     + How does consumption behave? In economics, an **ideal** consumption function is assumed that explains how this variable is determined: $C(t) = c_0 + c_1Y_D(t)\;c_0 > 0\;0 < c_1 < 1$ 
 
-    + What is the maximum distance a projectile travels from the ground? In physics, an **ideal** projectile motion function is assumed that explains how this variable is determined: $X_{ideal}^{max} = \frac{v_0^2sin(2\theta)}{g}$ [@mattosMovimientoParabolicoProyectiles2014]
+    + What is the maximum distance a projectile travels from the ground? In physics, an **ideal** projectile motion function is assumed that explains how this variable is determined: $X_{ideal}^{max} = \frac{v_0^2sin(2\theta)}{g}$ [@mattos_movimiento_2014]
         
 ```{r, out.width = '45%'}
 
@@ -146,7 +146,7 @@ include_graphics(path = '004_projectile_motion.png')
 
 # Types of equations in the models
 
-- **Equilibrium conditions**: establishes a requirement that should be met.
+- **Equilibrium conditions**: establish a requirement that should be met.
 
     + What condition must be met in a market so that resources are optimally allocated? The quantity demanded should tend to be equal to the quantity supplied **or there will be a surplus or shortage**.
 
@@ -221,25 +221,25 @@ ggplot(data = tibble(x = c(0, 5, 2),
                  linetype = 'dashed') +
     annotate(geom = 'text', 
              x = 2.25, y = 0.25, 
-             label = TeX('$Y^*(t)$')) +
+             label = latex2exp::TeX('$Y^*(t)$')) +
     annotate(geom = 'text', 
              x = 0.25, y = 2.25, 
-             label = TeX('$Y^*(t)$')) +
+             label = latex2exp::TeX('$Y^*(t)$')) +
     annotate(geom = 'text', 
              x = 4, y = 2.75, 
-             label = TeX('$Z(t) = c_0 + c_1(Y(t) - T(t)) + \\bar{I} + G(t)')) +
+             label = latex2exp::TeX('$Z(t) = c_0 + c_1(Y(t) - T(t)) + \\bar{I} + G(t)')) +
     annotate(geom = 'text', 
              x = 4, y = 4.25, 
-             label = TeX('$Y(t) \\equiv Y_R(t)$')) +
+             label = latex2exp::TeX('$Y(t) \\equiv Y_R(t)$')) +
     annotate(geom = 'text', 
              x = 5.25, y = 0, 
-             label = TeX('$Y_R(t)$')) +
+             label = latex2exp::TeX('$Y_R(t)$')) +
     annotate(geom = 'text', 
              x = 0, y = 5.25, 
-             label = TeX('$Z(t)\\;Y(t)$')) +
+             label = latex2exp::TeX('$Z(t)\\;Y(t)$')) +
     annotate(geom = 'text', 
              x = 1.75, y = 2.25, 
-             label = TeX('$Y(t) = Z(t)$')) +
+             label = latex2exp::TeX('$Y(t) = Z(t)$')) +
     theme_void()
 ```
 
@@ -278,7 +278,7 @@ ggplot(data = tibble(x = c(0, 5, 2),
 ```{r, out.width = '90%'}
 
 # Data
-gdp_agg_demand_col <- wb_data(country   = c('COL'), 
+gdp_agg_demand_col <- wbstats::wb_data(country   = c('COL'), 
         indicator = c('NE.CON.PRVT.CN',
                       'NE.GDI.TOTL.CN',
                       'NE.CON.GOVT.CN',
@@ -349,25 +349,31 @@ gdp_agg_demand_col %>%
 
 - In the model taxes are part but not equal to $T(t)$ because $T(t)$ includes taxes paid minus transfers from the state that consumers receive.
 
-- In economics, taxes are understood as compulsory payments made by individuals to finance the activities that the government has decided to carry out, regardless of whether the compulsory payment has a specific destination or whether or not it is proportional to the goods or services received. [@observatoriofiscalpontificiauniversidadjaverianaGuiaCiudadanaTributacion2018a].
+- In economics, taxes are understood as compulsory payments made by individuals to finance the activities that the government has decided to carry out, regardless of whether the compulsory payment has a specific destination or whether or not it is proportional to the goods or services received. [@observatorio_fiscal_pontificia_universidad_javeriana_guiciudadana_2018, p 5].
 
 - In Colombian tax law, taxes are divides in 3 categories: "impuestos", "tasas" and "contribuciones". In economics we don't make this distinction where we refer simply to the concept of tax (tributo in spanish). 
 
 # Taxes in Colombia
 
-- What are the main taxes paid in Colombia? [@observatoriofiscalpontificiauniversidadjaverianaGuiaCiudadanaTributacion2018a]
+- What are the main taxes paid in Colombia? [@observatorio_fiscal_pontificia_universidad_javeriana_guiciudadana_2018, p 15]
 
-    + __National taxes__: Carbono, Gasolina y ACPM, Consumo, IVA, GMF (4x1000), Renta Personas, Renta Empresas, Timbre nacional, Aranceles
+    + __National taxes__: Carbono, Gasolina y ACPM, Riqueza Empresas, Riqueza Personas, Consumo, IVA, 4x1000, Renta Personas, Renta Empresas, Timbre, Aranceles y tarifas
     
-    + __Local taxes__: ICA, Predial, Alcohol, cigarrillos y loterías, Sobretasa a la gasolina, Registro, Vehículos 
+    + __Local taxes__: ICA, Predial, Alcohol, cigarrillos y loterías, Vehículos, Sobretasa a la gasolina, Registro, Otros
+    
+# Taxes in Colombia
+
+- Annual tax revenue by tax type administered by DIAN (1970-2020) [@dian_estadisticas_2020]
+
+    + https://www.dian.gov.co/ > Sitio web institucional > Dirección de Impuestos y Aduanas Nacionales. Portal Institucional > DIAN > Cifras > Estadísticas > Estadísticas de Recaudo > Estadísticas de Recaudo Anual por Tipo de Impuesto 1970 - 2020
 
 # Taxes in Colombia
 
-- Annual tax revenue by tax type administered by DIAN (1970-2019) [@dianEstadisticasTributosAdministrados2020]
+- Annual tax revenue by tax type administered by DIAN (1970-2019) [@dian_estadisticas_2020]
 
 ```{r, out.width = '75%'}
 
-real_revenue_tax_dian <- read_excel(path  = "004_estadisticas_impuesto_dian1970_2020.xlsx", 
+real_revenue_tax_dian <- read_excel(path  = "004_estadisticas_de_recaudo_anual_por_tipo_de_impuesto_1970-2020.xlsx", 
            range = "A10:Z59", 
            col_names = FALSE) %>% 
     select(c(1, 3, 6, 9:16, 19:21, 23:25)) %>%
@@ -382,7 +388,7 @@ real_revenue_tax_dian <- read_excel(path  = "004_estadisticas_impuesto_dian1970_
                  values_to = "value") %>%
     mutate(value = value * 1e6,
            date  = str_remove_all(string = date, pattern = "[()p*]"),
-           date  = as.numeric(date)) %>% 
+           date  = as.numeric(date))  %>% 
     left_join(wb_data(indicator = "FP.CPI.TOTL", 
                       country = "COL", 
                       start_date = 1970, 
@@ -407,7 +413,7 @@ real_revenue_tax_dian %>%
                               CPI code WDI: FP.CPI.TOTL,
                               Variables units: constant COP Base Year 2010"),
          caption  = str_glue("Source 1: DIAN
-                              Last update date source 1: 2020-04    
+                              Last update date source 1: 2020-12    
                               Source 2:World Development Indicators (WDI) - World Bank
                               Last update date source 2: {real_revenue_tax_dian$last_updated %>% unique()}"),
          color = "") +

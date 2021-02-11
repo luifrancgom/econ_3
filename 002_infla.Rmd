@@ -137,7 +137,7 @@ $$\begin{aligned} GDP\;Deflator_t= \frac{Nominal\;GDP_t}{Real\;GDP_t} * 100\end{
 
 - Therefore __inflation__ is calculated as:
 
-$$\begin{aligned} Inflation_t= \frac{Deflator_t-Deflator_{t-1}}{Deflator_{t-1}} * 100\end{aligned}$$
+$$\begin{aligned} Inflation_t= \frac{GDP\;Deflator_t - GDP\;Deflator_{t-1}}{GDP\;Deflator_{t-1}} * 100\end{aligned}$$
 
 # Index numbers and inflation in Colombia
 

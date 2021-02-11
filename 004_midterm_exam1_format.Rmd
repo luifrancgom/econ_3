@@ -35,7 +35,7 @@ library(readxl)
 
 ```{r table, ft.align = 'center'}
 
-tibble(Indicator = c('Total Population (TP)',
+data <- tibble(Indicator = c('Total Population (TP)',
                      'Working Age Population (WAP)',
                      'Economically Active Population (EAP)',
                      'Employed (E)',
@@ -43,8 +43,8 @@ tibble(Indicator = c('Total Population (TP)',
                      'Visible Unemployment (VU)',
                      'Invisible Unemployment (IU)',
                      'Economically Inactive Population (EIP)')) %>% 
-    bind_cols(read_excel(path = '004_anexo_empleo_jun_2020.xlsx',
-                         sheet = 2, range = 'IA29:IA36', 
+    bind_cols(read_excel(path = '004_anexo_empleo_dic_2020.xlsx',
+                         sheet = 2, range = 'IG29:IG36', 
                          col_names = "Individuals")) %>% 
     mutate(Individuals = Individuals*1e3,
            Indicator = factor(Indicator, 
@@ -57,8 +57,10 @@ tibble(Indicator = c('Total Population (TP)',
                                          'Visible Unemployment (VU)',
                                          'Invisible Unemployment (IU)'))) %>% 
     arrange(Indicator) %>% 
-    slice(1:3, 5,7) %>% 
-    kable(caption = 'Some labor clasification data in Colombia on June 2020')
+    slice(1:3, 5,7)
+
+data %>% 
+    kable(caption = 'Some labor clasification data in Colombia on December 2020')
 ```
 
 1. Calculate the Population below 10 or 12 years (Rural or Urban) **(4 points)**
@@ -86,7 +88,7 @@ Using the information and the results calculated above find:
 - Enter into the Bank of the Republic (Colombia) using the route:
 
 **http://www.banrep.gov.co/** > Estadísticas > Actividad económica, mercado laboral y cuentas financieras > 
-4. Empleo y desempleo > Tasas de empleo y desempleo > Descargar y consultar: Total Nacional
+4. Mercado laboral > Tasas de ocupación y desempleo > Descargar y consultar: Total Nacional
 
 - Enter into the link:
 <**https://twitter.com/AlvaroUribeVel/status/1025061735554842625**>

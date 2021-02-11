@@ -1,7 +1,7 @@
 ---
 title: "Financial markets I"
 author: "Luis Francisco Gomez Lopez"
-date: 2020-08-10
+date: 2020-02-11 10:53:01 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -26,6 +26,7 @@ library(tidyverse)
 library(readxl)
 library(tidyquant)
 library(lubridate)
+library(latex2exp)
 ```
 
 
@@ -47,7 +48,7 @@ library(lubridate)
 
 - The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
 
-- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 4]
+- This presentation is based on [@blanchard_macroeconomics_2017, Chapter 4]
 
 # Purpose
 
@@ -85,17 +86,17 @@ Analyze the equilibrium of financial markets and the determination of the intere
 
 - **The rate**:
 
-    + In the link [**http://www.banrep.gov.co/es/estadisticas/tasas-interes-politica-monetaria**](http://www.banrep.gov.co/es/estadisticas/tasas-interes-politica-monetaria) on August 10, 2020 it was pointed out that:
+    + In the link [**http://www.banrep.gov.co/es/estadisticas/tasas-interes-politica-monetaria**](http://www.banrep.gov.co/es/estadisticas/tasas-interes-politica-monetaria) on __2020-02-11__ it was pointed out that:
     
         + *"La tasa de intervención de política monetaria es la tasa de interés mínima que el Banco de la República cobra a las entidades financieras por los préstamos que les hace mediante las operaciones de mercado abierto (OMA) que se otorgan en las subastas de expansión monetaria a un día. Esta tasa es el principal mecanismo de intervención de política monetaria usado por el Banco de la República para afectar la cantidad de dinero que circula en la economía."*
 
 ```{r}
 
 # Political interest rate August 10, 2020 (Colombia)
-i_t <- 0.0225 
+i_t <- 0.0175 
 ```
 
-    + Also the *"tasa de intervención de política monetaria"* on August 10, 2020 it was `r scales::percent(i_t, accuracy = 0.01)` 
+    + Also the *"tasa de intervención de política monetaria"* on __2020-02-11__ was `r scales::percent(i_t, accuracy = 0.01)` 
 
     + In this case the only component that we know is **the rate** which corresponds to `r scales::percent(i_t, accuracy = 0.01)`. However, we will know later the *"full name"* of this particular interest rate. 
 
@@ -161,7 +162,7 @@ i_t <- 0.0225
 
 - $i_t$ in the model for Colombia is the **"Tasa de intervención del Banco de la República".**
 
-- If $i_t =$ `r i_t` (`r scales::percent(i_t, accuracy = 0.01)`) and also it is an **annual effective overdue** interest rate then this means the following:
+- If $i_t =$ `r i_t` (`r scales::percent(i_t, accuracy = 0.01)`) and also an **annual effective overdue** interest rate then this means the following:
 
     + If a financial institution borrows $100$ **COP** from the Bank of the Republic of Colombia then a `r scales::percent(i_t, accuracy = 0.01)` interest rate would mean that at the end of the year the bank would receive `r 100*(1 + i_t)^2` **COP** from the financial institution: 
     
@@ -184,12 +185,12 @@ i_t <- 0.0225
 ```{r, out.width="90%"}
 
 pir_daily <- read_excel(path  = '005_tip_serie_historica_diaria_IQY.xlsx', 
-                      sheet = 1, range = 'A8:B5278') %>% 
+                        sheet = 1, range = 'A8:B8085') %>% 
     set_names(nm = c('date', 'pir')) %>% 
-    mutate(date = ymd(date)) %>% 
+    mutate(date = ymd(date))  %>% 
     arrange(date)
 
-    # Plot
+# Plot
 static_plot1 <- pir_daily %>% 
     ggplot(aes(x = date, y = pir)) +
     geom_line(color = palette_light()[[1]]) +
@@ -199,8 +200,8 @@ static_plot1 <- pir_daily %>%
          title    = 'Monetary policy intervention rate of the Bank of the Republic (Colombia)',
          subtitle = str_glue('Interest rate expressed as annual effective overdue
                              Frequency: daily')) +
-    scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
-                       breaks = seq(from = 0, to = 0.25, by = 0.025)) + 
+    scale_y_continuous(labels = scales::number_format(accuracy = 0.1, suffix = "%"),
+                       breaks = seq(from = 0, to = 25, by = 2.5)) + 
     expand_limits(y = 0) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
@@ -219,34 +220,39 @@ static_plot1
 
 ```{r, out.width="90%"}
 
+# https://www.banrep.gov.co > 
+# Estadísticas >
+# Tasas de interés y sector financiero >
+# 2. Otras tasas de interés #
+# Indicador Bancario de Referencia (IBR)
+# Descargar y consultar: Histórico - plazo overnight
 tib_daily <- read_excel(path  = '005_tib_serie_historica_diaria_IQY.xlsx', 
-           sheet = 1, range = 'A8:B6189') %>% 
+                        sheet = 1, range = 'A8:B6314') %>% 
     set_names(nm = c('date', 'tib')) %>% 
     mutate(date = ymd(date),
-           tib  = (str_remove(string = tib, pattern = "%") %>% 
-                    str_trim() %>% 
-                    as.double()) / 100) %>% 
+           tib  = str_remove(string = tib, pattern = "%") %>% 
+                    str_trim() %>%
+                    as.double()) %>% 
     arrange(date)
 
-ibr_daily <- read_csv(file = "005_ibr_plazo_overnight_nominal.csv") %>% 
-                    filter(NOMAGENTE == "IBR" & 
-                           `CASE  WHEN DESCRIPCION TASA = 'Tasa efectiva' THEN 'Tasa efectiva %' ELSE 'Tasa nominal %' END` == "Tasa efectiva %") %>% 
-                    select(`Fecha date`, TASA1) %>% 
-             set_names(nm = c("date", "ibr")) %>% 
-             mutate(ibr = ibr / 1e5)
+ibr_daily <- read_csv(file = "005_ibr_plazo_overnight_nominal_para_un_rango_de_fechas_dado.csv", ) %>% 
+    filter(NOMAGENTE == "IBR" & 
+               `CASE  WHEN DESCRIPCION TASA = 'Tasa efectiva' THEN 'Tasa efectiva %' ELSE 'Tasa nominal %' END` == "Tasa efectiva %") %>% 
+    select(`Fecha date`, TASA1) %>% 
+    set_names(nm = c("date", "ibr")) %>% 
+    mutate(ibr = ibr / 1e3)
 
 # Consolidate data
 pir_tib_tbr_daily <- pir_daily %>% 
     left_join(tib_daily, by = "date") %>% 
     left_join(ibr_daily, by = "date") %>%
+    drop_na() %>% 
     pivot_longer(cols = pir:ibr, names_to = "variable", values_to = "value") %>% 
     mutate(variable = case_when(
                         variable == "pir" ~ "Monetary policy intervention rate",
                         variable == "tib" ~ "Tasa interbancaria (TIB)",
                         variable == "ibr" ~ "Indicador Bancario de Referencia (IBR)",
-                        TRUE ~ variable)) %>%
-    tail(365*3)
-    
+                        TRUE ~ variable))
   
   # Plot
 static_plot2 <- pir_tib_tbr_daily %>% 
@@ -262,8 +268,8 @@ static_plot2 <- pir_tib_tbr_daily %>%
          title    = 'Monetary policy intervention rate, TIB and IBR (Colombia)',
          subtitle = str_glue('Interest rate expressed as annual effective overdue
                              Frequency: daily')) +
-    scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
-                       breaks = seq(from = 0, to = 0.25, by = 0.025)) +
+    scale_y_continuous(labels = scales::number_format(accuracy = 0.1, suffix = "%"),
+                       breaks = seq(from = 0, to = 25, by = 2.5)) + 
     scale_color_tq() +
     expand_limits(y = 0) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
@@ -283,29 +289,35 @@ static_plot2
 
 ```{r, out.width="90%"}
 
+# https://www.banrep.gov.co > 
+# Estadísticas >
+# Tasas de interés y sector financiero >
+# 2. Otras tasas de interés #
+# Tasas de captación diarias
+# Descargar y consultar: CDT Y CDAT (Formato 441) - Serie histórica
 tca_daily <- read_csv(file = "005_tca_diaria_serie_historica_IQY.csv") %>% 
-                    filter(Cuenta == "CDT" & 
-                           `Tipo de entidad` == "Total establecimientos",
-                           `Emisiones puntuales y rangos de emisión` %in% c("A 30 días", "A 60 días", "A 90 días", "A 120 días", "A 180 días", "A 360 días")) %>% 
-                    select("Fecha (DD/MM/YYYY)", "Tasa", "Emisiones puntuales y rangos de emisión") %>% 
-                    set_names(c("date", "tca", "variable")) %>%
-                    mutate(tca = str_replace(string = tca, pattern = ",", replacement = "."),
-                           tca = as.double(tca),
-                           tca = tca / 100,
-                           variable = case_when(
-                                        variable == "A 30 días" ~ "cdt_30",
-                                        variable == "A 60 días" ~ "cdt_60",
-                                        variable == "A 90 días" ~ "cdt_90",
-                                        variable == "A 120 días" ~ "cdt_120",
-                                        variable == "A 180 días" ~ "cdt_180",
-                                        variable == "A 360 días" ~ "cdt_360",
-                                        TRUE ~ variable)) %>% 
-                    arrange(date) %>% 
-                    pivot_wider(id_cols = date, names_from = "variable", values_from = "tca")
+    filter(Cuenta == "CDT" & 
+               `Tipo de entidad` == "Total establecimientos",
+           `Emisiones puntuales y rangos de emisión` %in% c("A 30 días", "A 60 días", "A 90 días", "A 120 días", "A 180 días", "A 360 días")) %>% 
+    select("Fecha (DD/MM/YYYY)", "Tasa %", "Emisiones puntuales y rangos de emisión") %>% 
+    set_names(c("date", "tca", "variable")) %>%
+    mutate(tca = str_replace(string = tca, pattern = ",", replacement = "."),
+           tca = as.double(tca),
+           variable = case_when(
+               variable == "A 30 días" ~ "cdt_30",
+               variable == "A 60 días" ~ "cdt_60",
+               variable == "A 90 días" ~ "cdt_90",
+               variable == "A 120 días" ~ "cdt_120",
+               variable == "A 180 días" ~ "cdt_180",
+               variable == "A 360 días" ~ "cdt_360",
+               TRUE ~ variable)) %>% 
+    arrange(date) %>% 
+    pivot_wider(id_cols = date, names_from = "variable", values_from = "tca")
 
 # Consolidate data
 pir_tca_cdt_daily <- pir_daily %>%
-    left_join(tca_daily, by = "date") %>%
+    left_join(tca_daily, by = "date") %>% 
+    drop_na() %>% 
     pivot_longer(cols = pir:cdt_90, names_to = "variable", values_to = "value") %>% 
     mutate(variable = case_when(
         variable == "pir" ~ "Monetary policy intervention rate",
@@ -319,8 +331,7 @@ pir_tca_cdt_daily <- pir_daily %>%
         variable = variable %>% 
                         fct_relevel(c("Monetary policy intervention rate",
                                     "CDT 30", "CDT 60", "CDT 90", "CDT 120",
-                                    "CDT 180", "CDT 360")))  %>%
-    tail(2.5*365*7)
+                                    "CDT 180", "CDT 360")))
 
 static_plot3 <- pir_tca_cdt_daily %>% 
   ggplot(aes(x = date, 
@@ -334,8 +345,8 @@ static_plot3 <- pir_tca_cdt_daily %>%
          title    = 'Monetary policy intervention rate and captive or passive interest rates CDT (Colombia)',
          subtitle = str_glue('Interest rate expressed as annual effective overdue
                              Frequency: daily')) +
-    scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
-                       breaks = seq(from = 0, to = 0.25, by = 0.025)) +
+    scale_y_continuous(labels = scales::number_format(accuracy = 0.1, suffix = "%"),
+                       breaks = seq(from = 0, to = 25, by = 2.5)) + 
     scale_color_tq() +
     expand_limits(y = 0) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
@@ -364,9 +375,6 @@ static_plot3
 # Money supply
 
 ```{r, out.width = '80%'}
-
-library(tidyverse)
-library(latex2exp)
 
 ggplot(data = tibble(x = c(0, 5, 2, 2),
                      y = c(5, 0, 2, 1))
@@ -451,7 +459,7 @@ ggplot(data = tibble(x = c(0, 5, 2, 2),
 
 - To the __[Business Science](https://www.business-science.io/)__ and __[R4DS Online Learning](https://www.rfordatasci.com/)__ communities where I learn __[R](https://www.r-project.org/about.html)__ 
 
-- To the __[R Core Team](https://www.r-project.org/contributors.html)__, the creators of __[RStudio IDE](https://rstudio.com/products/rstudio/)__ and the authors and maintainers of the packages __[tidyverse](https://CRAN.R-project.org/package=tidyverse)__, __[tidyquant](https://CRAN.R-project.org/package=tidyquant)__, __[lubridate](https://CRAN.R-project.org/package=lubridate)__, __[readxl](https://CRAN.R-project.org/package=readxl)__ and __[tinytex](https://CRAN.R-project.org/package=tinytex)__ for allowing me to access these tools without paying for a license
+- To the __[R Core Team](https://www.r-project.org/contributors.html)__, the creators of __[RStudio IDE](https://rstudio.com/products/rstudio/)__ and the authors and maintainers of the packages __[tidyverse](https://CRAN.R-project.org/package=tidyverse)__, __[tidyquant](https://CRAN.R-project.org/package=tidyquant)__, __[lubridate](https://CRAN.R-project.org/package=lubridate)__, __[readxl](https://CRAN.R-project.org/package=readxl)__, __[latex2exp](https://CRAN.R-project.org/package=latex2exp)__ and __[tinytex](https://CRAN.R-project.org/package=tinytex)__ for allowing me to access these tools without paying for a license
 
 - To the __[Linux kernel community](https://www.kernel.org/category/about.html)__ for allowing me the possibility to use some __[Linux distributions](https://static.lwn.net/Distributions/)__ as my main __[OS](https://en.wikipedia.org/wiki/Operating_system)__ without paying for a license
 
