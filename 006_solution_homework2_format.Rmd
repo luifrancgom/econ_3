@@ -114,37 +114,37 @@ In the appendix of *Chapter 4 Financial Markets I* from the book **Oliver Blanch
 
 ```{r}
 
-monetary_basse_col <- read_csv("006_depositos_en_el_sistema_financiero_PSE.csv", 
-         col_types = cols(Valor = col_number()), 
-         locale = locale(decimal_mark = ".", grouping_mark = "")) %>% 
+monetary_base_col <- read_csv("006_depositos_en_el_sistema_financiero_PSE.csv", 
+                               col_types = cols(Valor = col_number()), 
+                               locale = locale(decimal_mark = ".", grouping_mark = "")) %>% 
     select(1, 5, 10) %>% 
     set_names(nm = c("date", "variable", "value")) %>%
     filter(variable %in% c("Efectivo", "Reserva Bancaria")) %>%
     mutate(variable = case_when(
-                        variable == "Efectivo" ~ "Currency",
-                        variable == "Reserva Bancaria" ~ "Bank Reserves",
-                        variable == "Reserva Bancaria" ~ "Bank Reserves",
-                        TRUE ~ variable)) %>% 
+        variable == "Efectivo" ~ "Currency",
+        variable == "Reserva Bancaria" ~ "Bank Reserves",
+        variable == "Reserva Bancaria" ~ "Bank Reserves",
+        TRUE ~ variable)) %>% 
     pivot_wider(id_cols = date, names_from = variable, values_from = value) %>%  
     mutate(Total = Currency + `Bank Reserves`) %>% 
     pivot_longer(cols = Currency:Total, names_to = "variable", values_to = "value") %>% 
     mutate(label_text = str_glue("Date: {date}
                                  Variable: {variable}
                                  Value: {value %>% scales::number(suffix = 'B', accuracy = 1)}"))  
-    
-    # Plot
-static_plot1 <- monetary_basse_col %>% 
-    ggplot(aes(x = date, y = value, group = variable)) +
-    geom_line(aes(color = variable)) + 
-    geom_point(aes(text = label_text, fill = variable), 
-               color = "black",
-               shape = 21) +
-    geom_line() +
-    labs(x        = "Year",
-         y        = "Billions (Long scale)",
-         title    = "Nominal GDP Argentina") +
+
+# Plot
+static_plot1 <- monetary_base_col %>% 
+    ggplot(aes(x = date, 
+               y = value)) +
+    geom_point(aes(fill = variable, text = label_text), 
+               show.legend = FALSE,
+               size = 0.001) +
+    geom_line(aes(color = variable, 
+                  group = variable),
+              size = 0.5) +
     scale_y_continuous(labels = scales::number_format(suffix = "B")) +
     scale_color_tq() +
+    scale_fill_tq() +
     labs(x     = '',
          y     = 'Billions (Short Scale) of COP ',
          title = 'Monthly nominal Monetary Base in Colombia',
@@ -159,9 +159,9 @@ static_plot1 <- monetary_basse_col %>%
           legend.title      = element_text(face = "bold"),
           axis.text         = element_text(face = "bold"))
 
-    # Interactivity
-    static_plot1 %>% 
-      ggplotly(tooltip = "text")
+# Interactivity
+static_plot1 %>% 
+    ggplotly(tooltip = "text")
 ```
 
 ### Nominal interest rate fixed by the central bank
@@ -177,22 +177,23 @@ Section *4-3 Determining the interest rate II* mentions the **federals fund rate
 ```{r}
 
 i_daily <- read_excel(path  = '006_tip_serie_historica_diaria_IQY.xlsx', 
-                      sheet = 1, range = 'A8:B5277') %>% 
+                      sheet = 1, range = 'A8:B8089') %>% 
     set_names(nm = c('date', 'i')) %>% 
     mutate(date = ymd(date)) %>% 
     arrange(date) %>% 
     mutate(label_text = str_glue("Date: {date}
-                                  i: {i %>% scales::percent()}"))
-    # Plot
+                                  i: {i %>% scales::number(suffix = '%')}"))
+# Plot
 static_plot2 <- i_daily %>% 
     ggplot(aes(x = date, y = i)) +
     geom_line(color = palette_light()[[1]]) +
+    geom_point(aes(text = label_text),
+               size = 0.001) +
     labs(x        = '', 
          y        = 'Percent',
-         title    = 'Monetary policy intervention rate 
-         of the Bank of the Republic (Colombia)') +
-    scale_y_continuous(labels = scales::percent_format(accuracy = 0.1), 
-                       breaks = seq(from = 0, to = 0.25, by = 0.025)) + 
+         title    = 'Monetary policy intervention rate (Colombia)') +
+    scale_y_continuous(labels = scales::number_format(accuracy = 0.1), 
+                       breaks = seq(from = 0, to = 25, by = 2.5)) + 
     expand_limits(y = 0) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
@@ -204,9 +205,9 @@ static_plot2 <- i_daily %>%
           legend.title      = element_text(face = "bold"),
           axis.text         = element_text(face = "bold"))
 
-    # Interactivity
-    static_plot2 %>% 
-        ggplotly(tooltip = "text")
+# Interactivity
+static_plot2 %>% 
+    ggplotly(tooltip = "text")
 ```
 
 # Goods and financial markets: The IS-LM model
@@ -248,9 +249,8 @@ col_islm_real_nocommercial <- wb_data(country   = c('COL'),
 static_plot3 <- col_islm_real_nocommercial %>% 
     ggplot(aes(x     = date, 
                y     = value)) + 
-    geom_point(aes(fill = indicator, text = label_text), 
-               color = "black", 
-               shape = 21, 
+    geom_point(aes(fill = indicator, text = label_text),
+               size = 0.001,
                show.legend = FALSE) +
     geom_line(aes(color = indicator, 
                   group = indicator)) +
@@ -260,8 +260,7 @@ static_plot3 <- col_islm_real_nocommercial %>%
                                                       suffix = "B")) +
     labs(x        = "Year",
          y        = "Billions (Long scale)",
-         title    = "Colombia real domestic aggregate demand components 
-         and real GDP") +
+         title    = "Real domestic aggregate demand components and real GDP") +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),
@@ -279,7 +278,7 @@ static_plot3 <- col_islm_real_nocommercial %>%
 
 ## Exercise 5
 
-This exercises is taken from: 
+This exercises is based on:  
 
 **Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 5 Goods and Financial Markets; The IS-LM model > Questions and Problems > Exercise 5
 
@@ -291,7 +290,6 @@ $$I_t = 150 + 0.2Y_t - 1000i_t$$
 $$T_t = 100$$
 $$G_t = 200$$
 $$\overline{i}_t = 0.01 (1\%)$$
-$$(\frac{M}{P})^s = 1200$$
 $$(\frac{M}{P})^d = 2Y_t - 4000i_t$$
 
 9. Find the equation for aggregate demand. **(3.5 points)**
@@ -320,7 +318,7 @@ $$\begin{split}
    i_t & = 0.01
    \end{split}$$
 
-12. Solve for the equilibrium values of $Y_t$, $i_t$, $C_t$ and $I_t$. **(3.5 points)**
+12. Solve for the equilibrium values of $Y_t$, $i_t$, $C_t$, $I_t$ and $(\frac{M}{P})^s$. **(3.5 points)**
 
 - **Equilibrium value $Y_t$**:
 
@@ -348,15 +346,22 @@ $$\begin{split}
    I_t & = 304
    \end{split}$$
 
-13. Suppose that the central bank increases money supply to $(\frac{M}{P})^s = 1500$. What is the impact of this expansionary monetary policy on the IS and LM curves? **(3.5 points)**
+- **Equilibrium value $(\frac{M}{P})^s$**:
 
-Initially, if the central bank increases the money supply, $(\frac{M}{P})^s$, then also the central bank must decrease $i_t$ so people will accept to have money in their pockets. Therefore the **LM** will be affected taking into account that it is defined as $i_t = \overline{i}_t$. This effect can be seen later when we solve the next point where $\frac{di_t}{d(\frac{M}{P})^s} = -\frac{1}{4000} < 0$. 
+$$\begin{split}
+   (\frac{M}{P})^s & = (\frac{M}{P})^d \\
+   (\frac{M}{P})^s & = 2Y_t - 4000i_t \\
+   (\frac{M}{P})^s & = 2*820 - 4000*0.01 \\
+   (\frac{M}{P})^s & = 2*820 - 4000*0.01 \\
+   (\frac{M}{P})^s & = 1600
+   \end{split}$$
 
-Also the **IS** curve will be affected because the increases in the money supply, $(\frac{M}{P})^s$, implies a change in the interest rate, $i_t$, that affects investment, $I_t$. Because investment, $I_t$ will change then the **IS** will be affected and the direction of the change will depend on how investment is affected because  $\frac{dIS_t}{dI_t} > 0$.
 
-**Observation**: This exercise is interesting because it shows how difficult is to think when you have to understand the dynamics of an economic model where different variables are interacting and affecting each other. If you solve the next point you will see that if $(\frac{M}{P})^s$ changes from $1200$ to $1500$ then, taking into account **the overall equilibrium** of the IS-LM model, $Y_t$ will change from $820$ t0 $795$ and $i_t$ will change from $0.01 (1\%)$ to $0.0225 (2.25\%)$. 
+13. Suppose that the central bank fix the money supply to $(\frac{M}{P})^s = 1500$. What is the impact of this monetary policy on the IS and LM curves? **(3.5 points)**
 
-Initially we said that if $(\frac{M}{P})^s$ increases then $i_t$ must decrease. However as you will see in the next point $i_t$ will depend also on $Y_t$. If $(\frac{M}{P})^s$ increases also $Y_t$ will increase but the effect of this 2 variables goes in opposite directions. In the next point you will see that the increase of $Y_t$ will be greater than the increase in $(\frac{M}{P})^s$, $2∗795 > 1500$. Therefore, taking into account **the overall equilibrium** of the IS-LM model $Y_t$ will decrease and $i_t$ will increase when $(\frac{M}{P})^s$ increases.
+Initially, if the central bank fix the money supply, $(\frac{M}{P})^s = 1500$, then also the central bank must increase $i_t$ so people will accept to have less money in their pockets. Therefore the **LM** will be affected taking into account that it is defined as $i_t = \overline{i}_t$. This effect can be seen later when we solve the next point where $\frac{di_t}{d(\frac{M}{P})^s} = -\frac{1}{4000} < 0$. 
+
+Also the **IS** curve will be affected because the decrease in the money supply, $(\frac{M}{P})^s$, implies a change in the interest rate, $i_t$, that affects investment, $I_t$. Because investment, $I_t$ will change then the **IS** will be affected and the direction of the change will depend on how investment is affected because  $\frac{dIS_t}{dI_t} > 0$.
 
 14. Find the new equilibrium values of $Y_t$, $i_t$, $C_t$ and $I_t$ when $(\frac{M}{P})^s = 1500$. **(4 points)**
 

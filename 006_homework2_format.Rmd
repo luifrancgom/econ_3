@@ -84,7 +84,7 @@ Section *4-3 Determining the interest rate II* mentions the **federals fund rate
 
 ## Exercise 5
 
-This exercises is taken from: 
+This exercises is based on: 
 
 **Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 5 Goods and Financial Markets; The IS-LM model > Questions and Problems > Exercise 5
 
@@ -96,17 +96,16 @@ $$I_t = 150 + 0.2Y_t - 1000i_t$$
 $$T_t = 100$$
 $$G_t = 200$$
 $$\overline{i}_t = 0.01 (1\%)$$
-$$(\frac{M}{P})^s = 1200$$
 $$(\frac{M}{P})^d = 2Y_t - 4000i_t$$
 
 9. Find the equation for aggregate demand. **(3.5 points)**
 
 10. Derive the IS relation. **(3.5 points)**
 
-11. Derive the LM relation assuming that the central bank fix $\overline{i}_t = 0.01 (1\%)$. **(3.5 points)**
+11. Derive the LM relation assuming that the central bank fix $\overline{i}_t = 0.01 (1\%)$. Remember that the LM relation  will be an horizontal line. **(3.5 points)**
 
-12. Solve for the equilibrium values of $Y_t$, $i_t$, $C_t$ and $I_t$. **(3.5 points)**
+12. Solve for the equilibrium values of $Y_t$, $i_t$, $C_t$, $I_t$ and $(\frac{M}{P})^s$. **(3.5 points)**
 
-13. Suppose that the central bank increases money supply to $(\frac{M}{P})^s = 1500$. What is the impact of this expansionary monetary policy on the IS and LM curves? **(3.5 points)**
+13. Suppose that the central bank fix the money supply to $(\frac{M}{P})^s = 1500$. What is the impact of this monetary policy on the IS and LM curves? **(3.5 points)**
 
 14. Find the new equilibrium values of $Y_t$, $i_t$, $C_t$ and $I_t$ when $(\frac{M}{P})^s = 1500$. **(4 points)**
