@@ -222,7 +222,7 @@ ur_col <- read_excel("004_1.1.1.EMP_Total_nacional_IQY.xlsx",
 
 11. Point out if the hashtag on the twitter message is valid. **(3 points)**
 
-The hashtag is not valid and is also quite misleading. If it were true the country would be broken long ago.
+The hashtag is not valid and is also quite misleading. If it were true the country would be bankrupt long ago.
 
 # The goods market
 

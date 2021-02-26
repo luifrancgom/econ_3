@@ -1,12 +1,13 @@
 ---
 title: "Financial markets I"
 author: "Luis Francisco Gomez Lopez"
-date: 2020-02-11 10:53:01 GMT -05:00
+date: 2021-02-11 10:53:01 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
     fonttheme: structurebold
     theme: AnnArbor
+    number_sections: true
   ioslides_presentation: default
   slidy_presentation: default
 bibliography: macro_faedis.bib

@@ -1,9 +1,10 @@
 ---
 title: "Inflation"
 author: Luis Francisco Gomez Lopez
-date: 2020-01-28 10:41:17 GMT -05:00
+date: 2021-01-28 10:41:17 GMT -05:00
 output:
   beamer_presentation:
+    toc: true
     colortheme: dolphin
     fonttheme: structurebold
     theme: AnnArbor

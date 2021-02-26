@@ -1,7 +1,7 @@
 ---
 title: "Goods and financial markets: IS-LM model"
 author: "Luis Francisco Gomez Lopez"
-date: 2020-08-17
+date: 2021-02-19 16:10:09 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -64,7 +64,7 @@ library(latex2exp)
 
 - The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
 
-- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 5]
+- This presentation is based on [@blanchard_macroeconomics_2017, Chapter 5]
 
 # Purpose
 
@@ -106,7 +106,7 @@ Analyze the market of goods and financial markets jointly to examine the role of
 
 - One way to control the effect of prices on a variable that is measured in monetary units is to express it in **real** terms. This means that we seek to transform a variable in **nominal** to **real** terms. To understand the logic of the above process we are going to develop a simple example in which we review the purchasing power of 1000 **COP**[^1].
 
-    + **Example**: 1 good, 2 periods, expenditure in 2 periods (information about prices in 2 periods and quantities for a base period) [@ralphPracticalIntroductionIndex2015, p 40]
+    + **Example**: 1 good, 2 periods, expenditure in 2 periods (information about prices in 2 periods and quantities for a base period) [@ralph_practical_2015, p 40]
     
 ```{r table_price_level}
 
@@ -144,9 +144,9 @@ $$\frac{Basket\;2013}{Basket\;2012} = \frac{900*\textbf{6}}{800*\textbf{6}} * 10
 
 $$Real \; value(t) = \frac{Nominal \; value(t)}{Price \; Index(t) \; (Expressed \; in \; its \; decimal \; form)}$$
 
-- If you want to know more about transforming **nominal** values into **real** values you cant read [@federalreservebankofdallasDeflatingNominalValues2020]
+- If you want to know more about transforming **nominal** values into **real** values you cant read [@federal_reserve_bank_of_dallas_deflating_2020]
 
-- In [@federalreservebankofdallasDeflatingNominalValues2020] you can find more information about how to remove the price effect from a data series or change nominal data to real values.
+- In [@federal_reserve_bank_of_dallas_deflating_2020] you can find more information about how to remove the price effect from a data series or change nominal data to real values.
 
 # Variables of the IS-LM model in real terms
 
@@ -369,7 +369,7 @@ ggplot(data = tibble(x = c(0, 5, 2),
 
 # Regional transmission of monetary policy in Colombia
 
-- To see an application of how interest rates affect real **GDP**, we will review an exercise carried out at the regional and national level in Colombia by [@romeroprietoTransmisionRegionalPolitica2008].
+- To see an application of how interest rates affect real **GDP**, we will review an exercise carried out at the regional and national level in Colombia by [@romero_prieto_transmision_2008].
 
 - 32 departments and Bogotá are included for the period 1990:Q1 to 1993:Q4.
 
@@ -383,7 +383,7 @@ ggplot(data = tibble(x = c(0, 5, 2),
 
 # Regional transmission of monetary policy in Colombia
 
-- Percentage variation in the real GDP growth quarter by quarter due to a $1 \%$ increase in TIB [@romeroprietoTransmisionRegionalPolitica2008, p 17, fig 1]
+- Percentage variation in the real GDP growth quarter by quarter due to a $1 \%$ increase in TIB [@romero_prieto_transmision_2008, p 17, fig 1]
 
 ```{r, out.width = '65%'}
 
@@ -392,7 +392,7 @@ include_graphics(path = '006_col_islm1.png')
 
 # Regional transmission of monetary policy in Colombia
 
-- Percentage variation in the real GDP growth quarter by quarter due to a $1 \%$ increase in TIB [@romeroprietoTransmisionRegionalPolitica2008, p 18, fig 2]
+- Percentage variation in the real GDP growth quarter by quarter due to a $1 \%$ increase in TIB [@romero_prieto_transmision_2008, p 18, fig 2]
 
 ```{r, out.width = '65%'}
 
@@ -401,7 +401,7 @@ include_graphics(path = '006_col_islm2.png')
 
 # Regional transmission of monetary policy in Colombia
 
-- Percentage variation in the real GDP growth quarter by quarter due to a $1 \%$ increase in TIB [@romeroprietoTransmisionRegionalPolitica2008, p 19, fig 3]
+- Percentage variation in the real GDP growth quarter by quarter due to a $1 \%$ increase in TIB [@romero_prieto_transmision_2008, p 19, fig 3]
 
 ```{r, out.width = '65%'}
 
