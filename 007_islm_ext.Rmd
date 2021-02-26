@@ -1,7 +1,7 @@
 ---
 title: 'Financial markets II: The extended IS-LM model'
 author: "Luis Francisco Gomez Lopez"
-date: 2020-08-24
+date: 2021-02-26 11:43:26 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -60,7 +60,7 @@ library(kableExtra)
 
 - The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
 
-- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 6]
+- This presentation is based on [@blanchard_macroeconomics_2017, Chapter 6]
 
 # Purpose
 
@@ -68,7 +68,7 @@ Analyze an extension of the IS-LM model to present a more complex financial syst
 
 # Nominal and real interest rate
 
-- **Example**: 3 goods, 2 periods, expenditure in 2 periods (information about prices in 2 periods and quantities for a base period) [@ralphPracticalIntroductionIndex2015, p 40]
+- **Example**: 3 goods, 2 periods, expenditure in 2 periods (information about prices in 2 periods and quantities for a base period) [@ralph_practical_2015, p 40]
 
 ```{r table_price_level}
 
@@ -145,7 +145,7 @@ $$\begin{split}
 
 - If for example, you have a savings account with an **effective annual overdue** interest rate of $0.0025(0.25\%)$ and if the annual inflation was $0.03(3\%)$, your real return will be $0.0025 - 0.03 = -0.0275(-2.75\%)$.
 
-[^1]: The proof can be found in [@hamiltonTimeSeriesAnalysis1994, p 718, Logarithms and Percent]
+[^1]: The proof can be found in [@hamilton_time_1994, p 718, Logarithms and Percent]
 
 # Risk premium and interest rate
 

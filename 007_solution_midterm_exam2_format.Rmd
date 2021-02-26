@@ -43,43 +43,39 @@ library(latex2exp)
 
 + Enter into the Bank of the Republic (Colombia) using the route:
 
-**http://www.banrep.gov.co/** > Estadísticas > Precios e inflación > 1. Inflación al consumidor > Índice de precios al consumidor (IPC) > Descargar y consultar:Series IPC total nacional e inflación (desde 07/1954)
+**http://www.banrep.gov.co/** > Estadísticas > ¡NUEVO! Estadísticas Banrep > CATÁLOGO DE SERIES > Precios e inflación > Índices de precios al consumidor > Índice de precios al consumidor (IPC) > Base 2018 > Mensual > DESCARGAR > Descargar datos en Excel
 
 ```{r}
 
-infla_monthly <- read_excel(path  = "007_ipc_serie_variaciones-2.xlsx", 
+infla_monthly_na_values <- read_excel(path  = "007_ipc_serie_variaciones-2.xlsx", 
            sheet = 1, 
-           range = "A13:B806") %>% 
-    set_names(nm = c("date", "ipc")) %>%
-    mutate(date  = as.yearmon(as.character(date), "%Y%m") %>% 
-                        as_date(),
-           infla = (ipc - lag(ipc, n = 12)) / lag(ipc, n = 12)) %>%
-    drop_na() %>% 
-    filter_by_time(.date_var = date, .start_date = "1980-01-01")
+           range = "A2:B801") %>% 
+    set_names(nm = c("date", "ipc")) %>% 
+    mutate(date = ymd(date) %>% floor_date(unit = "month"),
+           infla = ((ipc - lag(ipc, n = 12)) / lag(ipc, n = 12)) * 100)
+
+infla_monthly <- infla_monthly_na_values %>% 
+  drop_na()
 ```
 
 1. Calculate the annual inflation using the monthly CPI that you can find in the column "IPC" from `r (infla_monthly$date[1] %>% as.character() %>% str_sub(start = 1, end = 7))` to `r (infla_monthly$date[length(infla_monthly$date)] %>% as.character() %>% str_sub(start = 1, end = 7))`. **(5 points)**
 
 **Observation 1**: If the CPI is measured monthly then to calculate the annual inflation for a particular month you must use the formula, $\pi_t=\frac{CPI_t - CPI_{t-12}}{CPI_{t-12}}$. For example if you want to calculate the annual inflation of January 2000 you need to use the CPI of January 2000 and January 1999.
 
-**Observation 2**: If the calculations are correct, you will get similar results as in the column "Inflación anual %".
+**Observation 2**: Taking into account **Observation 1** you need to begin to calculate the  annual inflation from `r (infla_monthly$date[1] %>% as.character() %>% str_sub(start = 1, end = 7))` and not from  a date between `r (infla_monthly_na_values$date[1] %>% as.character() %>% str_sub(start = 1, end = 7))` and `r (infla_monthly_na_values$date[12] %>% as.character() %>% str_sub(start = 1, end = 7))` because you don't have data before these dates to apply the formula $\pi_t=\frac{CPI_t - CPI_{t-12}}{CPI_{t-12}}$.
 
 ```{r}
 
-infla_monthly <- read_excel(path  = "007_ipc_serie_variaciones-2.xlsx", 
-           sheet = 1, 
-           range = "A13:B806") %>% 
-    set_names(nm = c("date", "ipc")) %>%
-    mutate(date  = as.yearmon(as.character(date), "%Y%m") %>% 
-                        as_date(),
-           infla = (ipc - lag(ipc, n = 12)) / lag(ipc, n = 12)) %>%
-    drop_na() %>% 
-    filter_by_time(.date_var = date, .start_date = "1980-01-01")
+ipc_base <- infla_monthly %>% 
+    filter(ipc == 100) %>% 
+    pull(date) %>% 
+    as.character() %>% 
+    str_sub(start = 1, end = 7)
 
 infla_monthly %>% 
-    mutate(infla = scales::percent(infla, accuracy = 0.01),
+    mutate(infla = scales::number(infla, accuracy = 0.01, suffix = "%"),
            date  = date %>% as.character() %>% str_sub(start = 1, end = 7)) %>% 
-    set_names(c("Date", "IPC (Base 2018-12 = 100)", "Inflation"))
+    set_names(c("Date", str_glue("IPC (Base {ipc_base} = 100)"), "Inflation"))
 ```
 
 ```{r}
@@ -91,9 +87,11 @@ static_plot1 <- infla_monthly %>%
     labs(x        = "",
          y        = "Percent",
          title    = "Annual inflation: Colombia", 
-         subtitle = str_glue("Period: {infla_monthly$date[1] %>% as.character() %>% str_sub(start = 1, end = 7)} - {infla_monthly$date[length(infla_monthly$date)] %>% as.character() %>% str_sub(start = 1, end = 7)}"),
+         subtitle = str_glue("Period: {infla_monthly$date[1] %>% as.character() %>% str_sub(start = 1, end = 7)} - {infla_monthly$date[length(infla_monthly$date)] %>% as.character() %>% str_sub(start = 1, end = 7)}
+                             Price index used: Indice de Precios al Consumidor - IPC
+                             IPC Base: {ipc_base} = 100"),
          color    = "") +
-    scale_y_continuous(labels = scales::percent_format()) +
+    scale_y_continuous(labels = scales::number_format(accuracy = 1, suffix = "%")) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),
@@ -109,22 +107,21 @@ static_plot1
 
 + Enter into the Bank of the Republic (Colombia) using the route:
 
-**http://www.banrep.gov.co/** > Estadísticas > Tasas de interés y sector financiero > 1. Tasas de interés de política monetaria > Tasas de interés de política monetaria > Descargar y consultar: Serie diaria (desde 04/01/1999)
+**http://www.banrep.gov.co/** > Estadísticas > ¡NUEVO! Estadísticas Banrep > CATÁLOGO DE SERIES > Tasas de interés y sector financiero > Tasas de interés > Tasa de política monetaria > Diaria > DESCARGAR > Descargar datos en Excel
 
-2. Calculate the mode (in statistics the mode is the value that appears most frequently) of the interest rate fixed by the Bank of the Republic (Colombia) (in the data it refers to the column "Tasa de intervención de política monetaria") **for each month in each year**. In case of a tie choose any value within the most frequent values **(5 points)**. 
+2. Calculate the mode (in statistics the mode is the value that appears most frequently) of the interest rate fixed by the Bank of the Republic (Colombia) (in the data it refers to the column "Tasa de política monetaria") **for each month in each year**. In case of a tie choose any value within the most frequent values **(5 points)**. 
 
 ```{r}
 
-i_mode_monthly <- read_excel(path  = "007_tip_Serie histórica diaria IQY.xlsx", 
+i_mode_monthly <- read_excel(path  = "007_tip_serie_historica_diaria_IQY.xlsx", 
            sheet = 1, 
-           range = "A8:B5285") %>% 
+           range = "A2:B8408") %>% 
     set_names(nm = c("date", "i")) %>% 
     mutate(date = ymd(date)) %>% 
-    arrange(date) %>% 
     summarize_by_time(.date_var = date, .by = "month", i = modeest::mfv1(i))
 
 i_mode_monthly %>% 
-    mutate(i = i %>% scales::percent(accuracy = 0.01)) %>% 
+    mutate(i = i %>% scales::number(accuracy = 0.01, suffix = "%")) %>% 
     set_names(nm = c("Date", "i"))
 ```
 
@@ -140,7 +137,7 @@ static_plot2 <- i_mode_monthly %>%
          subtitle = str_glue("In the case of a tie the first most frequent value is choosen
                              Period: {i_mode_monthly$date[1] %>% as.character() %>% str_sub(start = 1, end = 7)} - {i_mode_monthly$date[length(i_mode_monthly$date)] %>% as.character() %>% str_sub(start = 1, end = 7)}"),
          color    = "") +
-    scale_y_continuous(labels = scales::percent_format()) +
+    scale_y_continuous(labels = scales::number_format(accuracy = 1, suffix = "%")) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),
@@ -170,7 +167,10 @@ r_approx <- i_mode_monthly %>%
 
 r_approx %>% 
     select(date, i, infla, r_approx) %>% 
-    mutate_if(.predicate = is.numeric, .funs = scales::percent, accuracy = 0.01) %>% 
+    mutate(across(.cols    = i:r_approx, 
+                  .fns     = scales::number, 
+                  accuracy = 0.01, 
+                  suffix   = "%")) %>%
     set_names(c("Date", "i", "Inflation", "r (approx)"))
 ```
 
@@ -178,15 +178,20 @@ r_approx %>%
 
 **Observation 1**: Take into account that the objective is to calculate $r_t$ and not $1+r_t$.
 
+**Observation 2**: To apply the formula $1+r_t = \frac{1+i_t}{1+\pi_{t+12}}$ to calculate $r_t$ take into account that $i_t$ and $\pi_{t+12}$ must be expressed in it's decimal form. 
+
 ```{r}
 
 r_approx_exact <- r_approx %>%
-                    mutate(r_exact = ((1 + i) / (1 + lead(infla, n = 12))) - 1) %>% 
+                    mutate(r_exact = (((1 + (i / 100)) / (1 + lead((infla / 100), n = 12))) - 1) * 100) %>% 
                     drop_na()
 
 r_approx_exact %>% 
     select(date, i, infla, r_approx, r_exact) %>% 
-    mutate_if(.predicate = is.numeric, .funs = scales::percent, accuracy = 0.01) %>% 
+    mutate(across(.cols    = i:r_exact, 
+                  .fns     = scales::number, 
+                  accuracy = 0.01, 
+                  suffix   = "%")) %>% 
     set_names(c("Date", "i", "Inflation", "r (approx)", "r (exact)"))
 ```
 
@@ -217,7 +222,7 @@ r_approx_exact_clean %>%
          title    = "Monetary policy intervention rate: i and r (exact and approximated)", 
          subtitle = str_glue("Period: {r_approx_exact_clean$date[1]} - {r_approx_exact_clean$date[length(r_approx_exact_clean$date)]}"),
          color    = "") +
-    scale_y_continuous(labels = scales::percent_format()) +
+    scale_y_continuous(labels = scales::number_format(accuracy = 1, suffix = "%")) +
     scale_color_tq() +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
@@ -300,17 +305,15 @@ $$\begin{split}
 
 **Observation 1**: Be clear and precise in the explanation and please don’t include “bullshit” (Sorry for the last word but I did not find a better expression where I am using it in the sense indicated in **https://en.wikipedia.org/wiki/Bullshit**).
 
-- The financial crisis of 2008 in the USA generated a shift of the **IS** curve to the left where equilibrium production went from $\widehat{Y}^*$ to $\widehat{Y}^{**}$ as shown in the graph below. To mitigate the effects of the crisis, the Obama administration used fiscal policy by cutting taxes, $\widehat{T}$, and increasing the public spending, $\widehat{G}$, causing the **IS** curve to shift to the right. 
+- The financial crisis of 2008 in the USA generated a shift of the **IS** curve to the left where equilibrium production went from $\widehat{Y}^*$ to $\widehat{Y}^{**}$ as shown in the plot below. To mitigate the effects of the crisis, the Obama administration used fiscal policy by cutting taxes, $\widehat{T}$, and increasing the public spending, $\widehat{G}$, causing the **IS** curve to shift to the right. 
 
 - In addition, from the point of view of monetary policy, the aim was to reduce the nominal intervention interest rate, $i$ and ,so that the real interest rate would decrease,$r$, moving the **LM** curve downward. 
 
-- Finally, the **Federal Reserve System (FED)** (central bank system of the USA) sought to reduce the risk premium, $x$, using an unconventional monetary policy that helped a greater shift of the IS curve to the right. 
+- Finally, the **Federal Reserve System (FED)** (central bank system of the USA) sought to reduce the risk premium, $x$, using an unconventional monetary policy that helped a greater shift of the IS curve to the right.
+
 - These measures achieved that the equilibrium production was $\widehat{Y}^{***}$ mitigating the effects of the crisis, but they did not manage to return the economy to the initial level of production, $\widehat{Y}^{*}$.
 
 ```{r}
-
-library(tidyverse)
-library(latex2exp)
 
 ggplot(data = tibble(x = c(0, 5, 2, 0.5, 1.5),
                      y = c(5, 0, 2,   2, 1.5))

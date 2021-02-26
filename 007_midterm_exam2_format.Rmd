@@ -37,32 +37,32 @@ library(zoo)
 
 + Enter into the Bank of the Republic (Colombia) using the route:
 
-**http://www.banrep.gov.co/** > Estadísticas > Precios e inflación > 1. Inflación al consumidor > Índice de precios al consumidor (IPC) > Descargar y consultar:Series IPC total nacional e inflación (desde 07/1954)
+**http://www.banrep.gov.co/** > Estadísticas > ¡NUEVO! Estadísticas Banrep > CATÁLOGO DE SERIES > Precios e inflación > Índices de precios al consumidor > Índice de precios al consumidor (IPC) > Base 2018 > Mensual > DESCARGAR > Descargar datos en Excel
 
 ```{r}
 
-infla_monthly <- read_excel(path  = "007_ipc_serie_variaciones-2.xlsx", 
+infla_monthly_na_values <- read_excel(path  = "007_ipc_serie_variaciones-2.xlsx", 
            sheet = 1, 
-           range = "A13:B806") %>% 
-    set_names(nm = c("date", "ipc")) %>%
-    mutate(date  = as.yearmon(as.character(date), "%Y%m") %>% 
-                        as_date(),
-           infla = (ipc - lag(ipc, n = 12)) / lag(ipc, n = 12)) %>%
-    drop_na() %>% 
-    filter_by_time(.date_var = date, .start_date = "1980-01-01")
+           range = "A2:B801") %>% 
+    set_names(nm = c("date", "ipc")) %>% 
+    mutate(date = ymd(date) %>% floor_date(unit = "month"),
+           infla = (ipc - lag(ipc, n = 12)) / lag(ipc, n = 12))
+
+infla_monthly <- infla_monthly_na_values %>% 
+  drop_na()
 ```
 
 1. Calculate the annual inflation using the monthly CPI that you can find in the column "IPC" from `r (infla_monthly$date[1] %>% as.character() %>% str_sub(start = 1, end = 7))` to `r (infla_monthly$date[length(infla_monthly$date)] %>% as.character() %>% str_sub(start = 1, end = 7))`. **(5 points)**
 
 **Observation 1**: If the CPI is measured monthly then to calculate the annual inflation for a particular month you must use the formula, $\pi_t=\frac{CPI_t - CPI_{t-12}}{CPI_{t-12}}$. For example if you want to calculate the annual inflation of January 2000 you need to use the CPI of January 2000 and January 1999.
 
-**Observation 2**: If the calculations are correct, you will get similar results as in the column "Inflación anual %".
+**Observation 2**: Taking into account **Observation 1** you need to begin to calculate the  annual inflation from `r (infla_monthly$date[1] %>% as.character() %>% str_sub(start = 1, end = 7))` and not from  a date between `r (infla_monthly_na_values$date[1] %>% as.character() %>% str_sub(start = 1, end = 7))` and `r (infla_monthly_na_values$date[12] %>% as.character() %>% str_sub(start = 1, end = 7))` because you don't have data before these dates to apply the formula $\pi_t=\frac{CPI_t - CPI_{t-12}}{CPI_{t-12}}$.
 
 + Enter into the Bank of the Republic (Colombia) using the route:
 
-**http://www.banrep.gov.co/** > Estadísticas > Tasas de interés y sector financiero > 1. Tasas de interés de política monetaria > Tasas de interés de política monetaria > Descargar y consultar: Serie diaria (desde 04/01/1999)
+**http://www.banrep.gov.co/** > Estadísticas > ¡NUEVO! Estadísticas Banrep > CATÁLOGO DE SERIES > Tasas de interés y sector financiero > Tasas de interés > Tasa de política monetaria > Diaria > DESCARGAR > Descargar datos en Excel
 
-2. Calculate the mode (in statistics the mode is the value that appears most frequently) of the interest rate fixed by the Bank of the Republic (Colombia) (in the data it refers to the column "Tasa de intervención de política monetaria") **for each month in each year**. In case of a tie choose any value within the most frequent values **(5 points)**. 
+2. Calculate the mode (in statistics the mode is the value that appears most frequently) of the interest rate fixed by the Bank of the Republic (Colombia) (in the data it refers to the column "Tasa de política monetaria") **for each month in each year**. In case of a tie choose any value within the most frequent values **(5 points)**.
 
 3. Calculate the real interest rate **for each month in each year** using the information found in point 1 and point 2, the information available and the formula $r_t = i_t - \pi_{t+12}$. **(5 points)**
 
@@ -75,6 +75,8 @@ infla_monthly <- read_excel(path  = "007_ipc_serie_variaciones-2.xlsx",
 4. Calculate the real interest rate **for each month in each year** using the information found in point 1 and point 2, the information available, the formula $1+r_t = \frac{1+i_t}{1+\pi_{t+12}}$ and taking into account the observations pointed out in point 3. **(5 points)**
 
 **Observation 1**: Take into account that the objective is to calculate $r_t$ and not $1+r_t$.
+
+**Observation 2**: To apply the formula $1+r_t = \frac{1+i_t}{1+\pi_{t+12}}$ to calculate $r_t$ take into account that $i_t$ and $\pi_{t+12}$ must be expressed in it's decimal form.
 
 5. Plot the values of the interest rate fixed by the Bank of the Republic (Colombia) and the real interest rate for each month in each year using both formulas, $r_t = i_t - \pi_{t+12}$ and $1+r_t = \frac{1+i_t}{1+\pi_{t+12}}$, where the x-axis corresponds to the date and y-axis corresponds to the value of these variables. **(5 points)**
 
