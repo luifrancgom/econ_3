@@ -1,7 +1,7 @@
 ---
 title: 'The Goods Market in an Open Economy'
 author: "Luis Francisco Gomez Lopez"
-date: 2020-09-06
+date: 2021-03-10 09:12:36 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -63,7 +63,7 @@ library(kableExtra)
 
 - The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
 
-- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 18]
+- This presentation is based on [@blanchard_macroeconomics_2017, Chapter 18]
 
 # Purpose
 
@@ -410,7 +410,7 @@ $$\begin{split}
     
 - In an open economy the income of individuals **within** a territory includes the income obtained **within** the territory and represented by $\widehat{Y}$ as well as other income from the **rest of the world**. 
 
-- We are going to include this aspect using elements from the **Balance of Payments (BOP)** and taking into account [@internationalmonetaryfundBalancePaymentsInternational2009]
+- We are going to include this aspect using elements from the **Balance of Payments (BOP)** and taking into account [@international_monetary_fund_balance_2009]
     
 # IS curve and the Balance of Payments (BOP)
 

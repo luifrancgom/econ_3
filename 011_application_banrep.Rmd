@@ -1,7 +1,7 @@
 ---
-title: "The Board of Directors' Report to the Congress of Colombia (March 2020)"
+title: "The Board of Directors' Report to the Congress of Colombia (July 2020)"
 author: "Luis Francisco Gomez Lopez"
-date: 2020-09-10
+date: 2021-03-12 12:31:33 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -65,7 +65,7 @@ library(tidyquant)
 
 - The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
 
-- This presentation is based on [@bancodelarepublicaInformeJuntaDirectiva2020, Chapter 2]
+- This presentation is based on [@carrasquilla-barrera_informe_2020, Chapter 2]
 
 # Purpose
 
@@ -77,18 +77,17 @@ Examine an application of the macroeconomic concepts seen throughout the course.
 
     + The Board of Directors' Report to the Congress of Colombia
     + Monetary Policy Report (former Inflation Report)
-    + Governor´s Report
     + Financial Stability Report
     + Foreign Reserve Management Report
     + Payment Systems Report
-
-[^1]: Ley 31 de 1992, Artículo 5
 
 # Why read the Board of Directors' Report to the Congress of Colombia?
 
 - One way to know in general the macroeconomic environment that affects companies is the **The Board of Directors' Report to the Congress of Colombia** where by law[^1] the Bank of the Republic presents to the congress the execution of monetary, exchange and credit policies, the foreign reserve management and the financial situation of the central bank.
 
 - This report usually includes information about economic activity, the labor market, inflation, the financial sector and a balance of the external sector. The above aspects are relevant to understand the macroeconomic environment of the companies in Colombia.
+
+[^1]: Ley 31 de 1992, Artículo 5
 
 # Why read the Board of Directors' Report to the Congress of Colombia?
 
@@ -99,7 +98,7 @@ Examine an application of the macroeconomic concepts seen throughout the course.
 # Variables indicated in the report and seen throughout the course
 
 \tiny
-- Real GDP growth [@bancodelarepublicaInformeJuntaDirectiva2020, p 33, table 2.1]
+- Real GDP growth [@carrasquilla-barrera_informe_2020, p 37, table 2.1]
 
 ```{r, out.width = '65%'}
 
@@ -129,7 +128,7 @@ include_graphics(path = '011_Cuadro_2-1.png')
 # Variables indicated in the report and seen throughout the course
 
 \tiny
-- Real GDP growth by sectors [@bancodelarepublicaInformeJuntaDirectiva2020, p 34, table 2.2]
+- Real GDP growth by sectors [@carrasquilla-barrera_informe_2020, p 36, table 2.2]
 
 ```{r, out.width = '65%'}
 
@@ -160,26 +159,26 @@ tibble(Sector = c("Agriculture, hunting, forestry and fishing",
 ```
   
 [^4]: Measure as the sum of the aggregate value of companies
-[^5]: An explanation about, $\widehat{T}_t$, can be found in [@unitednationsNationalAccountsPractical2004, Chapter 1, p 5, Item 1.5]
+[^5]: An explanation about, $\widehat{T}_t$, can be found in [@united_nations_national_2004, Chapter 1, p 5, Item 1.5]
 
 # Observations about data of the Labor Market used in the report
 
 \tiny
-- Unemployment rate [@bancodelarepublicaInformeJuntaDirectiva2020, p 37, plot 2.2]
+- Unemployment rate [@carrasquilla-barrera_informe_2020, p 39, plot 2.23a]
 
 ```{r, out.width = '60%'}
 
-include_graphics(path = '011_Grafico_2-2a.png')
+include_graphics(path = '011_Grafico_2-23a.png')
 ```
 
 # Observations about data of the Labor Market used in the report
 
 \tiny
-- Employment rate [@bancodelarepublicaInformeJuntaDirectiva2020, p 37, plot 2.2]
+- Unemployment rate [@carrasquilla-barrera_informe_2020, p 39, plot 2.23b]
 
 ```{r, out.width = '60%'}
 
-include_graphics(path = '011_Grafico_2-2b.png')
+include_graphics(path = '011_Grafico_2-23b.png')
 ```
 
 # Observations about data of the Labor Market shown in the report
@@ -190,11 +189,11 @@ include_graphics(path = '011_Grafico_2-2b.png')
 
     + Where $x_n$ is monthly data.
 
-[^6]: For more information about the methods used please check [@beedagumSeasonalAdjustmentMethods2016]
+[^6]: For more information about the methods used please check [@bee_dagum_seasonal_2016]
 
 # Observations about data of the Labor Market shown in the report
 
-- The data used to generate **"Gráfico 2. Tasa de desempleo y de ocupación por dominios (trimestre móvil desestacionalizado)"** can be examine in:
+- The data used to generate **"Gráfico 2.23 Tasa de desempleo por dominios (series desestacionalizadas)"** can be examine in:
 
     + https://www.dane.gov.co/ > "Estadísticas por Tema" > Mercado Laboral > "Gran Encuesta Integrada de Hogares - GHEI -" > "Empleo y Desempleo" > "Series desestacionalizadas" 
     
@@ -203,13 +202,13 @@ include_graphics(path = '011_Grafico_2-2b.png')
 ```{r, out.width = '80%'}
 
 # Data not seasonally adjusted series
-vars <- read_excel(path      = "011_anexo_empleo_jul_20-1.xlsx", 
-           sheet     = 2, 
-           range     = "A14:IB17", 
-           col_names = FALSE) %>% 
+vars <- read_excel(path      = "011_anexo_empleo_ene_21.xlsx", 
+                   sheet     = 2, 
+                   range     = "A14:IH17",
+                   col_names = FALSE) %>% 
     slice(3:4) %>% 
     set_names(c("variable", seq.Date(from = ymd("2001-01-01"), 
-                                     to   = ymd("2020-07-01"), by = "1 month") %>% as.character())) %>% 
+                                     to   = ymd("2021-01-01"), by = "1 month") %>% as.character())) %>% 
     pivot_longer(cols      = -variable, 
                  names_to  = "date", 
                  values_to = "value") %>% 
@@ -218,13 +217,13 @@ vars <- read_excel(path      = "011_anexo_empleo_jul_20-1.xlsx",
     mutate(date = ymd(date))
 
 # Data seasonally adjusted series
-vars_season_adj <- read_excel(path      = "011_anexo_desestacionalizado_empleo_jul_20.xlsx", 
+vars_season_adj <- read_excel(path      = "011_anexo_desestacionalizado_empleo_ene_21.xlsx", 
                               sheet     = 2, 
-                              range     = "A14:IB16", 
+                              range     = "A14:IH20", 
                               col_names = FALSE) %>% 
     slice(2:3) %>% 
     set_names(c("variable", seq.Date(from = ymd("2001-01-01"), 
-                                     to   = ymd("2020-07-01"), by = "1 month") %>% as.character()))  %>% 
+                                     to   = ymd("2021-01-01"), by = "1 month") %>% as.character()))  %>% 
     pivot_longer(cols      = -variable, 
                  names_to  = "date", 
                  values_to = "value") %>% 
@@ -233,7 +232,7 @@ vars_season_adj <- read_excel(path      = "011_anexo_desestacionalizado_empleo_j
     mutate(date = ymd(date))
 
 # Data clean
-vars_vs_vars_season_adj_roll <- vars %>% 
+vars_season_adj_roll3 <- vars %>% 
     left_join(vars_season_adj, by = "date") %>% 
     mutate(er_season_adj_roll3 = rollmean(er_season_adj, 
                                           k     = 3, 
@@ -242,19 +241,17 @@ vars_vs_vars_season_adj_roll <- vars %>%
            ur_season_adj_roll3 = rollmean(ur_season_adj, 
                                           k     = 3, 
                                           align = "right", 
-                                          fill  = NA)) %>%
-    drop_na() %>% 
-    select(date, er, ur, er_season_adj_roll3, ur_season_adj_roll3)
+                                          fill  = NA))
 
-# Plot ur vs ur_season_adj_roll3 
-vars_vs_vars_season_adj_roll %>% 
-    select(date, ur, ur_season_adj_roll3) %>% 
-    pivot_longer(cols     = ur:ur_season_adj_roll3, 
+# Plot ur vs ur_season_adj 
+vars_season_adj_roll3 %>% 
+    select(date, ur, ur_season_adj) %>% 
+    pivot_longer(cols     = ur:ur_season_adj, 
                  names_to = "variable", values_to = "value") %>%
     mutate(variable = case_when(
-                        variable == "ur" ~ "Total unemployment rate (UR)",
-                        variable == "ur_season_adj_roll3" ~ "Total unemployment rate (UR)\nseasonally adjusted quarterly moving average",
-                        TRUE ~ variable)) %>% 
+        variable == "ur" ~ "Total unemployment rate (UR)",
+        variable == "ur_season_adj" ~ "Total unemployment rate (UR)\nseasonally adjusted",
+        TRUE ~ variable)) %>% 
     ggplot(aes(x = date, 
                y = value)) + 
     geom_line(aes(color = variable, 
@@ -263,17 +260,16 @@ vars_vs_vars_season_adj_roll %>%
          y        = "Percent",
          color    = "",
          title    = str_glue("Total monthly unemployment rate (UR) vs 
-                             total  monthly unemployment rate (UR) seasonally adjusted quarterly moving average"),
-         subtitle = str_glue("Period: from {vars_vs_vars_season_adj_roll$date[1] %>% format(format = '%Y-%m') } to {vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)] %>% format(format = '%Y-%m')}
-                             Data points: {nrow(vars_vs_vars_season_adj_roll)}"),
+                             total  monthly unemployment rate (UR) seasonally adjusted"),
+         subtitle = str_glue("Period: from {vars_season_adj_roll3$date[1] %>% format(format = '%Y-%m') } to {vars_season_adj_roll3$date[length(vars_season_adj_roll3$date)] %>% format(format = '%Y-%m')}"),
          caption  = str_glue("Source: Departamento Admnistrativo Nacional de Estadística - DANE
-                             Last update date: 2020-08-31")) +
+                             Last update date: 2021-02-26")) +
     scale_y_continuous(labels = scales::number_format(suffix = "%", accuracy = 1)) +
-    scale_x_date(breaks      = seq.Date(from = vars_vs_vars_season_adj_roll$date[1],
-                                        to = vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)], 
+    scale_x_date(breaks      = seq.Date(from = vars_season_adj_roll3$date[1],
+                                        to = vars_season_adj_roll3$date[length(vars_season_adj_roll3$date)], 
                                         by = "1 year"),
-                 date_labels = "%Y-%m", limits = c(vars_vs_vars_season_adj_roll$date[1], 
-                                                   vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)]))  +
+                 date_labels = "%Y-%m", limits = c(vars_season_adj_roll3$date[1], 
+                                                   vars_season_adj_roll3$date[length(vars_season_adj_roll3$date)]))  +
     scale_color_tq() +
     scale_fill_tq() +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
@@ -292,14 +288,14 @@ vars_vs_vars_season_adj_roll %>%
 
 ```{r, out.width="80%"}
 
-# Plot er vs er_season_adj_roll3 
-vars_vs_vars_season_adj_roll %>% 
-    select(date, er, er_season_adj_roll3) %>% 
-    pivot_longer(cols     = er:er_season_adj_roll3, 
+# Plot ur vs ur_season_adj_roll3 
+vars_season_adj_roll3 %>%
+    select(date, ur, ur_season_adj_roll3) %>% 
+    pivot_longer(cols     = ur:ur_season_adj_roll3, 
                  names_to = "variable", values_to = "value") %>%
     mutate(variable = case_when(
-        variable == "er" ~ "Total employment rate (ER)",
-        variable == "er_season_adj_roll3" ~ "Total employment rate (ER)\nseasonally adjusted quarterly moving average",
+        variable == "ur" ~ "Total unemployment rate (UR)",
+        variable == "ur_season_adj_roll3" ~ "Total unemployment rate (UR)\nseasonally adjusted quarterly moving average",
         TRUE ~ variable)) %>% 
     ggplot(aes(x = date, 
                y = value)) + 
@@ -308,18 +304,17 @@ vars_vs_vars_season_adj_roll %>%
     labs(x        = "",
          y        = "Percent",
          color    = "",
-         title    = str_glue("Total monthly employment rate (ER) vs 
-                             total  monthly employment rate (ER) seasonally adjusted quarterly moving average"),
-         subtitle = str_glue("Period: from {vars_vs_vars_season_adj_roll$date[1] %>% format(format = '%Y-%m') } to {vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)] %>% format(format = '%Y-%m')}
-                             Data points: {nrow(vars_vs_vars_season_adj_roll)}"),
+         title    = str_glue("Total unemployment rate (UR) vs 
+                             total  unemployment rate (UR) seasonally adjusted quarterly moving average"),
+         subtitle = str_glue("Period: from {vars_season_adj_roll3$date[1] %>% format(format = '%Y-%m') } to {vars_season_adj_roll3$date[length(vars_season_adj_roll3$date)] %>% format(format = '%Y-%m')}"),
          caption  = str_glue("Source: Departamento Admnistrativo Nacional de Estadística - DANE
-                             Last update date: 2020-08-31")) +
+                             Last update date: 2021-02-26")) +
     scale_y_continuous(labels = scales::number_format(suffix = "%", accuracy = 1)) +
-    scale_x_date(breaks      = seq.Date(from = vars_vs_vars_season_adj_roll$date[1],
-                                        to = vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)], 
+    scale_x_date(breaks      = seq.Date(from = vars_season_adj_roll3$date[1],
+                                        to = vars_season_adj_roll3$date[length(vars_season_adj_roll3$date)], 
                                         by = "1 year"),
-                 date_labels = "%Y-%m", limits = c(vars_vs_vars_season_adj_roll$date[1], 
-                                                   vars_vs_vars_season_adj_roll$date[length(vars_vs_vars_season_adj_roll$date)]))  +
+                 date_labels = "%Y-%m", limits = c(vars_season_adj_roll3$date[1], 
+                                                   vars_season_adj_roll3$date[length(vars_season_adj_roll3$date)]))  +
     scale_color_tq() +
     scale_fill_tq() +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
@@ -337,14 +332,14 @@ vars_vs_vars_season_adj_roll %>%
 # Inflation measures mentioned in the report
 
 \tiny
-- Inflation [@bancodelarepublicaInformeJuntaDirectiva2020, p 41, table 2.3]
+- Inflation [@carrasquilla-barrera_informe_2020, p 42, table 2.3]
 
 ```{r, out.width = '55%'}
 
 include_graphics(path = '011_Cuadro_2-3.png')
 ```
 
-# Inflation measures mentioned in the report
+# Inflation measures mentioned in the report[^7]
 
 - **Tradable inflation**
 
@@ -361,8 +356,10 @@ include_graphics(path = '011_Cuadro_2-3.png')
         + Fuels
         + Public services
         + Some transportation services
+
+[^7]: Please check out [@gonzalez-molano_nueva_2020] for an update about this aspect and specially Annex 4
     
-# Inflation measures mentioned in the report
+# Inflation measures mentioned in the report[^8] 
 
 - **Food inflation**
 
@@ -374,6 +371,8 @@ include_graphics(path = '011_Cuadro_2-3.png')
     
         + Food
         + Fuels, public services or transportation services that are regulated
+        
+[^8]: Please check out [@gonzalez-molano_nueva_2020] for an update about this aspect and specially Annex 4
         
 # Acknowledgments
 
@@ -387,4 +386,4 @@ include_graphics(path = '011_Cuadro_2-3.png')
 
 - To the __[Linux kernel community](https://www.kernel.org/category/about.html)__ for allowing me the possibility to use some __[Linux distributions](https://static.lwn.net/Distributions/)__ as my main __[OS](https://en.wikipedia.org/wiki/Operating_system)__ without paying for a license
 
-# References
+# References {.allowframebreaks}

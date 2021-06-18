@@ -100,8 +100,8 @@ tibble::tibble(Week = c(1:9, 9),
                           rep("[@blanchard_macroeconomics_2017]", times = 7),
                           "[@carrasquilla-barrera_informe_2020]"),
        Chapter        = c("1 & 2", "2", "3", "4", "5", "6", "17", "18", "19", "2"),
-       `Initial page` = c(26, 1, 70, 90, 112, 134, 372, 392, 414, 31),
-       `Final page`   = c(63, 31, 89, 107, 132, 153, 391, 413, 433, 67)) %>%
+       `Initial page` = c(26, 1, 70, 90, 112, 134, 372, 392, 414, 17),
+       `Final page`   = c(63, 31, 89, 107, 132, 153, 391, 413, 433, 43)) %>%
   dplyr::mutate(`Number of pages` = (`Final page` - `Initial page`) + 1) %>% 
   knitr::kable()
 ```
@@ -296,7 +296,7 @@ tibble::tibble(Week = c(1:9, 9),
 - March 28
 
     + __Final Exam Closing__
-        + __Closing time__: 00:00 hours
+        + __Closing time__: 22:00 hours
         + __Prerequisites__:
             + Having answered the Final Exam before 22:00 hours
             

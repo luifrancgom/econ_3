@@ -122,8 +122,10 @@ i_mode_monthly <- read_excel(path  = "007_tip_serie_historica_diaria_IQY.xlsx",
 
 i_mode_monthly %>% 
     mutate(i = i %>% scales::number(accuracy = 0.01, suffix = "%")) %>% 
-    set_names(nm = c("Date", "i"))
+    set_names(nm = c("Date", "i")) %>% 
+    mutate(Date  = Date %>% as.character() %>% str_sub(start = 1, end = 7))
 ```
+
 
 ```{r}
 
@@ -171,7 +173,8 @@ r_approx %>%
                   .fns     = scales::number, 
                   accuracy = 0.01, 
                   suffix   = "%")) %>%
-    set_names(c("Date", "i", "Inflation", "r (approx)"))
+    set_names(c("Date", "i", "Inflation", "r (approx)"))  %>% 
+    mutate(Date  = Date %>% as.character() %>% str_sub(start = 1, end = 7))
 ```
 
 4. Calculate the real interest rate **for each month in each year** using the information found in point 1 and point 2, the information available, the formula $1+r_t = \frac{1+i_t}{1+\pi_{t+12}}$ and taking into account the observations pointed out in point 3. **(5 points)**
@@ -192,7 +195,8 @@ r_approx_exact %>%
                   .fns     = scales::number, 
                   accuracy = 0.01, 
                   suffix   = "%")) %>% 
-    set_names(c("Date", "i", "Inflation", "r (approx)", "r (exact)"))
+    set_names(c("Date", "i", "Inflation", "r (approx)", "r (exact)"))  %>% 
+    mutate(Date  = Date %>% as.character() %>% str_sub(start = 1, end = 7))
 ```
 
 5. Plot the values of the interest rate fixed by the Bank of the Republic (Colombia) and the real interest rate for each month in each year using both formulas, $r_t = i_t - \pi_{t+12}$ and $1+r_t = \frac{1+i_t}{1+\pi_{t+12}}$, where the x-axis corresponds to the date and y-axis corresponds to the value of these variables. **(5 points)**

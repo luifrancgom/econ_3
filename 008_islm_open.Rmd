@@ -1,7 +1,7 @@
 ---
 title: "Openness in goods and financial markets"
 author: "Luis Francisco Gomez Lopez"
-date: 2020-08-31
+date: 2021-03-05 12:03:56 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -68,7 +68,7 @@ library(kableExtra)
 
 - The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
 
-- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 17]
+- This presentation is based on [@blanchard_macroeconomics_2017, Chapter 17]
 
 # Purpose
 
@@ -95,17 +95,19 @@ Analyze the consequences of openness in the markets of goods and in the financia
 trade_sg <- wb_data(country     = c('SG'),
                     indicator   = c('NE.EXP.GNFS.ZS',
                                     'NE.IMP.GNFS.ZS'),
-                    return_wide = FALSE) %>% 
-    select(iso3c, country, date, indicator, value) %>% 
-    arrange(date) %>% 
-    mutate(indicator = case_when(
-        indicator == 'Exports of goods and services (% of GDP)' ~ 'X (% of GDP)',
-        indicator == 'Imports of goods and services (% of GDP)' ~ 'IM (% of GDP)',
+                    return_wide = FALSE)
+
+trade_sg_long <- trade_sg  %>% 
+  select(iso3c, country, date, indicator, value) %>% 
+  arrange(date) %>% 
+  mutate(indicator = case_when(
+        indicator == 'Exports of goods and services (% of GDP)' ~ 'Exports: X (% of GDP)',
+        indicator == 'Imports of goods and services (% of GDP)' ~ 'Imports: IM (% of GDP)',
         TRUE ~ indicator
     ))
 
 # Plot
-trade_sg %>%  
+trade_sg_long %>%  
     ggplot(aes(x = date, 
                y = value)) + 
     geom_point(aes(fill = indicator), 
@@ -117,12 +119,14 @@ trade_sg %>%
                color      = palette_light()[[1]]) +
     labs(x        = "Year",
          y        = "Percent",
+         fill     = "",
+         color    = "",
          title    = "Singapore imports and exports as percent of GDP",
          subtitle = str_glue("Variables Units: percent
                               Imports WDI code : NE.IMP.GNFS.ZS
                               Exports WDI: NE.EXP.GNFS.ZS"),
          caption  = str_glue("Source: World Development Indicators - World Bank,
-                              Last update: 2020-08-18"),
+                              Last update: {unique(trade_sg$last_updated)}"),
          color = "") +
     scale_y_continuous(labels = scales::number_format(accuracy = 1, suffix = "%")) +
     scale_color_tq() +
@@ -132,7 +136,7 @@ trade_sg %>%
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),
           legend.background = element_rect(fill = "#f3fcfc"),
-          legend.position   = "none",
+          legend.position   = "bottom",
           plot.title        = element_text(face = "bold"),
           axis.title        = element_text(face = "bold"),
           legend.title      = element_text(face = "bold"),
@@ -171,30 +175,37 @@ trade_sg %>%
 
 ```{r, out.width = '90%'}
 
-# Data
 cop_usd_trm <- read_csv(file   = "008_trm_cop_usd_consolidado_series.csv", 
-                        locale = locale(decimal_mark = ",")) %>% 
-    select(`Fecha (dd/mm/aaaa)`, TRM) %>% 
+         locale = locale(decimal_mark = ".")) %>% 
     set_names(nm = c("date", "trm")) %>% 
-    arrange(date) %>% 
-    mutate(trm_change = (trm - lag(trm)))
+    left_join(read_csv(file = "008_tcm_banda_cambiaria_serie_historica.csv", 
+                       locale = locale(decimal_mark = ",")) %>% 
+                  set_names(nm = c("date", "trm_floor", "trm_medio", "trm_ceiling")), 
+              by = "date") %>% 
+    select(-trm_medio) %>% 
+    pivot_longer(cols = trm:trm_ceiling)
 
-    # Plot
+# Plot
 cop_usd_trm %>%
-    ggplot(aes(x = date, y = trm)) +
-    geom_line(color = palette_light()[[1]]) +
+    ggplot(aes(x = date, y = value, group = name)) +
+    geom_line(aes(color = name), 
+              show.legend = FALSE) +
+    geom_vline(xintercept = ymd("1994-01-24"),
+               color      = palette_light()[[4]]) +
     geom_vline(xintercept = ymd("1999-09-25"),
-               color      = palette_light()[[3]]) +
-    annotate(x     = ymd("1995-01-01"), 
+               color      = palette_light()[[4]]) +
+    annotate(x     = ymd("1997-01-01"), 
              y     = 3500, 
              geom  = "label",
              color = "white",
              fill  = palette_light()[[1]],
              label = str_glue("On 1999-09-25
-                              the currency band system 
-                              was abandoned by
-                              the Bank of the
+                              the currency band 
+                              system was 
+                              abandoned by the 
+                              Bank of the
                               Republic")) +
+    scale_color_tq() +
     labs(x        = "",
          y        = "COP/USD",
          title    = "Daily MRE (COP/USD)", 
@@ -262,25 +273,15 @@ cop_usd_trm %>%
 
     + Where $E_t$ is the *nominal* exchange rate expressed as the amount of **units of national currency** that must be given in exchange for a **unit of foreign currency**, $P_{jt}$ is a price index used abroad and $P_{it}$ is a national price index.
     
-- If you want to construct your own bilateral real exchange rate or see a specific example see [@neelyConstructingBilateralReal2020]
+- If you want to construct your own bilateral real exchange rate or see a specific example see [@neely_constructing_2020]
     
 # Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
 
 ```{r, out.width = '80%'}
 
 # Data
-bi_itcr_usa <- read_excel(path  = '008_bilaterales_IQY.xlsx',
-           sheet = 1,
-           range = 'A11:W415') %>%
-    select(1, 12) %>%
-    set_names(nm = c('date', 'bi_itcr_usa')) %>%
-    mutate(date  = as.character(date),
-           year  = str_sub(date, end = 4),
-           month = str_sub(date, start = -2)) %>%
-    select(-date) %>%
-    unite(col = 'date', year, month, sep = '-') %>%
-    mutate(date = as.yearmon(date, '%Y-%m') %>%
-             as.Date(frac = 1))
+bi_itcr_usa <- read_csv(file = '008_bilaterales_IQY_col_usa.csv') %>%
+    set_names(nm = c('date', 'bi_itcr_usa'))
 
 # Plot
 bi_itcr_usa %>% 
@@ -293,15 +294,15 @@ bi_itcr_usa %>%
                             ymd('2000-01-31'),
                             ymd('2010-01-31'),
                             ymd('2020-01-31')),
-                 date_labels = '%Y-%m') +
+                 date_labels = '%Y') +
     labs(x       = '',
          y       = 'ITCR (Mean 2010 = 100)',
-        title    = 'Monthly Bilateral ITCR Colombia - USA',
-        subtitle = str_glue('ITCR: "Índice de la tasa de cambio real"
+         title    = 'Monthly Bilateral ITCR Colombia - USA',
+         subtitle = str_glue('ITCR: "Índice de la tasa de cambio real"
                             Base period: Mean 2010 = 100
                             Used price indices: Producer Price Index (PPI) for Colombia and USA
                             Observation: The data for the last 12 months are provisional'),
-        caption  = str_glue('Source: Banco de la República - Colombia
+         caption  = str_glue('Source: Banco de la República - Colombia
                             Methodology: (Banrep 2015)')) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
@@ -311,7 +312,6 @@ bi_itcr_usa %>%
           axis.title        = element_text(face = "bold"),
           legend.title      = element_text(face = "bold"),
           axis.text         = element_text(face = "bold"))
-
 ```
 
 # Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
@@ -320,30 +320,19 @@ bi_itcr_usa %>%
 
 - A detailed explanation of the calculation of the **multilateral real** exchange rate is beyond the scope of this course since it is necessary to incorporate not only one but several nominal exchange rates and also a price index for each of the other territories.
 
-- For Colombia, the **multilateral real** exchange rate is calculated by the Bank of the Republic. If you want to know in detail the way it is calculated you can check out [@banrepMetodologiaCalculoIndice2015]
+- For Colombia, the **multilateral real** exchange rate is calculated by the Bank of the Republic. If you want to know in detail the way it is calculated you can check out [@banrep_metodologicalculo_2015]
 
 # Real exchange rate and "Indice de la tasa de cambio real (ITCR)" for Colombia
 
 ```{r, out.width = '80%'}
 
 # Data
-multi_itcr_ipp <- read_excel(path  = '008_serie_historica_IQY-1.xlsx',
-           sheet = 1,
-           range = 'A9:G413') %>%
-    select(1, 5) %>%
-    set_names(nm = c('date', 'multi_itcr_ipp')) %>%
-    mutate(date  = as.character(date),
-           year  = str_sub(date, end = 4),
-           month = str_sub(date, start = -2)) %>%
-    select(-date) %>%
-    unite(col = 'date', year, month, sep = '-') %>%
-    mutate(date = as.yearmon(date, '%Y-%m') %>%
-             as.Date(frac = 1),
-           multi_itcr_ipp = as.numeric(multi_itcr_ipp))
+multi_itcr_ipp <- read_csv(file  = '008_serie_historica_IQY-1_ITCRIPP_T.csv') %>%
+    set_names(nm = c('date', 'multi_itcr_ipp_t'))
 
 # Plot
 multi_itcr_ipp %>% 
-    ggplot(aes(x = date, y = multi_itcr_ipp)) +
+    ggplot(aes(x = date, y = multi_itcr_ipp_t)) +
     geom_line(color = palette_light()[[1]]) +
     geom_hline(yintercept = 100,
                color      = palette_light()[[3]]) +
@@ -352,17 +341,17 @@ multi_itcr_ipp %>%
                             ymd('2000-01-31'),
                             ymd('2010-01-31'),
                             ymd('2020-01-31')),
-                 date_labels = '%Y-%m') +
+                 date_labels = '%Y') +
     labs(x       = '',
          y       = 'ITCR (Mean 2010 = 100)',
-        title    = 'Monthly Multilateral ITCR for Colombia',
-        subtitle = str_glue('ITCR: "Índice de la tasa de cambio real"
+         title    = 'Monthly Multilateral ITCR for Colombia',
+         subtitle = str_glue('ITCR: "Índice de la tasa de cambio real (ponderaciones totales y el IPP como deflactor)"
                             Base period: Mean 2010 = 100
                             Number of other territories included: 22 countries (Germany, Argentina, Brazil, Belgium, Canada, Chile, China, South Korea, Ecuador, 
                             Spain, United States, France, Netherlands, England, Italy, Japan, Mexico, Panama, Peru, Sweden, Switzerland, Venezuela)
                             Used price indices: Producer Price Index (PPI) for every country except Panama where Consumer Price Index (IPC) is used'),
-        caption  = str_glue('Source: Banco de la República - Colombia
-                            Methodology: http://www.banrep.gov.co/sites/default/files/paginas/Metodologia_ITCR_u.PDF')) +
+         caption  = str_glue('Source: Banco de la República - Colombia
+                            Methodology: (Banrep 2015)')) +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),
@@ -371,7 +360,6 @@ multi_itcr_ipp %>%
           axis.title        = element_text(face = "bold"),
           legend.title      = element_text(face = "bold"),
           axis.text         = element_text(face = "bold"))
-
 ```
 
 # Balance of Payments
@@ -396,7 +384,7 @@ multi_itcr_ipp %>%
         
     + **Capital account**: Credit and debit entries for nonproduced nonfinancial assets and capital transfers between residents and nonresidents (**Example**: A resident buys a patent from a nonresident company)
     
-[^6]: Based on [@internationalmonetaryfundBalancePaymentsInternational2009]
+[^6]: Based on [@international_monetary_fund_balance_2009]
     
 # Balance of Payments
 
@@ -406,7 +394,7 @@ multi_itcr_ipp %>%
         
     + **Net errors and omissions**: imperfections in source data and compilation
 
-[^7]: Based on [@internationalmonetaryfundBalancePaymentsInternational2009]
+[^7]: Based on [@international_monetary_fund_balance_2009]
 
 # Balance of Payments
 

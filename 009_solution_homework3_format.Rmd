@@ -63,7 +63,7 @@ data_trade <- wb_data(country   = c('COL'),
 
 data_trade %>%
     select(date, x, im, net_x) %>% 
-    mutate_at(vars(x:net_x), scales::dollar) %>% 
+    mutate(across(x:net_x, scales::dollar)) %>% 
     set_names(nm = c("Date", "Exports", "Imports", "Net exports"))
 ```
 
@@ -191,7 +191,7 @@ static_plot2 %>%
 
 5. Point out if it is possible that **imports** or **exports** can be greater than **GDP**. Then explain why or why not imports can be greater than **GDP** supporting your answer with an example or using elements from macroeconomic theory. **(3.5 points)** 
 
-**Observation 1**: Be clear and precise in the explanation and please don’t include “bullshit” (Sorry for the last word but I did not find a better expression where I am using it in the sense indicated in **https://en.wikipedia.org/wiki/Bullshit**).
+**Observation 1**: Be clear and precise in the explanation and please don’t include nonsense arguments.
 
 Yes. It is possible that the **exports** or **imports** can be greater than **GDP**. This can happen because **exports** or **imports** can include intermediate goods. A "toy" example can be found in **Oliver Blanchard (2017) Macroeconomics (7 Edition)** > Chapter 17 > Openness in Goods and Financial Markets > 17.1 Openness in Goods Markets > Exports and Imports > Can Exports Exceed GDP? and a real example is the case of Singapore:
 
@@ -250,7 +250,7 @@ static_plot3 %>%
 
 - Enter into the Bank of the Republic (Colombia) using the route:
 
-**http://www.banrep.gov.co/** > Estadísticas > Tasas de cambio, sector externo y derivados > 1. Tasas de cambio > Tasa Representativa del Mercado (TRM - Peso por dólar) > Descargar y consultar: Serie histórica completa (desde 27/11/1991)
+**http://www.banrep.gov.co/** > Estadísticas > ¡NUEVO! Estadísticas Banrep > Tasas de cambio y sector externo > Tasas de cambio nominales > Tasa Representativa del Mercado (TRM) > Diaria > DESCARGAR > Descargar datos en Excel
 
 6. Make a plot of *Tasa Representativa del Mercado (TRM - Peso por dólar)* where the x-axis corresponds to the date and y-axis corresponds to the value of this variable. **(3.5 points)**
 
@@ -258,7 +258,7 @@ static_plot3 %>%
 
 # Data
 trm_cop_usd <- read_excel(path  = "009_tcm_serie_historica_IQY.xlsx", 
-           sheet = 1, range = "A8:B10514") %>% 
+           sheet = 1, range = "A2:B10697") %>% 
     set_names(nm = c("date", "trm")) %>% 
     mutate(date = ymd(date))
 
@@ -288,7 +288,7 @@ static_plot4 %>%
 
 # Real exchange rate
 
-7. Assume that you want to calculate the *real exchange rate* for **Colombia** with reference to the **USA** and where only one product, the **Big Mac hamburger**, is taken into account. Calculate the *real exchange rate* for the dates in the table below using information of this table[^1], and data from point 5 about the *Tasa Representativa del Mercado (TRM - Peso por dólar)* in those dates **(3.5 points)**:
+7. Assume that you want to calculate the *real exchange rate* for **Colombia** with reference to the **USA** and where only one product, the **Big Mac hamburger**, is taken into account. Calculate the *real exchange rate* for the dates in the table below using information of this table[^1], and data from point 6 about the *Tasa Representativa del Mercado (TRM - Peso por dólar)* in those dates **(3.5 points)**:
 
 ```{r}
 
@@ -333,7 +333,7 @@ real_exchange_rate_big_mac_clean %>%
     set_names(nm = c('Date', 'Price Big Mac Colombia', 'Price Big Mac USA', 'TRM', 'Real TRM'))
 ```
 
-8. Maket a plot of the *real exchange rate* using the information you found in point 6 where the x-axis corresponds to the dates of the table above and y-axis corresponds to the value of the *real exchange rate*. **(3.5 points)**
+8. Make a plot of the *real exchange rate* using the information you found in point 7 where the x-axis corresponds to the dates of the table above and y-axis corresponds to the value of the *real exchange rate*. **(3.5 points)**
 
 ```{r}
 
@@ -377,13 +377,13 @@ real_exchange_rate_big_mac_clean %>%
 
 9. Describe what this expression refers to and what it represents. **(3.5 points)**
 
-**Observation 1**: Be clear and precise in the explanation and please don’t include “bullshit” (Sorry for the last word but I did not find a better expression where I am using it in the sense indicated in **https://en.wikipedia.org/wiki/Bullshit**).
+**Observation 1**: Be clear and precise in the explanation and please don’t include nonsense arguments.
 
 The **uncovered interes parity relation** represents a situation where the yield of a **national** financial product is equal to the yield of a financial product from the **rest of the world**. In order for residents to have both domestic and foreign financial products in an economy, the yield between both types of financial products must be equal and that represents the **uncovered interest parity relation**. This condition is consistent with the **Balance of Payments** of many countries like Colombia where individuals have both **national** financial products and financial products from the **rest of the world**.
 
 10. In Colombia, the **nominal exchange rate** between pesos and US dollars is expressed as $\frac{pesos}{1\; dollar}$. What modifications would have to be made to the condition pointed out in point 9 if someone want to write the **uncovered interes parity relation** for a resident in Colombia who has to decide to invest between financial products of Colombia and the USA? **(3.5 points)**
 
-If a resident in Colombia has to decide to invest between a financial product from Colombia or the USA, then he should compare the yield of these products. If $i_t$ is the interest rate of the financial product from Colombia then the yield is $1+i_t$. Also if $i_t^*$ is the interest rate of the financial product from USA he must firts convert his pesos into US dollars to buy the product and then convert the yield he recieve in US dollars into pesos. Therefore, the yield of the financial product from USA is $(1+i_t^*)\frac{E_{t+1}^e}{E_t}$. In that way, the **uncovered interest parity relation** is:
+If a resident in Colombia has to decide to invest between a financial product from Colombia or the USA, then he should compare the yield of these products. If $i_t$ is the interest rate of the financial product from Colombia then the yield is $1+i_t$. Also if $i_t^*$ is the interest rate of the financial product from USA he must first convert his pesos into US dollars to buy the product and then convert the yield he receive in US dollars into pesos. Therefore, the yield of the financial product from USA is $(1+i_t^*)\frac{E_{t+1}^e}{E_t}$. In that way, the **uncovered interest parity relation** is:
 
 $$(1 + i_t) = (1 + i_t^*)\frac{E_{t+1}^e}{E_t}$$
 The difference between the condition pointed out in point 9 and the above expression is how the **nominal** exchange rates, $(E_{t+1}^e, E_t)$, are included. If the **nominal** exchange rate is expressed as $\frac{pesos}{1\; dollar}$ then $E_{t+1}^e$ would be in the numerator and $E_t$ in the denominator.
@@ -439,13 +439,14 @@ $$\widehat{T}_t^* = 10$$
 $$\widehat{IM}_t^* = 0.3\widehat{Y}_t^*$$
 
 $$\widehat{X}_t^* = 0.3\widehat{Y}_t$$
+
 - The process is practically the same as for the domestic economy but taking into account the asterisks. The **IS** curve for the **foreign** economy is:
 
 $$\begin{split}
    \widehat{Y}_t^* & = \widehat{Z}_t^* \\
    \widehat{Y}_t^* & = \widehat{C}_t^* + \widehat{I}_t^* + \widehat{G}_t^* + \widehat{X}_t^* - \widehat{IM}_t^* \\
    \widehat{Y}_t^* & = 10 + 0.8(\widehat{Y}_t^* - \widehat{T}_t^*) + \widehat{I}_t^* + \widehat{G}_t^* + 0.3\widehat{Y}_t - 0.3\widehat{Y}_t^* \\
-   \widehat{Y}_t & = 22 + 0.8\widehat{Y}_t^* - 0.3\widehat{Y}_tt^* + 0.3\widehat{Y}_t \\ \widehat{Y}_t^* & = \frac{1}{1 - 0.8 + 0.3}(22 + 0.3\widehat{Y}_t) \\
+   \widehat{Y}_t^* & = 22 + 0.8\widehat{Y}_t^* - 0.3\widehat{Y}_t^* + 0.3\widehat{Y}_t \\ \widehat{Y}_t^* & = \frac{1}{1 - 0.8 + 0.3}(22 + 0.3\widehat{Y}_t) \\
    \widehat{Y}_t^* & = 44 + 0.6\widehat{Y}_t
    \end{split}$$
 Where $\frac{1}{1 - 0.8 + 0.3} = \frac{1}{0.5} = 2 > 1$ is the multiplier for the **foreign** economy **without** taking into account the effect of the *GDP* of the **national** economy.

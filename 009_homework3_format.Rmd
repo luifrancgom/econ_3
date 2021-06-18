@@ -57,13 +57,13 @@ library(knitr)
 
 - Enter into the Bank of the Republic (Colombia) using the route:
 
-**http://www.banrep.gov.co/** > Estadísticas > Tasas de cambio, sector externo y derivados > 1. Tasas de cambio > Tasa Representativa del Mercado (TRM - Peso por dólar) > Descargar y consultar: Serie histórica completa (desde 27/11/1991)
+**http://www.banrep.gov.co/** > Estadísticas > ¡NUEVO! Estadísticas Banrep > Tasas de cambio y sector externo > Tasas de cambio nominales > Tasa Representativa del Mercado (TRM) > Diaria > DESCARGAR > Descargar datos en Excel
 
 6. Make a plot of *Tasa Representativa del Mercado (TRM - Peso por dólar)* where the x-axis corresponds to the date and y-axis corresponds to the value of this variable. **(3.5 points)**
 
 # Real exchange rate
 
-7. Assume that you want to calculate the *real exchange rate* for **Colombia** with reference to the **USA** and where only one product, the **Big Mac hamburger**, is taken into account. Calculate the *real exchange rate* for the dates in the table below using information of this table[^1], and data from point 5 about the *Tasa Representativa del Mercado (TRM - Peso por dólar)* in those dates **(3.5 points)**:
+7. Assume that you want to calculate the *real exchange rate* for **Colombia** with reference to the **USA** and where only one product, the **Big Mac hamburger**, is taken into account. Calculate the *real exchange rate* for the dates in the table below using information of this table[^1], and data from point 6 about the *Tasa Representativa del Mercado (TRM - Peso por dólar)* in those dates **(3.5 points)**:
 
 ```{r}
 
@@ -88,7 +88,7 @@ big_mac %>%
 
 [^1]: The data of the table was taken from https://github.com/TheEconomist/big-mac-data
 
-8. Maket a plot of the *real exchange rate* using the information you found in point 6 where the x-axis corresponds to the dates of the table above and y-axis corresponds to the value of the *real exchange rate*. **(3.5 points)**
+8. Make a plot of the *real exchange rate* using the information you found in point 7 where the x-axis corresponds to the dates of the table above and y-axis corresponds to the value of the *real exchange rate*. **(3.5 points)**
 
 # Uncovered interes parity relation
 

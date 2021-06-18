@@ -1,7 +1,7 @@
 ---
 title: "Output, the interest rate and the exchange rate"
 author: "Luis Francisco Gomez Lopez"
-date: 2020-09-08
+date: 2021-03-10 12:11:04 GMT -05:00
 output:
   beamer_presentation:
     colortheme: dolphin
@@ -65,7 +65,7 @@ library(lubridate)
 
 - The purpose of the virtual meetings is to answer questions and not to make a summary of the study material.
 
-- This presentation is based on [@blanchardMacroeconomics2017a, Chapter 19]
+- This presentation is based on [@blanchard_macroeconomics_2017, Chapter 19]
 
 # Purpose
 
@@ -250,7 +250,7 @@ ggplot(data = tibble(x = c(0, 5, 2, 6, 11, 8),
 
 # Exchange rate regimes
 
-- Classification of __de facto__ exchange arrangements [@imfAnnualReportExchange2020, p 43-45]:
+- Classification of __de facto__ exchange arrangements [@imf_annual_2020, p 43-45]:
 
 ```{r, out.width = '100%'}
 
@@ -307,45 +307,51 @@ grViz(diagram = '
 
 # Exchange rate regimes
 
-- __De facto__ exchange arrangements around the world [@imfAnnualReportExchange2020]
+- __De facto__ exchange arrangements around the world [@imf_annual_2020]
 
-```{r, out.width = "75%"}
+```{r, out.width = "80%"}
 
-read_csv(file = "010_AREAERDataQueryReport_ Exchange_Arrangement (1949 -)_2020_08_27.csv") %>% 
+data_exchange_rta <- read_csv(file = "010_AREAER_data_query_report_2021_03_10.csv", 
+         skip = 2) %>% 
     select(Year, Country, Code, Index, Category, Status) %>% 
-    filter(Year %in% 2010:2018,
-           Code %in% c(971, 972, 973, 974, 159, 975, 976, 977, 978, 979),
-           Status %in% "yes") %>% 
     count(Year, Category) %>% 
-    mutate(Year     = as_factor(Year),
-           Category = case_when(
-                        Category == "Pegged exchange rate within horizontal bands" ~ str_glue("Pegged exchange rate
+    mutate(Category = case_when(
+                            Category == "Pegged exchange rate within horizontal bands" ~ str_glue("Pegged exchange rate
                                                                                               within horizontal bands"),
-                        TRUE ~ Category)) %>% 
-    ggplot(aes(x    = Year, 
-               y    = n, 
-               fill = fct_reorder(.f = Category, .x = n) %>% 
-                        fct_rev())) +
-    geom_col(color = "black", alpha = 0.8) + 
-    geom_text(aes(x     = Year, 
-                  y     = n, 
-                  label = n), 
-              fontface  = "bold",
-              position  = position_stack(vjust = 0.5)) +
+               TRUE ~ Category),
+           Category = Category %>% fct_reorder(.x = n, .fun = max) %>% fct_rev())
+
+initial_year <- min(data_exchange_rta$Year)
+last_year    <- max(data_exchange_rta$Year)
+
+data_exchange_rta %>% 
+    filter(between(x = Year, left = initial_year, right = last_year)) %>% 
+    ggplot(aes(Year, Category %>% fct_rev())) + 
+    geom_point(aes(fill = Category, size = n), shape = 21) +
+    geom_text(aes(label = n), 
+              fontface  = "bold", 
+              position  = position_nudge(x = -0.3, y = 0)) +
+    scale_x_continuous(breaks = initial_year:last_year) +
     scale_fill_tq() + 
-    labs(y        = "Number of countries",
-         title    = "De facto exchange rate arrangements around the world",
+    guides(size = guide_none()) +
+    labs(x        = "",
+         y        = "",
+         title    = str_glue("Number of de facto exchange rate arrangements around the world {initial_year}-{last_year}"),
+         subtitle = "Classification of Exchange arrangements (2008 onwards)",
          caption  = str_glue("Source: IMF AREAER Database
-                             Last date update: 2020-08"), 
+                             Last date update: 2021-03-10"), 
          fill     = "") +
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),
           legend.background = element_rect(fill = "#f3fcfc"),
           plot.title        = element_text(face = "bold"),
-          axis.title        = element_text(face = "bold"),
-          legend.title      = element_text(face = "bold"), legend.position = "bottom",
-          axis.text         = element_text(face = "bold"))
+          axis.title        = element_text(face = "bold"), 
+          legend.title      = element_text(face = "bold"), 
+          legend.position   = "bottom",
+          axis.text         = element_text(face = "bold"), 
+          axis.text.y       = element_blank(), 
+          axis.ticks.y      = element_blank())
 ```
 
 # Exchange Policy in Colombia
@@ -386,24 +392,24 @@ read_csv(file = "010_AREAERDataQueryReport_ Exchange_Arrangement (1949 -)_2020_0
 
 ```{r, out.width = "75%"}
 
-# Data 1: clasiffication exchange rate regimes
+# Data 1: monthly average exchange rate COP/USD
+col_cop_usd_monthly_mean <- read_csv(file   = "010_TCM_Serie empalmada_de_datos_promedio_por_meses_y_datos_a_fin_de_mes.csv", 
+                                     locale = locale(decimal_mark = ",")) %>% 
+    set_names(nm = c("date", "mean", "last")) %>% 
+    mutate(date = as.character(date) 
+           %>% timetk::parse_date2()) %>% 
+    select(date, mean)
+
+initial_date <- col_cop_usd_monthly_mean$date[1]
+last_date <- col_cop_usd_monthly_mean$date[length(col_cop_usd_monthly_mean$date)]
+
+# Data 2: clasiffication exchange rate regimes
 classif <- tibble(regime = c("Crawling peg", 
                              "Pegged exchange rate within horizontal bands",
                              "Free floating") %>% as_factor(),
                   start  = c(ymd("1967-03-01"), ymd("1991-10-01"), ymd("1999-11-01")),
-                  end    = c(ymd("1991-10-01"), ymd("1999-11-01"), ymd("2020-08-01")))
+                  end    = c(ymd("1991-10-01"), ymd("1999-11-01"), last_date))
 
-# Data 2: monthly average exchange rate COP/USD
-col_cop_usd_monthly_mean <- read_csv(file   = "010_TCM_Serie empalmada_de_datos_promedio_por_meses_y_datos_a_fin_de_mes.csv", 
-         locale = locale(decimal_mark = ",")) %>% 
-    set_names(nm = c("date", "mean", "last")) %>% 
-    mutate(date = as.character(date) 
-                    %>% timetk::parse_date2()) %>% 
-    filter_by_time(.date_var   = date, 
-                   .start_date = ymd("1967-03-01"), 
-                   .end_date   = "end") %>% 
-    select(date, mean)
-    
 col_cop_usd_monthly_mean %>%     
     ggplot() + 
     geom_line(aes(x = date, y = mean),
@@ -416,10 +422,11 @@ col_cop_usd_monthly_mean %>%
               color = "black",
               show.legend = TRUE) +
     scale_fill_tq() +
-    scale_x_date(breaks = c(ymd("1967-03-01"), 
+    scale_x_date(breaks = c(initial_date,
+                            ymd("1967-03-01"), 
                             ymd("1991-10-01"),
                             ymd("1999-11-01"),
-                            ymd("2020-08-01")), 
+                            last_date), 
                  date_labels = "%Y-%m") +
     labs(x        = "",
          y        = "COP/USD",
@@ -428,7 +435,7 @@ col_cop_usd_monthly_mean %>%
                              de jure exchange rate regime classification: COP/USD"),
          caption  = str_glue("Source monthly average exchange rate: Banco de la República (Colombia)
                              Source de jure exchange rate regime classification: Author's own interpretation 
-                             Last update date: 2020-08")) + 
+                             Last update date: {last_date}")) + 
     theme(panel.border      = element_rect(fill = NA, color = "black"),
           plot.background   = element_rect(fill = "#f3fcfc"),
           panel.background  = element_rect(fill = "#f3f7fc"),
