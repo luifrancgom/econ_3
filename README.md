@@ -1,4 +1,4 @@
-# Notes and presentations Economics I (Introduction to the Colombian economy)
+# Notes and presentations Economics III (Macroeconomics)
 
 - Include 
   
@@ -6,3 +6,4 @@
   + Presentations
   + Data
   + References
+  + Workshops and solutions
